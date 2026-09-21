@@ -30,16 +30,46 @@
 
   /* One easing curve, one duration scale. */
   --ease-quiet: cubic-bezier(0.22, 1, 0.36, 1);
-  --animate-drift: drift 14s linear infinite;
 }
 
-@keyframes drift {
+@keyframes rise {
   from {
-    transform: translateX(-12%);
+    opacity: 0;
+    transform: translateY(14px);
   }
   to {
-    transform: translateX(112%);
+    opacity: 1;
+    transform: none;
   }
+}
+
+@keyframes carriage {
+  from {
+    transform: translateX(-60px);
+  }
+  to {
+    transform: translateX(860px);
+  }
+}
+
+/*
+ * The above-the-fold entrance. Deliberately CSS rather than JavaScript: it
+ * paints on the first frame instead of waiting for hydration, so the heading
+ * is never an invisible element holding up the largest contentful paint.
+ * Siblings stagger by setting animation-delay, matching the scroll reveals.
+ */
+.rise {
+  animation: rise 0.5s var(--ease-quiet) both;
+}
+
+/*
+ * The carriage travelling down the aisle. A compositor-driven CSS animation,
+ * so an endless loop costs the main thread nothing. Its untransformed
+ * position is where it comes to rest when motion is turned down.
+ */
+.carriage {
+  transform: translateX(300px);
+  animation: carriage 17s linear infinite;
 }
 
 :root {
@@ -89,7 +119,22 @@ body {
   *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
+    animation-delay: 0s !important;
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
+  }
+
+  /*
+   * Drop these animations outright rather than racing them to zero, so the
+   * hero simply appears and the carriage simply sits in the aisle.
+   */
+  .rise,
+  .carriage {
+    animation: none !important;
+  }
+
+  .rise {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }

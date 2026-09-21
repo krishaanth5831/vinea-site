@@ -1,7 +1,3 @@
-"use client";
-
-import { motion, useReducedMotion } from "framer-motion";
-
 /** Evenly spaced plants either side of the aisle. */
 const PLANTS = Array.from({ length: 19 }, (_, index) => 20 + index * 42);
 
@@ -11,12 +7,14 @@ const AISLE = 110;
 
 /**
  * The one moving thing on the page: a carriage travelling down an aisle
- * between two rows. Suggestion, not illustration — it is a diagram of where
- * the work happens, and it stops completely under reduced motion.
+ * between two rows of plants. Suggestion, not illustration — a diagram of
+ * where the work happens.
+ *
+ * The movement is a CSS animation on the compositor, so it costs the main
+ * thread nothing and needs no JavaScript. Under reduced motion it stops
+ * dead, parked in the aisle, rather than slowing down.
  */
 export function AisleMotion() {
-  const reduced = useReducedMotion() ?? false;
-
   return (
     <svg
       viewBox="0 0 800 220"
@@ -70,15 +68,7 @@ export function AisleMotion() {
           strokeDasharray="3 7"
         />
 
-        <motion.g
-          initial={reduced ? { x: 300 } : { x: -60 }}
-          animate={reduced ? { x: 300 } : { x: 860 }}
-          transition={
-            reduced
-              ? { duration: 0 }
-              : { duration: 17, repeat: Infinity, ease: "linear" }
-          }
-        >
+        <g className="carriage">
           {/* What the carriage is looking at, either side of itself. */}
           <line
             x1="0"
@@ -99,7 +89,7 @@ export function AisleMotion() {
           />
           <circle cx="-9" cy={AISLE + 9} r="2.5" fill="var(--color-ink)" />
           <circle cx="9" cy={AISLE + 9} r="2.5" fill="var(--color-ink)" />
-        </motion.g>
+        </g>
       </g>
     </svg>
   );
