@@ -34,7 +34,7 @@ export function Contact() {
               {lane.ask}
             </p>
 
-            <div className="mt-8 pt-2">
+            <div className="mt-auto pt-10">
               <Cta cta={lane.cta} />
             </div>
           </RevealItem>

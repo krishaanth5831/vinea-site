@@ -1,14 +1,15 @@
 import { tasks } from "@/content";
 
-import { RevealGroup, RevealItem } from "./Reveal";
+import { Reveal, RevealGroup, RevealItem } from "./Reveal";
 import { Section } from "./Section";
 
 export function Tasks() {
   return (
     <Section meta={tasks.meta} lead={tasks.lead} raised>
-      <RevealGroup className="mt-16 flex flex-col" as="div">
+      {/* Long enough that each job reveals on its own as it is reached. */}
+      <div className="mt-16 flex flex-col">
         {tasks.tasks.map((task) => (
-          <RevealItem
+          <Reveal
             key={task.name}
             className="border-t border-line-strong py-10 first:border-t-0 first:pt-0"
           >
@@ -44,9 +45,9 @@ export function Tasks() {
                 </div>
               </dl>
             </div>
-          </RevealItem>
+          </Reveal>
         ))}
-      </RevealGroup>
+      </div>
 
       <RevealGroup className="mt-20">
         <RevealItem>
