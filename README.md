@@ -5,6 +5,10 @@ The Vinea site: a single page built from static, typed content.
 Next.js (App Router) with TypeScript, Tailwind v4 and Framer Motion, deployed
 on Vercel. No CMS, no database, no auth, no analytics.
 
+**Live at <https://vinea-site.vercel.app>** — a preview URL on its own Vercel
+project. `getvinea.nl` still points at the previous site and has not been
+touched; moving it here is a manual step, written out below.
+
 ## Local development
 
 ```bash
@@ -68,7 +72,7 @@ Both projects are in the same Vercel team, so the domain moves between them
 without any DNS change — the nameserver and record setup stays exactly as it
 is. The steps, in order:
 
-1. Open this project's `.vercel.app` URL and confirm you are happy with it.
+1. Open <https://vinea-site.vercel.app> and confirm you are happy with it.
 2. In the Vercel dashboard, go to **`vinea-website` → Settings → Domains**.
    Remove `www.getvinea.nl`, then remove `getvinea.nl`. Removing the www one
    first avoids leaving the apex redirecting to a domain that is no longer
