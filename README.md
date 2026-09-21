@@ -1,36 +1,97 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Vinea site
 
-## Getting Started
+The Vinea site: a single page built from static, typed content.
 
-First, run the development server:
+Next.js (App Router) with TypeScript, Tailwind v4 and Framer Motion, deployed
+on Vercel. No CMS, no database, no auth, no analytics.
+
+## Local development
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev          # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Other commands:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build        # production build; must finish with no warnings
+npm run lint         # ESLint; must finish silent
+npm run audit:copy   # content-rule check, run after a build
+npm start            # serve the production build locally
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Where the copy lives
 
-## Learn More
+**All prose is in `src/content/`.** Components read from it and never inline
+their own sentences, so text can be changed in one place without touching JSX.
 
-To learn more about Next.js, take a look at the following resources:
+| File            | What it holds                                              |
+| --------------- | ---------------------------------------------------------- |
+| `site.ts`       | Name, meta title and description, nav labels, footer links |
+| `hero.ts`       | Heading, lead, the honesty note, the two calls to action   |
+| `method.ts`     | How we work: the steps, what is asked, heard and discarded |
+| `tasks.ts`      | The candidate jobs, and what has been ruled out and why    |
+| `platform.ts`   | What that points to, and the note on cost                  |
+| `objections.ts` | The grower objection, what can be answered, the blockers   |
+| `status.ts`     | Where the project stands; what exists and what does not    |
+| `contact.ts`    | The grower and investor lanes                              |
+| `types.ts`      | The shape of all of the above                              |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Editing a string in any of those files changes the page. TypeScript will
+reject a missing or misshapen field at build time.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### The content rules are checked, not just trusted
 
-## Deploy on Vercel
+The site carries no numbers at all — no figures, no percentages, no durations,
+no years. After a build, `npm run audit:copy` reads the *rendered* HTML (so
+anything hardcoded in JSX is caught too) and exits non-zero if a digit reaches
+visible text. It also reports, for reading rather than failing, any use of
+"one"/"two", pivot language, load-bearing adjectives and traction phrases.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run build && npm run audit:copy
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Pointing getvinea.nl at this project
+
+**This is deliberately not done.** The domain currently serves a different,
+pre-existing Vercel project and nothing here has touched it or its DNS.
+
+Current state, for reference:
+
+- Project **`vinea-website`** holds both `getvinea.nl` and `www.getvinea.nl`
+- `getvinea.nl` redirects to `www.getvinea.nl` with a 308
+- This repo deploys to the separate project **`vinea-site`**
+
+Both projects are in the same Vercel team, so the domain moves between them
+without any DNS change — the nameserver and record setup stays exactly as it
+is. The steps, in order:
+
+1. Open this project's `.vercel.app` URL and confirm you are happy with it.
+2. In the Vercel dashboard, go to **`vinea-website` → Settings → Domains**.
+   Remove `www.getvinea.nl`, then remove `getvinea.nl`. Removing the www one
+   first avoids leaving the apex redirecting to a domain that is no longer
+   attached to anything.
+3. Go to **`vinea-site` → Settings → Domains**. Add `www.getvinea.nl` first
+   and let it verify.
+4. Then add `getvinea.nl`, and set it to **redirect to `www.getvinea.nl`** with
+   status **308**, which is how it is configured today.
+5. Check both `https://getvinea.nl` and `https://www.getvinea.nl`. The apex
+   should 308 to www, and www should serve this site.
+
+Certificates are issued automatically once each domain verifies. There is a
+short window between step 2 and step 4 where the domain resolves to nothing;
+doing it in one sitting keeps that to a minute or so.
+
+To undo, do the same in reverse — the old project is untouched and its
+deployments are all still there.
+
+`metadataBase` in `src/app/layout.tsx` is already set to `https://getvinea.nl`,
+so canonical and Open Graph URLs are correct the moment the domain moves. No
+code change is needed as part of the switch.
+
+## Notes
+
+Judgement calls made during the build, including one place where the brief
+contradicted itself, are written up in [DECISIONS.md](./DECISIONS.md).
