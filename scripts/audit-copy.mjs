@@ -48,7 +48,7 @@ const checks = [
   },
 ];
 
-let failures = 0;
+let flagged = 0;
 
 for (const check of checks) {
   const hits = lines.filter((line) => check.re.test(line));
@@ -58,8 +58,19 @@ for (const check of checks) {
   }
   console.log(`HITS  ${check.name} (${hits.length}) — review each:`);
   for (const hit of hits) console.log(`        ${hit}`);
-  failures += hits.length;
+  flagged += hits.length;
 }
 
 console.log(`\nVisible text blocks scanned: ${lines.length}`);
-process.exit(0);
+console.log(`Lines flagged for review: ${flagged}`);
+
+/*
+ * Reviewed rather than enforced. "one" reads as "a single" throughout, and
+ * the traction phrases only ever appear inside denials, so hits are read
+ * rather than failed on. Digits are the check that must stay at zero.
+ */
+const digitsClean = checks
+  .filter((check) => check.name === "digits")
+  .every((check) => !lines.some((line) => check.re.test(line)));
+
+process.exit(digitsClean ? 0 : 1);

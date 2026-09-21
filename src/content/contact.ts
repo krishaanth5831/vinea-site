@@ -4,7 +4,7 @@ export const contact: ContactContent = {
   meta: {
     id: "talk-to-us",
     eyebrow: "Talk to us",
-    heading: "Two different conversations.",
+    heading: "Different conversations, depending on who is asking.",
   },
 
   lead:
