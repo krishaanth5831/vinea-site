@@ -19,7 +19,7 @@ export function AisleMotion() {
     <svg
       viewBox="0 0 800 220"
       role="img"
-      aria-label="A carriage moving along the aisle between two rows of plants."
+      aria-label="A carriage moving along the aisle, between rows of plants."
       className="h-auto w-full"
     >
       <defs>

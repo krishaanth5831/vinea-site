@@ -50,7 +50,8 @@ reject a missing or misshapen field at build time.
 The site carries no numbers at all — no figures, no percentages, no durations,
 no years. After a build, `npm run audit:copy` reads the *rendered* HTML (so
 anything hardcoded in JSX is caught too) and exits non-zero if a digit reaches
-visible text. It also reports, for reading rather than failing, any use of
+visible text. It checks `aria-label`, `alt` and `title` as well, since text a
+screen reader speaks is text on the site. It also reports, for reading rather than failing, any use of
 "one"/"two", pivot language, load-bearing adjectives and traction phrases.
 
 ```bash

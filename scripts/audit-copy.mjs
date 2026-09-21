@@ -8,23 +8,38 @@ import { readFileSync } from "node:fs";
 
 const html = readFileSync(".next/server/app/index.html", "utf8");
 
+function decode(text) {
+  return text
+    .replace(/&#x27;/g, "'")
+    .replace(/&#39;/g, "'")
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&nbsp;/g, " ");
+}
+
+/*
+ * Text a screen reader speaks is text on the site, so the labelling
+ * attributes are audited alongside the prose. They are collected before the
+ * tags are stripped, and before <svg> is discarded, since that is where the
+ * aisle diagram's description lives.
+ */
+const spoken = [...html.matchAll(/(?:aria-label|alt|title)="([^"]*)"/gi)]
+  .map((match) => decode(match[1]))
+  .filter(Boolean);
+
 /* Strip everything the reader never sees, then decode entities. */
 const visible = html
   .replace(/<script\b[\s\S]*?<\/script>/gi, " ")
   .replace(/<style\b[\s\S]*?<\/style>/gi, " ")
+  .replace(/<noscript\b[\s\S]*?<\/noscript>/gi, " ")
   .replace(/<svg\b[\s\S]*?<\/svg>/gi, " ")
   .replace(/<!--[\s\S]*?-->/g, " ")
   .replace(/<[^>]+>/g, "\n")
-  .replace(/&#x27;/g, "'")
-  .replace(/&#39;/g, "'")
-  .replace(/&amp;/g, "&")
-  .replace(/&quot;/g, '"')
-  .replace(/&lt;/g, "<")
-  .replace(/&gt;/g, ">")
-  .replace(/&nbsp;/g, " ");
+;
 
-const lines = visible
-  .split("\n")
+const lines = [...decode(visible).split("\n"), ...spoken]
   .map((line) => line.trim())
   .filter(Boolean);
 
