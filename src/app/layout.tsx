@@ -1,24 +1,27 @@
 import type { Metadata, Viewport } from "next";
-import { Instrument_Serif, Inter } from "next/font/google";
+import { IBM_Plex_Mono } from "next/font/google";
+import localFont from "next/font/local";
 
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { SmoothScroll } from "@/components/SmoothScroll";
 import { site } from "@/content";
 
 import "./globals.css";
 
-/** One display face. */
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-instrument-serif",
-  subsets: ["latin"],
-  weight: "400",
+/** One display face, self-hosted. */
+const generalSans = localFont({
+  src: "../fonts/GeneralSans-Variable.woff2",
+  variable: "--font-general-sans",
+  weight: "200 700",
   display: "swap",
 });
 
-/** One text face. */
-const inter = Inter({
-  variable: "--font-inter",
+/** One mono, for part names, labels and anything the drawing annotates. */
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-plex-mono",
   subsets: ["latin"],
+  weight: ["400", "500"],
   display: "swap",
 });
 
@@ -42,22 +45,16 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#fbfaf8",
+  themeColor: "#fbfbf9",
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en-GB" className={`${instrumentSerif.variable} ${inter.variable}`}>
-      <body className="antialiased">
-        {/*
-          Without JavaScript the reveal wrappers would keep their hidden
-          state, so the copy is forced visible instead.
-        */}
-        <noscript>
-          <style>{`[data-reveal]{opacity:1 !important;transform:none !important;}`}</style>
-        </noscript>
+    <html lang="en-GB" className={`${generalSans.variable} ${plexMono.variable}`}>
+      <body>
+        <SmoothScroll />
 
         <a
           href="#main"

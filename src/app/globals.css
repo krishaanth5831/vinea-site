@@ -1,41 +1,181 @@
 @import "tailwindcss";
 
 /*
- * Design tokens.
+ * Vinea's design tokens.
  *
- * Neutral base plus a single accent. One display face, one text face.
- * One spacing token (--spacing-section) drives the vertical rhythm of every
- * section, so nothing needs a one-off margin.
+ * The page is a technical drawing: near-white ground, hairline rules, one
+ * signal colour. The signal is the colour of ripe fruit, which is the only
+ * thing on the page allowed to be loud.
  */
 @theme {
-  --color-paper: #fbfaf8;
-  --color-raised: #f4f2ed;
-  --color-ink: #16191c;
-  --color-muted: #5e6672;
-  --color-line: #e3e0da;
-  --color-line-strong: #cfcbc2;
-  --color-accent: #14603f;
-  --color-accent-soft: #eef3ef;
+  --color-paper: #fbfbf9;
+  --color-raised: #f3f3ef;
+  --color-ink: #0f1311;
+  --color-muted: #6a6f69;
+  --color-line: #e0dfd8;
+  --color-line-strong: #c4c3ba;
+  --color-signal: #a83a20;
+  --color-signal-soft: #f6ebe7;
 
-  --font-display: var(--font-instrument-serif), Georgia, "Times New Roman", serif;
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-general-sans), "Helvetica Neue", Arial, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", monospace;
 
-  /* The rhythm token. Every section's vertical padding comes from this. */
-  --spacing-section: clamp(4.5rem, 10vw, 8.5rem);
-  --spacing-gutter: clamp(1.25rem, 5vw, 2.5rem);
+  /* The rhythm token. Every band's vertical padding comes from this. */
+  --spacing-section: clamp(5rem, 11vw, 9.5rem);
+  --spacing-gutter: clamp(1.25rem, 4vw, 2.5rem);
 
-  /* Narrow measure for body copy. */
   --container-measure: 65ch;
-  --container-shell: 76rem;
+  --container-shell: 84rem;
 
-  /* One easing curve, one duration scale. */
+  /* One easing curve for everything that moves. */
   --ease-quiet: cubic-bezier(0.22, 1, 0.36, 1);
 }
+
+:root {
+  color-scheme: light;
+  /*
+   * No `scroll-behavior: smooth` on purpose — Lenis owns scrolling, and the
+   * two fight each other when both are on.
+   */
+}
+
+html {
+  background-color: var(--color-paper);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-synthesis-weight: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+
+[id] {
+  scroll-margin-top: 6rem;
+}
+
+::selection {
+  background-color: var(--color-signal);
+  color: var(--color-paper);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-signal);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ---- type scale -------------------------------------------------------- */
+
+.t-display {
+  font-size: clamp(3.25rem, 11vw, 9rem);
+  font-weight: 600;
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+}
+
+.t-h1 {
+  font-size: clamp(2.25rem, 5.4vw, 4.5rem);
+  font-weight: 600;
+  line-height: 1.02;
+  letter-spacing: -0.032em;
+  text-wrap: balance;
+}
+
+.t-h2 {
+  font-size: clamp(1.875rem, 3.6vw, 3rem);
+  font-weight: 600;
+  line-height: 1.06;
+  letter-spacing: -0.026em;
+  text-wrap: balance;
+}
+
+.t-h3 {
+  font-size: clamp(1.25rem, 1.9vw, 1.625rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
+.t-lead {
+  font-size: clamp(1.0625rem, 1.35vw, 1.3125rem);
+  line-height: 1.6;
+  letter-spacing: -0.006em;
+}
+
+.t-body {
+  font-size: 1rem;
+  line-height: 1.68;
+}
+
+/* Data labels and part names. The drawing's handwriting. */
+.t-mono {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+
+/* ---- drawing primitives ------------------------------------------------ */
+
+/*
+ * The faint ruled ground the whole page sits on, like graph paper that has
+ * been photographed rather than printed.
+ */
+.ruled {
+  background-image: linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-line) 55%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-line) 55%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 64px 64px;
+}
+
+/*
+ * The drawing's strokes are measured in screen pixels, not drawing units, so
+ * the schematic stays legible when it is scaled down to a phone instead of
+ * fading to nothing.
+ */
+.schematic * {
+  vector-effect: non-scaling-stroke;
+}
+
+/* Part names are unreadable once the drawing is this small, so they go. */
+@media (max-width: 40rem) {
+  .schematic .callout {
+    display: none;
+  }
+}
+
+/* The monospace crop field behind the hero: every glyph is a plant. */
+.crop-field {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.15;
+  letter-spacing: 0.32em;
+  white-space: pre;
+  color: var(--color-line-strong);
+  user-select: none;
+}
+
+/* ---- motion ------------------------------------------------------------ */
 
 @keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(14px);
+    transform: translateY(16px);
   }
   to {
     opacity: 1;
@@ -43,77 +183,38 @@
   }
 }
 
-@keyframes carriage {
-  from {
-    transform: translateX(-60px);
-  }
-  to {
-    transform: translateX(860px);
-  }
-}
-
 /*
- * The above-the-fold entrance. Deliberately CSS rather than JavaScript: it
- * paints on the first frame instead of waiting for hydration, so the heading
- * is never an invisible element holding up the largest contentful paint.
- * Siblings stagger by setting animation-delay, matching the scroll reveals.
+ * The above-the-fold entrance. CSS rather than JavaScript so it paints on the
+ * first frame instead of waiting for hydration, and never holds up the
+ * largest contentful paint.
  */
 .rise {
-  animation: rise 0.5s var(--ease-quiet) both;
+  animation: rise 0.6s var(--ease-quiet) both;
+}
+
+@keyframes travel {
+  from {
+    transform: translateX(-8%);
+  }
+  to {
+    transform: translateX(108%);
+  }
 }
 
 /*
- * The carriage travelling down the aisle. A compositor-driven CSS animation,
- * so an endless loop costs the main thread nothing. Its untransformed
- * position is where it comes to rest when motion is turned down.
+ * The carriage running the length of the aisle. A compositor-driven CSS
+ * animation, so an endless loop costs the main thread nothing.
  */
-.carriage {
-  transform: translateX(300px);
-  animation: carriage 17s linear infinite;
-}
-
-:root {
-  /* Light only, by design. Stops the browser tinting form controls. */
-  color-scheme: light;
-  scroll-behavior: smooth;
-}
-
-body {
-  background-color: var(--color-paper);
-  color: var(--color-ink);
-  font-family: var(--font-sans);
-  font-synthesis-weight: none;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-}
-
-/* Anchors land below the sticky header rather than under it. */
-[id] {
-  scroll-margin-top: 6rem;
-}
-
-::selection {
-  background-color: var(--color-accent);
-  color: var(--color-paper);
-}
-
-/* One visible focus treatment, used everywhere. */
-:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 3px;
-  border-radius: 2px;
+.travel {
+  animation: travel 19s linear infinite;
 }
 
 /*
- * Reduced motion: nothing moves. The hero's animated element stops rather
- * than slows, scroll-triggered reveals resolve to their final state, and
- * smooth scrolling is turned off.
+ * Reduced motion. Three separate things have to stop: this stylesheet's own
+ * animations, the scroll reveals (which resolve to their end state in JS),
+ * and Lenis, which is never constructed at all.
  */
 @media (prefers-reduced-motion: reduce) {
-  :root {
-    scroll-behavior: auto;
-  }
-
   *,
   *::before,
   *::after {
@@ -124,12 +225,8 @@ body {
     scroll-behavior: auto !important;
   }
 
-  /*
-   * Drop these animations outright rather than racing them to zero, so the
-   * hero simply appears and the carriage simply sits in the aisle.
-   */
   .rise,
-  .carriage {
+  .travel {
     animation: none !important;
   }
 

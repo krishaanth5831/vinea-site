@@ -4,7 +4,6 @@ import type { SectionMeta } from "@/content";
 
 import { Reveal } from "./Reveal";
 
-/** Horizontal shell. Every full-width band uses it, so the gutters agree. */
 export function Container({
   children,
   className = "",
@@ -19,18 +18,27 @@ export function Container({
   );
 }
 
-export function Eyebrow({ children }: { children: ReactNode }) {
+/** A mono label. Used for eyebrows, part names and column headings. */
+export function Mono({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return <p className={`t-mono text-muted ${className}`}>{children}</p>;
+}
+
+/** The rule-and-label header every band opens with. */
+export function BandRule({ label }: { label: string }) {
   return (
-    <p className="font-sans text-xs uppercase tracking-[0.18em] text-muted">
-      {children}
-    </p>
+    <div className="flex items-center gap-4 border-t border-line pt-4">
+      <span className="t-mono text-signal">◆</span>
+      <span className="t-mono text-muted">{label}</span>
+    </div>
   );
 }
 
-/**
- * A page section: the shared vertical rhythm, a rule at the top, and the
- * eyebrow/heading/lead pattern used by every one of them.
- */
 export function Section({
   meta,
   lead,
@@ -40,31 +48,26 @@ export function Section({
   meta: SectionMeta;
   lead?: string;
   children: ReactNode;
-  /** Tints the band, used to break up a long scroll. */
   raised?: boolean;
 }) {
   return (
     <section
       id={meta.id}
       aria-labelledby={`${meta.id}-heading`}
-      className={`border-t border-line py-section ${raised ? "bg-raised" : ""}`}
+      className={`py-section ${raised ? "bg-raised" : ""}`}
     >
       <Container>
         <Reveal>
-          <div className="max-w-measure">
-            <Eyebrow>{meta.eyebrow}</Eyebrow>
-            <h2
-              id={`${meta.id}-heading`}
-              className="mt-5 font-display text-[clamp(1.9rem,4vw,3rem)] leading-[1.1] tracking-[-0.015em] text-balance"
-            >
-              {meta.heading}
-            </h2>
-            {lead ? (
-              <p className="mt-6 text-[1.0625rem] leading-[1.75] text-muted">
-                {lead}
-              </p>
-            ) : null}
-          </div>
+          <BandRule label={meta.eyebrow} />
+        </Reveal>
+
+        <Reveal className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-16">
+          <h2 id={`${meta.id}-heading`} className="t-h2 m-0 max-w-[18ch]">
+            {meta.heading}
+          </h2>
+          {lead ? (
+            <p className="t-lead m-0 max-w-measure self-end text-muted">{lead}</p>
+          ) : null}
         </Reveal>
 
         {children}
