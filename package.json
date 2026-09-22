@@ -7,10 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "audit:copy": "node scripts/audit-copy.mjs"
+    "audit:copy": "node scripts/audit-copy.mjs",
+    "check:responsive": "node scripts/check-responsive.mjs"
   },
   "dependencies": {
-    "framer-motion": "^13.4.0",
+    "gsap": "^3.15.0",
+    "lenis": "^1.3.26",
     "next": "16.3.5",
     "react": "19.2.8",
     "react-dom": "19.2.8"
@@ -22,6 +24,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.5",
+    "puppeteer-core": "^24.43.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
