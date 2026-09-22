@@ -1,3 +1,10 @@
+import type { ToolHeadName } from "./toolNames";
+
+import type { ImageKey } from "./images";
+
+/** Re-exported so content files import one module. */
+export type ToolName = ToolHeadName;
+
 /**
  * Shapes for every piece of copy on the site.
  *
@@ -60,6 +67,10 @@ export type TaskStatus = "under evaluation" | "ruled out";
 
 export type Task = {
   name: string;
+  /** Which tool head would come off the arm for this job. */
+  tool: ToolName;
+  /** The plate shown alongside it. */
+  image: ImageKey;
   /** What the job actually is, in the words a grower would use. */
   summary: string;
   /** What growers say hurts about it. */

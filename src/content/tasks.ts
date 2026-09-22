@@ -13,6 +13,8 @@ export const tasks: TasksContent = {
   tasks: [
     {
       name: "Harvesting",
+      tool: "cutter",
+      image: "truss",
       summary: "Cutting ripe trusses and getting them into a crate without marking the fruit.",
       pain:
         "This is the job growers name first. It happens on the crop's schedule, not on the schedule of whoever is available that morning, and a truss left too long is a truss sold for less.",
@@ -22,6 +24,8 @@ export const tasks: TasksContent = {
     },
     {
       name: "Deleafing and pruning",
+      tool: "deleafer",
+      image: "row",
       summary: "Taking leaf off the lower plant so light and air reach the fruit.",
       pain:
         "Repetitive, physically low-skill, and it competes for exactly the same people at exactly the same moment as harvesting. It is the job that slips when the house is busy, and it slipping shows up later in the crop.",
@@ -31,6 +35,8 @@ export const tasks: TasksContent = {
     },
     {
       name: "Scouting",
+      tool: "scout",
+      image: "corridor",
       summary: "Finding pest and disease early, and knowing where in the house you found it.",
       pain:
         "Problems get found by whoever happens to walk past, which means they get found late. Growers describe this as the job they would most like to stop relying on luck for.",
@@ -40,6 +46,8 @@ export const tasks: TasksContent = {
     },
     {
       name: "Crop work",
+      tool: "gripper",
+      image: "hand",
       summary: "Lowering, twisting and clipping the vine as the plant grows past the wire.",
       pain:
         "Awkward, physical, done overhead, and it has to happen on time. Growers talk about this one in terms of their people's shoulders and backs.",
@@ -49,6 +57,8 @@ export const tasks: TasksContent = {
     },
     {
       name: "Transport",
+      tool: "fork",
+      image: "crates",
       summary: "Moving full crates out of the aisle and empties back in.",
       pain:
         "People who should be picking spend part of their day pushing. It is the clearest case of skilled time going into unskilled movement.",

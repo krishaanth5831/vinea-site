@@ -1,6 +1,8 @@
 /** Every piece of copy on the site, re-exported from one place. */
 
 export * from "./types";
+export * from "./toolNames";
+export { images, type SiteImage, type ImageKey } from "./images";
 export { site, navCta } from "./site";
 export { hero } from "./hero";
 export { method } from "./method";

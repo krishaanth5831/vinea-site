@@ -1,13 +1,14 @@
 import { hero } from "@/content";
-import { STAGGER } from "@/lib/motion";
 
-import { AisleMotion } from "./AisleMotion";
+import { CropField } from "./CropField";
 import { Cta } from "./Cta";
-import { Container, Eyebrow } from "./Section";
+import { Frame } from "./Frame";
+import { MachineSchematic } from "./MachineSchematic";
+import { Container, Mono } from "./Section";
 
-/** Same stagger as the scroll reveals, expressed as a CSS delay. */
+/** The same stagger as the scroll reveals, expressed as a CSS delay. */
 function step(index: number) {
-  return { animationDelay: `${(index * STAGGER).toFixed(3)}s` };
+  return { animationDelay: `${(index * 0.08).toFixed(3)}s` };
 }
 
 /**
@@ -16,46 +17,62 @@ function step(index: number) {
  */
 export function Hero() {
   return (
-    <section aria-labelledby="hero-heading" className="py-section">
-      <Container>
-        <div className="rise" style={step(0)}>
-          <Eyebrow>{hero.eyebrow}</Eyebrow>
+    <section aria-labelledby="hero-heading" className="relative isolate overflow-hidden">
+      {/* The house, written out behind everything. */}
+      <CropField className="absolute inset-x-0 top-16 -z-10 flex flex-col items-center" />
+
+      <Container className="pt-[clamp(3.5rem,9vw,7rem)] pb-[clamp(2rem,5vw,3.5rem)]">
+        <div className="flex flex-col items-center text-center">
+          <div className="rise" style={step(0)}>
+            <Mono>
+              {hero.eyebrow} <span className="px-2 text-line-strong">/</span> discovery
+              project
+            </Mono>
+          </div>
+
+          <h1
+            id="hero-heading"
+            className="rise t-h1 mx-auto mt-8 mb-0 max-w-[17ch]"
+            style={step(1)}
+          >
+            {hero.heading}
+          </h1>
+
+          <p
+            className="rise t-lead mx-auto mt-8 mb-0 max-w-measure text-muted"
+            style={step(2)}
+          >
+            {hero.lead}
+          </p>
+
+          <div
+            className="rise mt-10 flex flex-wrap items-center justify-center gap-3"
+            style={step(3)}
+          >
+            {hero.ctas.map((cta) => (
+              <Cta key={cta.href} cta={cta} />
+            ))}
+          </div>
         </div>
+      </Container>
 
-        <h1
-          id="hero-heading"
-          className="rise mt-6 max-w-[19ch] font-display text-[clamp(2.25rem,6vw,4.25rem)] leading-[1.05] tracking-[-0.02em] text-balance"
-          style={step(1)}
-        >
-          {hero.heading}
-        </h1>
+      {/* The drawing, full width. */}
+      <div className="rise mt-[clamp(2rem,4vw,3.5rem)]" style={step(4)}>
+        <Container>
+          <MachineSchematic />
+        </Container>
+      </div>
 
-        <p
-          className="rise mt-8 max-w-measure text-[1.0625rem] leading-[1.75] text-muted"
-          style={step(2)}
-        >
-          {hero.lead}
-        </p>
-
-        <div
-          className="rise mt-10 flex flex-wrap items-center gap-3"
-          style={step(3)}
-        >
-          {hero.ctas.map((cta) => (
-            <Cta key={cta.href} cta={cta} />
-          ))}
-        </div>
-
-        {/* The honesty note, stated rather than tucked away. */}
-        <p
-          className="rise mt-12 max-w-measure border-l-2 border-accent pl-5 text-[0.9375rem] leading-[1.7] text-muted"
-          style={step(4)}
-        >
-          {hero.disclaimer}
-        </p>
-
-        <div className="rise mt-16 sm:mt-20" style={step(5)}>
-          <AisleMotion />
+      {/*
+        Put immediately under the drawing on purpose: the machine above is a
+        drawing, and the next thing the page does is say so.
+      */}
+      <Container className="pb-section">
+        <div className="rise mt-[clamp(2.5rem,5vw,4rem)]" style={step(5)}>
+          <Frame className="mx-auto max-w-[62ch] bg-paper p-8">
+            <Mono className="text-signal">What does not exist yet</Mono>
+            <p className="t-body mt-4 mb-0 text-muted">{hero.disclaimer}</p>
+          </Frame>
         </div>
       </Container>
     </section>
