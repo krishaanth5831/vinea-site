@@ -14,7 +14,7 @@ export function Platform() {
               <div>
                 <h3 className="t-h3 m-0">{element.title}</h3>
                 {/* The grower-side observation this element follows from. */}
-                <p className="t-mono mt-4 mb-0 text-signal">{element.because}</p>
+                <p className="t-mono-sentence mt-4 mb-0 text-signal">{element.because}</p>
               </div>
               <p className="t-body m-0 self-center text-muted">{element.body}</p>
             </div>

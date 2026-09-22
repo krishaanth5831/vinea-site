@@ -36,8 +36,8 @@ export function Objections() {
         quotation styling. It is evidence, set in the page's own voice.
       */}
       <Reveal className="mt-16">
-        <div className="max-w-[46ch] border-l-2 border-signal pl-7 sm:pl-10">
-          <p className="t-h2 m-0">{objections.objection}</p>
+        <div className="max-w-[46rem] border-l-2 border-signal pl-7 sm:pl-10">
+          <p className="t-quote m-0">{objections.objection}</p>
           <p className="t-body mt-7 mb-0 text-muted">{objections.objectionNote}</p>
         </div>
       </Reveal>
