@@ -2,8 +2,8 @@
 
 The Vinea site: a single page built from static, typed content.
 
-Next.js (App Router) with TypeScript, Tailwind v4 and Framer Motion, deployed
-on Vercel. No CMS, no database, no auth, no analytics.
+Next.js (App Router) with TypeScript, Tailwind v4, GSAP and Lenis, deployed on
+Vercel. No CMS, no database, no auth, no analytics.
 
 **Live at <https://vinea-site.vercel.app>** — a preview URL on its own Vercel
 project. `getvinea.nl` still points at the previous site and has not been
@@ -23,7 +23,16 @@ npm run build        # production build; must finish with no warnings
 npm run lint         # ESLint; must finish silent
 npm run audit:copy   # content-rule check, run after a build
 npm start            # serve the production build locally
+
+# responsive, reveal and motion check against a running server
+npm run check:responsive -- http://localhost:3000
 ```
+
+`check:responsive` drives headless Chrome at phone and desktop width and
+asserts four things that source review does not catch: no element left
+invisible after a full scroll (including when scrolling starts before
+hydration), no horizontal overflow, no layout shift, and no digits in visible
+or screen-reader text. It needs a Chrome binary and skips cleanly without one.
 
 ## Where the copy lives
 
@@ -95,6 +104,23 @@ deployments are all still there.
 `metadataBase` in `src/app/layout.tsx` is already set to `https://getvinea.nl`,
 so canonical and Open Graph URLs are correct the moment the domain moves. No
 code change is needed as part of the switch.
+
+## How the page is drawn
+
+The site is a technical drawing: near-white ground, hairline rules, one signal
+colour, and plates with registration marks at their corners.
+
+- `MachineSchematic.tsx` is the side elevation in the hero, annotated with the
+  parts the argument rests on. It ships complete and is only ever *undrawn*
+  from JavaScript, so it is never a blank frame.
+- `ToolHead.tsx` draws the tool for each candidate job.
+- `CropField.tsx` is the monospace field behind the hero — each glyph a plant.
+- `Reveal.tsx` wraps GSAP ScrollTrigger. Content ships visible and is hidden
+  before paint, so a reveal that never runs cannot strand it.
+- `SmoothScroll.tsx` sets up Lenis and hands scroll updates to ScrollTrigger.
+  Under reduced motion Lenis is never constructed at all.
+
+Photograph and typeface credits are in [CREDITS.md](./CREDITS.md).
 
 ## Notes
 

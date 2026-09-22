@@ -65,15 +65,49 @@ controls. Adding a dark theme later means adding tokens, not restructuring.
 **Tailwind v4**, which is what `create-next-app` installs. There is no
 `tailwind.config.js`; the tokens live in `@theme` in `src/app/globals.css`.
 
-**Above-the-fold motion is CSS, not Framer Motion.** Framer Motion sets its
-initial state after hydration, which left the hero heading at zero opacity and
-delayed the largest contentful paint. Framer Motion still drives every
-scroll-triggered reveal, which is where it earns its place.
+**Above-the-fold motion is CSS, not JavaScript.** A JavaScript animation
+library sets its initial state after hydration, which left the hero heading at
+zero opacity and delayed the largest contentful paint. GSAP drives everything
+below the fold, which is where it earns its place.
 
 **The reveal observer root extends far upward.** Reveals fire once, so a
 reader who loads the page and flicks straight down could outrun hydration and
 strand whole sections invisible. Anything already above the viewport now
 reveals as soon as its observer attaches.
+
+## The redesign
+
+The first build of this site was a quiet editorial page. It was rebuilt as a
+technical drawing, taking its structure from boat.dev and its content from the
+glasshouse.
+
+**GSAP and Lenis replaced Framer Motion** rather than joining it. Running two
+animation libraries would be two ways to do one job, and the scroll-driven
+work this design wanted is what GSAP's ScrollTrigger is for.
+
+**`scroll-behavior: smooth` had to go.** Lenis owns scrolling now, and the two
+fight when both are on — the same CSS rule is what made an earlier round of
+scroll testing behave strangely. Same-page links are handed to Lenis instead.
+
+**Typefaces and photographs came from the first version of the site.** General
+Sans and IBM Plex Mono were already chosen there and already licensed, and the
+glasshouse photography was already graded. They are credited in CREDITS.md,
+which landed in the same commit as the files.
+
+**Photographs are confined to the task map**, framed and captioned like plates
+in a manual. Line art is the stronger idea here and photography is the
+optional one; if the two had fought, the photographs would have gone.
+
+**No pinned or hijacked scrolling.** A pinned horizontal sequence was the
+obvious thing to build with ScrollTrigger and the thing most likely to break at
+phone width. The scroll-driven motion that survived is a marker travelling a
+rail beside the task list, which degrades to nothing on a phone and under
+reduced motion.
+
+**The content rules still bind.** boat.dev's most copyable components — the
+price block, the comparison bars — are number-carriers, and this site carries
+no numbers. They were not ported. `npm run audit:copy` still fails on any digit
+reaching visible or spoken text.
 
 ## Deployment
 
