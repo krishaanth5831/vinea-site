@@ -6,6 +6,14 @@
  * blank at phone width, and content stranded when a reader outran hydration.
  * Both are caught here.
  *
+ * On the overflow assertion: `body` carries `overflow-x: clip`, which raises
+ * the fair question of whether it hides the overflow this is looking for. It
+ * does not — planting a wide element takes documentElement.scrollWidth from
+ * the viewport width to the element's width, so the check discriminates.
+ * Measuring children's right edges instead would be worse: the crop field and
+ * the schematic both legitimately extend past the viewport under the clip, so
+ * that version reports an overflow on a clean page.
+ *
  *   npm run build && npm start &   # or any running server
  *   npm run check:responsive -- http://localhost:3000
  */
