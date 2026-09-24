@@ -3,52 +3,72 @@
 /*
  * Vinea's design tokens.
  *
- * The page is a technical drawing: near-white ground, hairline rules, one
- * signal colour. The signal is the colour of ripe fruit, which is the only
- * thing on the page allowed to be loud.
+ * Black and white only, for now. Dark is the default and is what ships in
+ * the markup; light is opt-in and remembered. Every colour on the page comes
+ * from these tokens, so a theme is a block of values rather than a set of
+ * overrides — and an accent, when there is one, is a single token to add.
  */
+:root {
+  color-scheme: dark;
+  --bg: #090a0b;
+  --raised: #111214;
+  --fg: #f6f7f9;
+  --muted: #9a9ea5;
+  --faint: #5d6167;
+  --line: #1d1f22;
+  --line-strong: #2c2f33;
+  /* A button's hover fill — a step off its own fill. */
+  --fg-hover: #d8dadf;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #fbfbfb;
+  --raised: #f2f2f3;
+  --fg: #0b0c0d;
+  --muted: #5b5f66;
+  --faint: #a4a8ae;
+  --line: #e6e6e8;
+  --line-strong: #d3d4d7;
+  --fg-hover: #2c2f34;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-raised: var(--raised);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", monospace;
+  --font-pixel: var(--font-geist-pixel), var(--font-geist-mono), monospace;
+}
+
 @theme {
-  --color-paper: #fbfbf9;
-  --color-raised: #f3f3ef;
-  --color-ink: #0f1311;
-  --color-muted: #6a6f69;
-  --color-line: #e0dfd8;
-  --color-line-strong: #c4c3ba;
-  --color-signal: #a83a20;
-  --color-signal-soft: #f6ebe7;
+  --spacing-section: clamp(6rem, 13vw, 10rem);
+  --spacing-gutter: clamp(1rem, 4vw, 2rem);
+  --container-shell: 72rem;
 
-  --font-display: var(--font-general-sans), "Helvetica Neue", Arial, sans-serif;
-  --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", monospace;
-
-  /* The rhythm token. Every band's vertical padding comes from this. */
-  --spacing-section: clamp(5rem, 11vw, 9.5rem);
-  --spacing-gutter: clamp(1.25rem, 4vw, 2.5rem);
-
-  --container-measure: 65ch;
-  --container-shell: 84rem;
-
-  /* One easing curve for everything that moves. */
   --ease-quiet: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-:root {
-  color-scheme: light;
-  /*
-   * No `scroll-behavior: smooth` on purpose — Lenis owns scrolling, and the
-   * two fight each other when both are on.
-   */
-}
-
+/*
+ * No `scroll-behavior: smooth` on purpose — Lenis owns scrolling, and the
+ * two fight each other when both are on.
+ */
 html {
-  background-color: var(--color-paper);
+  background-color: var(--bg);
   -webkit-text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
-  background-color: var(--color-paper);
-  color: var(--color-ink);
-  font-family: var(--font-display);
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
   font-synthesis-weight: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -56,149 +76,461 @@ body {
 }
 
 [id] {
-  scroll-margin-top: 6rem;
+  scroll-margin-top: 5rem;
 }
 
 ::selection {
-  background-color: var(--color-signal);
-  color: var(--color-paper);
+  background-color: var(--fg);
+  color: var(--bg);
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-signal);
+  outline: 2px solid var(--fg);
   outline-offset: 3px;
-  border-radius: 2px;
+  border-radius: 6px;
 }
 
-/* ---- type scale -------------------------------------------------------- */
+/* ---- type -------------------------------------------------------------- */
 
+/*
+ * The hero heading. Its size also answers to the viewport's height, because
+ * the hero shares a single screen with the mark and must never be cropped.
+ */
 .t-display {
-  font-size: clamp(3.25rem, 11vw, 9rem);
-  font-weight: 600;
-  line-height: 0.92;
-  letter-spacing: -0.045em;
-}
-
-.t-h1 {
-  font-size: clamp(2.25rem, 5.4vw, 4.5rem);
-  font-weight: 600;
-  line-height: 1.02;
-  letter-spacing: -0.032em;
-  text-wrap: balance;
+  font-size: clamp(2.5rem, min(5.6vw, 11svh), 5.5rem);
+  font-weight: 500;
+  line-height: 0.95;
+  letter-spacing: -0.05em;
 }
 
 .t-h2 {
-  font-size: clamp(1.875rem, 3.6vw, 3rem);
-  font-weight: 600;
-  line-height: 1.06;
-  letter-spacing: -0.026em;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.04em;
   text-wrap: balance;
 }
 
 .t-h3 {
-  font-size: clamp(1.25rem, 1.9vw, 1.625rem);
-  font-weight: 600;
-  line-height: 1.2;
-  letter-spacing: -0.015em;
+  font-size: clamp(1.75rem, 3.4vw, 2.75rem);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+
+/* A beat in the story: one short sentence, read on its own. */
+.t-beat {
+  font-size: clamp(1.625rem, 3.6vw, 2.75rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
 }
 
 .t-lead {
-  font-size: clamp(1.0625rem, 1.35vw, 1.3125rem);
-  line-height: 1.6;
-  letter-spacing: -0.006em;
+  font-size: clamp(1.0625rem, 1.4vw, 1.25rem);
+  line-height: 1.55;
+  letter-spacing: -0.01em;
 }
 
-.t-body {
-  font-size: 1rem;
-  line-height: 1.68;
-}
-
-/*
- * A pulled-out statement. Smaller than a heading because it is a paragraph,
- * and its measure is set in rem — `ch` on a wrapper resolves against the
- * wrapper's own font size, not the type it contains, which is how this ends
- * up as a narrow column of very large words.
- */
-.t-quote {
-  font-size: clamp(1.375rem, 2.4vw, 2rem);
-  font-weight: 600;
-  line-height: 1.32;
-  letter-spacing: -0.02em;
-}
-
-/* The same mono, left in sentence case where there is a sentence of it. */
-.t-mono-sentence {
-  font-family: var(--font-mono);
-  font-size: 0.8125rem;
-  font-weight: 400;
-  letter-spacing: 0.01em;
-  line-height: 1.5;
-  text-transform: none;
-}
-
-/* Data labels and part names. The drawing's handwriting. */
-.t-mono {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  font-weight: 500;
-  letter-spacing: 0.15em;
+/* Labels: small, spaced capitals in the pixel face, echoing the mark. */
+.t-label {
+  font-family: var(--font-pixel);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   line-height: 1.4;
 }
 
-/* ---- drawing primitives ------------------------------------------------ */
+.t-mono {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  line-height: 1.5;
+}
 
-/*
- * The faint ruled ground the whole page sits on, like graph paper that has
- * been photographed rather than printed.
- */
-.ruled {
-  background-image: linear-gradient(
-      to right,
-      color-mix(in srgb, var(--color-line) 55%, transparent) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      to bottom,
-      color-mix(in srgb, var(--color-line) 55%, transparent) 1px,
-      transparent 1px
-    );
-  background-size: 64px 64px;
+/* The cursor after the hero heading: a square, blinking — square one. */
+.cursor-square {
+  display: inline-block;
+  width: 0.5em;
+  height: 0.5em;
+  margin-left: 0.08em;
+  background-color: var(--fg);
+  vertical-align: baseline;
+  animation: blink 1.1s steps(1, end) infinite;
 }
 
 /*
- * The drawing's strokes are measured in screen pixels, not drawing units, so
- * the schematic stays legible when it is scaled down to a phone instead of
- * fading to nothing.
+ * The cursor that travels along the question while it types: solid, not
+ * blinking, and out of the flow so moving it never reflows the line.
  */
-.schematic * {
-  vector-effect: non-scaling-stroke;
+.cursor-typing {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0.5em;
+  height: 0.5em;
+  background-color: var(--fg);
+  opacity: 0;
+  pointer-events: none;
 }
 
-/* Part names are unreadable once the drawing is this small, so they go. */
-@media (max-width: 40rem) {
-  .schematic .callout {
-    display: none;
+@keyframes blink {
+  50% {
+    opacity: 0;
   }
 }
 
-/* The monospace crop field behind the hero: every glyph is a plant. */
-.crop-field {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  line-height: 1.15;
-  letter-spacing: 0.32em;
-  white-space: pre;
-  color: var(--color-line-strong);
-  user-select: none;
+/* ---- buttons ----------------------------------------------------------- */
+
+/*
+ * Square-cornered, like the cells of the mark. On hover a fill rises from
+ * the bottom edge and the pixel arrow steps forward, one column at a time.
+ */
+.btn {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  height: 3rem;
+  padding: 0 1.125rem 0 1.25rem;
+  border-radius: 3px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  transition: transform 0.3s var(--ease-quiet);
 }
 
-/* ---- motion ------------------------------------------------------------ */
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 0.5s var(--ease-quiet);
+}
+
+.btn:hover::before {
+  transform: scaleY(1);
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-sm {
+  height: 2.5rem;
+  padding: 0 0.875rem 0 1rem;
+  gap: 1rem;
+  font-size: 0.875rem;
+}
+
+.btn-primary {
+  background-color: var(--fg);
+  color: var(--bg);
+}
+
+.btn-primary::before {
+  background-color: var(--fg-hover);
+}
+
+.btn-secondary {
+  color: var(--fg);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+}
+
+.btn-secondary::before {
+  background-color: var(--raised);
+}
+
+.px-arrow rect {
+  transition: transform 0.35s var(--ease-quiet);
+  transition-delay: calc(var(--i) * 35ms);
+}
+
+.btn:hover .px-arrow rect {
+  transform: translateX(1px);
+}
+
+/* ---- the header -------------------------------------------------------- */
+
+.header-shell {
+  transition: transform 0.5s var(--ease-quiet);
+}
+
+.header-shell[data-hidden] {
+  transform: translateY(-100%);
+}
+
+/* How far down the page the reader is, as a hairline under the header. */
+.scroll-progress {
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+/* ---- the mark ---------------------------------------------------------- */
+
+/*
+ * The hero's mark assembles from JavaScript. The `js` class is set by the
+ * inline script before paint, so the cells never flash in and back out.
+ */
+.js .mark-assemble .mark-shape {
+  opacity: 0;
+}
+
+/* ---- the story -------------------------------------------------------- */
+
+/*
+ * The hero and the pivot share one sticky stage: the reader scrolls, the
+ * hero steps back, and the mark comes apart and collapses to square one.
+ *
+ * That only happens with JavaScript, with motion allowed, and on a screen
+ * tall enough to hold the stage. Everywhere else the same markup reads as a
+ * plain stack: the hero, the mark, then the beats as lines of text. The
+ * choice is made here in CSS, before the first paint, so nothing moves on
+ * load. The gate is repeated as STAGED in Story.tsx; keep the two in step.
+ */
+.story {
+  display: flex;
+  flex-direction: column;
+}
+
+/* As a plain stack, the stage's parts are laid out by the story itself. */
+.story-stage {
+  display: contents;
+}
+
+.story-hero {
+  order: 1;
+  padding-block: 5rem 3rem;
+}
+
+.story-mark {
+  order: 2;
+  align-self: center;
+  margin-block: 2rem 1rem;
+}
+
+.story-mark-svg {
+  width: 9rem;
+  height: 9rem;
+}
+
+.story-anchor {
+  order: 3;
+  display: block;
+  scroll-margin-top: 6rem;
+}
+
+.story-after {
+  order: 4;
+  padding-block: 3rem 1rem;
+  text-align: center;
+}
+
+.story-beats {
+  display: grid;
+  gap: 1rem;
+}
+
+.story-beat {
+  margin: 0;
+}
+
+.story-thread,
+.story-ticks {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) and (min-height: 37.5rem) {
+  .js .story {
+    display: block;
+    position: relative;
+    height: 320svh;
+  }
+
+  /* "What went wrong" lands where the first beat is fully in view. */
+  .js .story-anchor {
+    position: absolute;
+    top: 55svh;
+    scroll-margin-top: 0;
+  }
+
+  .js .story-stage {
+    display: block;
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  .js .story-hero {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding-block: 4rem 0;
+  }
+
+  /* The mark's home in the story: centred, a little below the middle. */
+  .js .story-mark {
+    position: absolute;
+    left: 50%;
+    top: 58%;
+    z-index: 1;
+    margin: 0;
+    translate: -50% -50%;
+  }
+
+  .js .story-mark-svg {
+    width: min(40svh, 64vw);
+    height: min(40svh, 64vw);
+  }
+
+  /*
+   * The beats sit above the mark, clear of the thread that falls from it,
+   * and in front of it, so a flung cell passes behind the words.
+   */
+  .js .story-after {
+    position: absolute;
+    z-index: 2;
+    left: 0;
+    right: 0;
+    pointer-events: none;
+    top: calc(4rem + 6svh);
+    padding: 0;
+  }
+
+  .js .story-beats {
+    gap: 0;
+  }
+
+  .js .story-beats > * {
+    grid-area: 1 / 1;
+  }
+
+  .js .story-beat,
+  .js .story-label,
+  .js .story-ticks {
+    opacity: 0;
+  }
+
+  .js .story-thread {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 58%;
+    bottom: 0;
+    width: 1px;
+    background-color: var(--line-strong);
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+
+  .js .story-ticks {
+    display: flex;
+  }
+}
+
+/* ---- the thread ------------------------------------------------------- */
+
+.thread-line {
+  background-color: var(--line-strong);
+}
+
+.thread-node {
+  width: 0.625rem;
+  height: 0.625rem;
+  background-color: var(--fg);
+}
+
+/* ---- stacked cards ---------------------------------------------------- */
+
+/*
+ * The findings stack as they scroll: each card holds just under the header
+ * while the next slides up over it.
+ */
+.stack-card {
+  position: sticky;
+  top: calc(5.5rem + var(--i) * 0.875rem);
+  transform-origin: 50% 0;
+}
+
+/* ---- glyphs ----------------------------------------------------------- */
+
+.glyph .dim {
+  fill: var(--line-strong);
+}
+
+.glyph .lit {
+  fill: var(--fg);
+}
+
+.glyph rect {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* ---- theme switch ----------------------------------------------------- */
+
+:root .icon-sun {
+  display: block;
+}
+
+:root .icon-moon,
+:root[data-theme="light"] .icon-sun {
+  display: none;
+}
+
+:root[data-theme="light"] .icon-moon {
+  display: block;
+}
+
+/* The switch reveals the new theme as a circle; the snapshot does no fade. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* ---- motion ----------------------------------------------------------- */
+
+/*
+ * The above-the-fold entrance: each line of the heading rises out of its own
+ * mask. CSS rather than JavaScript so it paints on the first frame instead of
+ * waiting for hydration, and never holds up the largest contentful paint.
+ */
+.line-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+@keyframes line-rise {
+  from {
+    transform: translateY(105%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+.line-rise {
+  display: block;
+  animation: line-rise 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--d, 0s);
+}
 
 @keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(18px);
   }
   to {
     opacity: 1;
@@ -206,36 +538,15 @@ body {
   }
 }
 
-/*
- * The above-the-fold entrance. CSS rather than JavaScript so it paints on the
- * first frame instead of waiting for hydration, and never holds up the
- * largest contentful paint.
- */
 .rise {
-  animation: rise 0.6s var(--ease-quiet) both;
-}
-
-@keyframes travel {
-  from {
-    transform: translateX(-8%);
-  }
-  to {
-    transform: translateX(108%);
-  }
-}
-
-/*
- * The carriage running the length of the aisle. A compositor-driven CSS
- * animation, so an endless loop costs the main thread nothing.
- */
-.travel {
-  animation: travel 19s linear infinite;
+  animation: rise 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--d, 0s);
 }
 
 /*
  * Reduced motion. Three separate things have to stop: this stylesheet's own
- * animations, the scroll reveals (which resolve to their end state in JS),
- * and Lenis, which is never constructed at all.
+ * animations, the GSAP work (which resolves to its end state in JS), and
+ * Lenis, which is never constructed at all.
  */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -245,16 +556,20 @@ body {
     animation-iteration-count: 1 !important;
     animation-delay: 0s !important;
     transition-duration: 0.001ms !important;
-    scroll-behavior: auto !important;
   }
 
   .rise,
-  .travel {
+  .line-rise {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .cursor-square {
     animation: none !important;
   }
 
-  .rise {
-    opacity: 1 !important;
-    transform: none !important;
+  .js .mark-assemble .mark-shape {
+    opacity: 1;
   }
 }

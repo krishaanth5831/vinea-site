@@ -1,26 +1,20 @@
-import { Contact } from "@/components/Contact";
-import { Hero } from "@/components/Hero";
-import { Method } from "@/components/Method";
-import { Objections } from "@/components/Objections";
-import { Platform } from "@/components/Platform";
-import { Status } from "@/components/Status";
-import { Tasks } from "@/components/Tasks";
+import { Heard } from "@/components/Heard";
+import { Question } from "@/components/Question";
+import { Story } from "@/components/Story";
+import { Talk } from "@/components/Talk";
 
 /**
- * One page, in the order the argument is made: the problem, the method that
- * found it, the jobs it turned up, what those point to, what growers say
- * against it, where the project actually stands, and how to reach it.
+ * One page, one line through it. The story comes apart and collapses to
+ * square one; a thread falls from that square through the question, the
+ * refusals, and into the ask, where the mark grows back.
  */
 export default function Home() {
   return (
     <>
-      <Hero />
-      <Method />
-      <Tasks />
-      <Platform />
-      <Objections />
-      <Status />
-      <Contact />
+      <Story />
+      <Question />
+      <Heard />
+      <Talk />
     </>
   );
 }

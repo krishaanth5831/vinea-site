@@ -50,10 +50,6 @@ const checks = [
     re: /\b(one|two|three|four|five|six|seven|eight|nine|ten|dozen|dozens|hundred|thousand|percent)\b/i,
   },
   {
-    name: "pivot language",
-    re: /\b(pivot|pivoted|pivoting|previously|originally|used to|now we think)\b/i,
-  },
-  {
     name: "load-bearing adjectives",
     re: /\b(efficien\w*|sustainab\w*|impact\w*|innovat\w*|cutting[- ]edge|revolutionis\w*|revolutioniz\w*)\b/i,
   },

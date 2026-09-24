@@ -2,7 +2,7 @@
 
 import { useRef, type ElementType, type ReactNode } from "react";
 
-import { DURATION, EASE, STAGGER, gsap, prefersReducedMotion } from "@/lib/gsap";
+import { DURATION, EASE, STAGGER, alreadySeen, gsap, prefersReducedMotion } from "@/lib/gsap";
 import { useIsomorphicLayoutEffect } from "@/lib/useIsomorphicLayoutEffect";
 
 type RevealProps = {
@@ -54,13 +54,12 @@ export function Reveal({
        * animating. A reader who loaded the page and scrolled straight down
        * would otherwise outrun hydration and be left looking at blank space.
        */
-      const seen = el.getBoundingClientRect().top < window.innerHeight * 0.9;
-      if (seen) {
+      if (alreadySeen(el)) {
         gsap.set(targets, { opacity: 1, y: 0 });
         return;
       }
 
-      gsap.set(targets, { opacity: 0, y: 18 });
+      gsap.set(targets, { opacity: 0, y: 24 });
       gsap.to(targets, {
         opacity: 1,
         y: 0,

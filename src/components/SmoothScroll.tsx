@@ -23,8 +23,9 @@ export function SmoothScroll() {
     const lenis = new Lenis({
       autoRaf: false,
       /* Same-page hash links are handed to Lenis instead of jumping. */
-      anchors: { offset: -80 },
-      lerp: 0.1,
+      anchors: { offset: -72 },
+      /* A little heavier than the default, so the page glides. */
+      lerp: 0.085,
       smoothWheel: true,
     });
 
@@ -33,6 +34,12 @@ export function SmoothScroll() {
     const tick = (time: number) => lenis.raf(time * 1000);
     gsap.ticker.add(tick);
     gsap.ticker.lagSmoothing(0);
+
+    /*
+     * Web fonts change the height of every block of text, and with it every
+     * trigger's start and end. Measure again once they are in.
+     */
+    document.fonts?.ready.then(() => ScrollTrigger.refresh());
 
     return () => {
       gsap.ticker.remove(tick);
