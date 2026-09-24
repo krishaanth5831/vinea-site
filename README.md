@@ -39,17 +39,17 @@ or screen-reader text. It needs a Chrome binary and skips cleanly without one.
 **All prose is in `src/content/`.** Components read from it and never inline
 their own sentences, so text can be changed in one place without touching JSX.
 
-| File            | What it holds                                              |
-| --------------- | ---------------------------------------------------------- |
-| `site.ts`       | Name, meta title and description, nav labels, footer links |
-| `hero.ts`       | Heading, lead, the honesty note, the two calls to action   |
-| `method.ts`     | How we work: the steps, what is asked, heard and discarded |
-| `tasks.ts`      | The candidate jobs, and what has been ruled out and why    |
-| `platform.ts`   | What that points to, and the note on cost                  |
-| `objections.ts` | The grower objection, what can be answered, the blockers   |
-| `status.ts`     | Where the project stands; what exists and what does not    |
-| `contact.ts`    | The grower and investor lanes                              |
-| `types.ts`      | The shape of all of the above                              |
+| File          | What it holds                                              |
+| ------------- | ---------------------------------------------------------- |
+| `site.ts`     | Name, meta title and description, nav labels, footer links |
+| `hero.ts`     | Heading, lead, calls to action, the honesty line           |
+| `why.ts`      | The three beats told while the mark comes apart            |
+| `question.ts` | The one question, and why the refusals matter              |
+| `heard.ts`    | The refusals so far                                        |
+| `talk.ts`     | The closing ask and its two buttons                        |
+| `types.ts`    | The shape of all of the above                              |
+
+Keep it short. The page is meant to be read in under a minute.
 
 Editing a string in any of those files changes the page. TypeScript will
 reject a missing or misshapen field at build time.
@@ -61,7 +61,7 @@ no years. After a build, `npm run audit:copy` reads the *rendered* HTML (so
 anything hardcoded in JSX is caught too) and exits non-zero if a digit reaches
 visible text. It checks `aria-label`, `alt` and `title` as well, since text a
 screen reader speaks is text on the site. It also reports, for reading rather than failing, any use of
-"one"/"two", pivot language, load-bearing adjectives and traction phrases.
+"one"/"two", load-bearing adjectives and traction phrases.
 
 ```bash
 npm run build && npm run audit:copy
@@ -107,20 +107,31 @@ code change is needed as part of the switch.
 
 ## How the page is drawn
 
-The site is a technical drawing: near-white ground, hairline rules, one signal
-colour, and plates with registration marks at their corners.
+Black and white. Dark is the default; the switch in the header flips to light
+and remembers it. Colours are tokens in `src/app/globals.css`, one block per
+theme, and nothing else names a colour.
 
-- `MachineSchematic.tsx` is the side elevation in the hero, annotated with the
-  parts the argument rests on. It ships complete and is only ever *undrawn*
-  from JavaScript, so it is never a blank frame.
-- `ToolHead.tsx` draws the tool for each candidate job.
-- `CropField.tsx` is the monospace field behind the hero — each glyph a plant.
-- `Reveal.tsx` wraps GSAP ScrollTrigger. Content ships visible and is hidden
-  before paint, so a reveal that never runs cannot strand it.
+The page is one line. The mark comes apart and collapses to square one, a
+thread falls from that square through every section, and the mark grows back
+at the end.
+
+- `Mark.tsx` is the Vinea diamond and wordmark as SVG, in `currentColor`.
+  `src/app/icon.svg` is the same mark as the favicon.
+- `Story.tsx` is the hero and the pivot on one sticky stage. The layout is
+  chosen in CSS before paint (see `.story` in `globals.css`); without motion,
+  JavaScript or a tall enough screen it is a plain stack.
+- `Thread.tsx` is a length of the line that opens each later section.
+- `Question.tsx` types the question out as the thread reaches it.
+- `StackCards.tsx` and `Glyph.tsx` are the refusals and their drawings.
+- `RebuildMark.tsx` grows the mark back out of square one.
+- `SplitReveal.tsx` raises headings line by line; `Reveal.tsx` fades the rest.
+  Both ship content visible and only hide what is still below the fold.
+- `HeaderShell.tsx` hides the header while scrolling down and draws the
+  progress hairline.
 - `SmoothScroll.tsx` sets up Lenis and hands scroll updates to ScrollTrigger.
   Under reduced motion Lenis is never constructed at all.
 
-Photograph and typeface credits are in [CREDITS.md](./CREDITS.md).
+Typeface credits are in [CREDITS.md](./CREDITS.md).
 
 ## Notes
 
