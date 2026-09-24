@@ -1,10 +1,3 @@
-import type { ToolHeadName } from "./toolNames";
-
-import type { ImageKey } from "./images";
-
-/** Re-exported so content files import one module. */
-export type ToolName = ToolHeadName;
-
 /**
  * Shapes for every piece of copy on the site.
  *
@@ -22,147 +15,70 @@ export type NavLink = {
 export type Cta = {
   label: string;
   href: Href;
-  /** `primary` renders as the filled accent button, `secondary` as the quiet one. */
+  /** `primary` renders as the solid pill, `secondary` as the outlined one. */
   tone: "primary" | "secondary";
-};
-
-export type SectionMeta = {
-  /** Anchor target. Also what the nav links to. */
-  id: string;
-  /** Small label above the heading. */
-  eyebrow: string;
-  heading: string;
-};
-
-export type HeroContent = {
-  eyebrow: string;
-  heading: string;
-  lead: string;
-  /** The honesty note. Stated plainly, not hidden in a footnote. */
-  disclaimer: string;
-  ctas: Cta[];
-};
-
-export type MethodStep = {
-  /** The discipline, named as an instruction. */
-  title: string;
-  body: string;
-};
-
-export type MethodColumn = {
-  title: string;
-  items: string[];
-};
-
-export type MethodContent = {
-  meta: SectionMeta;
-  lead: string;
-  steps: MethodStep[];
-  columns: MethodColumn[];
-  conclusion: string;
-};
-
-/** Whether a candidate job is still being looked at, or has been set aside. */
-export type TaskStatus = "under evaluation" | "ruled out";
-
-export type Task = {
-  name: string;
-  /** Which tool head would come off the arm for this job. */
-  tool: ToolName;
-  /** The plate shown alongside it. */
-  image: ImageKey;
-  /** What the job actually is, in the words a grower would use. */
-  summary: string;
-  /** What growers say hurts about it. */
-  pain: string;
-  /** Why the job resists a machine. */
-  hard: string;
-  status: TaskStatus;
-};
-
-export type TasksContent = {
-  meta: SectionMeta;
-  lead: string;
-  tasks: Task[];
-  discardedTitle: string;
-  discarded: { claim: string; because: string }[];
-};
-
-export type PlatformElement = {
-  title: string;
-  /** The grower-side observation this element follows from. */
-  because: string;
-  body: string;
-};
-
-export type PlatformContent = {
-  meta: SectionMeta;
-  lead: string;
-  elements: PlatformElement[];
-  pricingTitle: string;
-  pricing: string;
-  pricingLabel: string;
-  caveat: string;
-};
-
-export type Blocker = {
-  title: string;
-  body: string;
-};
-
-export type ObjectionsContent = {
-  meta: SectionMeta;
-  lead: string;
-  /** The grower objection, paraphrased. Not a testimonial, not attributed. */
-  objection: string;
-  objectionNote: string;
-  answeredTitle: string;
-  answered: Blocker[];
-  unansweredTitle: string;
-  unanswered: Blocker[];
-  blockersTitle: string;
-  blockers: Blocker[];
-};
-
-export type StatusContent = {
-  meta: SectionMeta;
-  lead: string;
-  facts: { label: string; value: string }[];
-  exists: { title: string; items: string[] };
-  doesNotExist: { title: string; items: string[] };
-};
-
-export type ContactLane = {
-  id: string;
-  audience: string;
-  heading: string;
-  body: string;
-  ask: string;
-  cta: Cta;
-};
-
-export type ContactContent = {
-  meta: SectionMeta;
-  lead: string;
-  lanes: ContactLane[];
-};
-
-export type FooterLink = {
-  label: string;
-  href: Href;
-  external?: boolean;
 };
 
 export type SiteContent = {
   name: string;
-  tagline: string;
-  /** Used for <title> and social cards. */
   metaTitle: string;
   metaDescription: string;
-  url: string;
+  url: `https://${string}`;
   email: string;
   location: string;
   person: string;
   nav: NavLink[];
-  footerLinks: FooterLink[];
+  footerLinks: (NavLink & { external?: boolean })[];
+};
+
+export type HeroContent = {
+  eyebrow: string;
+  /** Two lines, set large. */
+  heading: [string, string];
+  lead: string;
+  ctas: [Cta, Cta];
+  /** The honesty line. One sentence, stated plainly. */
+  note: string;
+};
+
+export type WhyContent = {
+  id: string;
+  eyebrow: string;
+  /**
+   * Read one at a time as the mark comes apart: the polite yes, what it
+   * really was, and square one.
+   */
+  beats: [string, string, string];
+};
+
+export type QuestionContent = {
+  id: string;
+  eyebrow: string;
+  /** The one question every call now turns on. */
+  question: string;
+  body: string;
+};
+
+export type Finding = {
+  /** Short, and doubles as the legend label under the mark. */
+  title: string;
+  body: string;
+};
+
+export type HeardContent = {
+  id: string;
+  eyebrow: string;
+  heading: string;
+  lead: string;
+  /** Exactly four: each has its own pixel drawing, in this order. */
+  findings: [Finding, Finding, Finding, Finding];
+  note: string;
+};
+
+export type TalkContent = {
+  id: string;
+  eyebrow: string;
+  heading: [string, string];
+  lead: string;
+  ctas: [Cta, Cta];
 };
