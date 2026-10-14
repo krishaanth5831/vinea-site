@@ -491,11 +491,870 @@ body {
   display: block;
 }
 
-/* The switch reveals the new theme as a circle; the snapshot does no fade. */
-::view-transition-old(root),
-::view-transition-new(root) {
+/*
+ * The switch reveals the new theme as a circle; the snapshot does no fade.
+ * Scoped to the switch's own class, so it leaves page-to-page transitions
+ * below alone.
+ */
+:root.vt-theme::view-transition-old(root),
+:root.vt-theme::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
+}
+
+/*
+ * Moving between pages: the old page lifts away as the new one settles in,
+ * on the page's own curve. The header is its own layer, so it stays put
+ * while the page beneath it changes.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+
+  .header-shell {
+    view-transition-name: site-header;
+  }
+
+  :root.vt-theme .header-shell {
+    view-transition-name: none;
+  }
+
+  ::view-transition-old(root) {
+    animation: page-out 0.28s var(--ease-quiet) both;
+  }
+
+  ::view-transition-new(root) {
+    animation: page-in 0.5s var(--ease-quiet) both;
+  }
+}
+
+@keyframes page-out {
+  to {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+
+/* ---- the deck --------------------------------------------------------- */
+
+/*
+ * Each slide carries its own ink. Ink slides sit on the raised surface;
+ * paper slides invert it, so the deck alternates the way the printed one
+ * does and no two neighbours share a colour, in either theme.
+ */
+.slide {
+  --s-bg: var(--raised);
+  --s-fg: var(--fg);
+  --s-muted: var(--muted);
+  --s-line: color-mix(in oklab, var(--fg) 16%, var(--raised));
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 4svh, 2.5rem);
+  min-height: 88svh;
+  padding: clamp(2.5rem, 8vw, 4rem) var(--spacing-gutter);
+  overflow: hidden;
+  background-color: var(--s-bg);
+  color: var(--s-fg);
+}
+
+.slide[data-tone="paper"] {
+  --s-bg: var(--fg);
+  --s-fg: var(--bg);
+  --s-muted: color-mix(in oklab, var(--bg) 62%, var(--fg));
+  --s-line: color-mix(in oklab, var(--bg) 20%, var(--fg));
+}
+
+.slide ::selection {
+  background-color: var(--s-fg);
+  color: var(--s-bg);
+}
+
+.slide-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+}
+
+.slide-title {
+  font-size: clamp(2.75rem, 12vw, 6rem);
+  font-weight: 600;
+  line-height: 0.9;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+}
+
+.slide[data-layout="talk"] .slide-title,
+.slide[data-layout="end"] .slide-title {
+  font-size: clamp(3.25rem, 16vw, 8rem);
+}
+
+.slide-wordmark {
+  font-size: clamp(3.25rem, 15vw, 8rem);
+  font-weight: 500;
+  line-height: 1;
+}
+
+.slide-foot {
+  display: grid;
+  gap: 2.5rem;
+  margin-top: auto;
+}
+
+.slide-body {
+  display: grid;
+  gap: 1.5rem;
+  max-width: 46rem;
+  font-size: clamp(1rem, 1.3vw, 1.1875rem);
+  line-height: 1.55;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+/* Buttons inside a slide follow the slide's ink, not the page's. */
+.slide .btn-primary {
+  background-color: var(--s-fg);
+  color: var(--s-bg);
+}
+
+.slide .btn-primary::before {
+  background-color: color-mix(in oklab, var(--s-fg) 82%, var(--s-bg));
+}
+
+.slide .btn-secondary {
+  color: var(--s-fg);
+  box-shadow: inset 0 0 0 1px var(--s-line);
+}
+
+.slide .btn-secondary::before {
+  background-color: color-mix(in oklab, var(--s-fg) 9%, var(--s-bg));
+}
+
+.slide :focus-visible {
+  outline-color: var(--s-fg);
+}
+
+/* Darkens a slide as the next one rises over it. */
+.slide-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background-color: var(--bg);
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (min-width: 64rem) {
+  .slide-foot.has-figure {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    align-items: end;
+    gap: clamp(2rem, 5vw, 5rem);
+  }
+
+  .slide[data-layout="cover"] .slide-foot {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    align-items: end;
+  }
+
+  .slide-mark {
+    justify-self: end;
+  }
+}
+
+/*
+ * The slide rail. It sits over the slides in difference blend, so its
+ * ticks read on ink and paper alike without knowing which is underneath.
+ */
+.deck-rail {
+  display: none;
+  position: fixed;
+  top: 50%;
+  right: clamp(0.75rem, 1.4vw, 1.5rem);
+  z-index: 30;
+  color: #fff;
+  mix-blend-mode: difference;
+  opacity: 0;
+  pointer-events: none;
+  translate: 0 -50%;
+  transition: opacity 0.3s var(--ease-quiet);
+}
+
+.deck-rail[data-visible] {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.deck-rail p {
+  color: inherit;
+  opacity: 0.7;
+}
+
+.deck-rail-button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  width: 100%;
+  height: 1.125rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.deck-rail-tick {
+  display: block;
+  width: 0.375rem;
+  height: 0.375rem;
+  background-color: currentColor;
+  opacity: 0.35;
+  transform-origin: right center;
+  transition:
+    opacity 0.2s ease,
+    transform 0.25s var(--ease-quiet);
+}
+
+.deck-rail-button[aria-current] .deck-rail-tick {
+  opacity: 1;
+  transform: scaleX(3);
+}
+
+.deck-rail-label {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(6px);
+  transition:
+    opacity 0.2s ease,
+    transform 0.25s var(--ease-quiet);
+}
+
+.deck-rail-button:focus-visible .deck-rail-label {
+  opacity: 1;
+  transform: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .deck-rail-button:hover .deck-rail-tick {
+    opacity: 1;
+  }
+
+  .deck-rail-button:hover .deck-rail-label {
+    opacity: 0.9;
+    transform: none;
+  }
+}
+
+/*
+ * The stack. With JavaScript, motion allowed and a screen big enough to
+ * hold a slide, every slide sticks to the top while the next rises over it.
+ * Anywhere else the slides are a plain run of panels. The gate is repeated
+ * as STAGED in deck/Deck.tsx; keep the two in step.
+ */
+@media (prefers-reduced-motion: no-preference) and (min-width: 64rem) and (min-height: 37.5rem) {
+  .js .deck-slide {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    padding: 4.5rem 0.75rem 0.75rem;
+  }
+
+  /* The right padding keeps every slide's content clear of the rail. */
+  .js .slide {
+    height: 100%;
+    min-height: 0;
+    padding: clamp(1.75rem, 3vw, 3rem) clamp(4rem, 6vw, 6rem) clamp(1.75rem, 3vw, 3rem)
+      clamp(1.75rem, 3vw, 3rem);
+    border-radius: 4px;
+  }
+
+  .js .slide-title {
+    font-size: clamp(3rem, min(9.5vw, 15svh), 10.5rem);
+  }
+
+  .js .slide[data-layout="talk"] .slide-title,
+  .js .slide[data-layout="end"] .slide-title {
+    font-size: clamp(3.5rem, min(13vw, 22svh), 15rem);
+  }
+
+  .js .slide-wordmark {
+    font-size: clamp(4rem, min(13vw, 22svh), 14rem);
+  }
+
+  .js .slide-body {
+    font-size: clamp(1rem, min(1.25vw, 2.4svh), 1.25rem);
+  }
+
+  .js .deck-rail {
+    display: block;
+  }
+}
+
+/*
+ * The deck as a PDF, one slide to a page. `scripts/export-deck.mjs` prints
+ * the page with reduced motion on, so every slide is already in place.
+ */
+@media print {
+  @page {
+    size: 1600px 900px;
+    margin: 0;
+  }
+
+  html,
+  body {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .header-shell,
+  footer,
+  .deck-intro,
+  .deck-rail,
+  .deck-outro {
+    display: none !important;
+  }
+
+  .deck-slide {
+    break-after: page;
+    height: 900px;
+  }
+
+  .deck-slide:last-child {
+    break-after: auto;
+  }
+
+  .slide-figure {
+    zoom: 1.35;
+  }
+
+  .slide {
+    height: 900px;
+    min-height: 0;
+    padding: 72px 80px;
+  }
+
+  .slide-title {
+    font-size: 150px;
+  }
+
+  .slide[data-layout="talk"] .slide-title,
+  .slide[data-layout="end"] .slide-title,
+  .slide-wordmark {
+    font-size: 220px;
+  }
+
+  .slide-body {
+    font-size: 22px;
+  }
+
+  .slide-foot.has-figure,
+  .slide[data-layout="cover"] .slide-foot {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    align-items: end;
+    gap: 80px;
+  }
+
+  .slide-mark {
+    justify-self: end;
+  }
+}
+
+/* ---- the ROI calculator ---------------------------------------------- */
+
+.roi-group-title {
+  margin: 0;
+  font-size: clamp(1.375rem, 2.2vw, 1.75rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.roi-subhead {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+.roi-field {
+  display: grid;
+  gap: 0.625rem;
+}
+
+.roi-label {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.roi-label-compact {
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.roi-help {
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
+.roi-link {
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--fg);
+  font-size: 0.9375rem;
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 4px;
+  transition: text-decoration-color 0.2s ease;
+}
+
+.roi-link:hover {
+  text-decoration-color: var(--fg);
+}
+
+/* Where a number comes from: sourced, your estimate, or provisional. */
+.roi-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 1.375rem;
+  padding: 0 0.5rem;
+  border-radius: 2px;
+  font-size: 0.625rem;
+  letter-spacing: 0.16em;
+  white-space: nowrap;
+}
+
+.roi-tag-source {
+  background-color: var(--fg);
+  color: var(--bg);
+}
+
+a.roi-tag-source {
+  transition: background-color 0.2s ease;
+}
+
+a.roi-tag-source:hover {
+  background-color: var(--fg-hover);
+}
+
+.roi-tag-estimate {
+  color: var(--muted);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+}
+
+.roi-tag-provisional {
+  color: var(--muted);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0 4px,
+    color-mix(in oklab, var(--fg) 7%, transparent) 4px 5px
+  );
+}
+
+/* The number box: the figure, and its unit set inside the box. */
+.roi-input {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  height: 3rem;
+  padding: 0 0.875rem;
+  border-radius: 3px;
+  background-color: var(--raised);
+  box-shadow: inset 0 0 0 1px var(--line);
+  transition: box-shadow 0.2s ease;
+}
+
+.roi-input:focus-within {
+  box-shadow: inset 0 0 0 1px var(--fg);
+}
+
+/* Zero width, so the box sizes the input and never the other way round. */
+.roi-input input {
+  flex: 1;
+  width: 0;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  background: none;
+  color: var(--fg);
+  font: inherit;
+  font-size: 1.0625rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  outline: none;
+}
+
+.roi-unit {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--faint);
+  white-space: nowrap;
+}
+
+.roi-text {
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.75rem 0.875rem;
+  border: 0;
+  border-radius: 3px;
+  background-color: var(--raised);
+  box-shadow: inset 0 0 0 1px var(--line);
+  color: var(--fg);
+  font: inherit;
+  font-size: 1rem;
+  transition: box-shadow 0.2s ease;
+}
+
+.roi-text:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 1px var(--fg);
+}
+
+/* The slider: a hairline that fills to the value, and a square thumb. */
+.roi-range {
+  width: 100%;
+  height: 1.25rem;
+  margin: 0;
+  background: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.roi-range::-webkit-slider-runnable-track {
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    var(--fg) var(--fill, 0%),
+    var(--line-strong) var(--fill, 0%)
+  );
+}
+
+.roi-range::-moz-range-track {
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    var(--fg) var(--fill, 0%),
+    var(--line-strong) var(--fill, 0%)
+  );
+}
+
+.roi-range::-webkit-slider-thumb {
+  width: 0.875rem;
+  height: 0.875rem;
+  margin-top: calc(-0.4375rem + 1px);
+  border: 0;
+  border-radius: 1px;
+  background-color: var(--fg);
+  appearance: none;
+  -webkit-appearance: none;
+  transition: transform 0.15s var(--ease-quiet);
+}
+
+.roi-range::-moz-range-thumb {
+  width: 0.875rem;
+  height: 0.875rem;
+  border: 0;
+  border-radius: 1px;
+  background-color: var(--fg);
+}
+
+.roi-range:active::-webkit-slider-thumb {
+  transform: scale(1.25);
+}
+
+.roi-range:focus-visible {
+  outline-offset: 2px;
+}
+
+/* A radio group set as square options. */
+.roi-segmented {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.roi-segment {
+  position: relative;
+  cursor: pointer;
+}
+
+.roi-segment > span {
+  display: inline-flex;
+  align-items: center;
+  height: 2.5rem;
+  padding: 0 0.875rem;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+  color: var(--muted);
+  font-size: 0.875rem;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.roi-segment input:checked + span {
+  background-color: var(--fg);
+  box-shadow: inset 0 0 0 1px var(--fg);
+  color: var(--bg);
+}
+
+.roi-segment input:focus-visible + span {
+  outline: 2px solid var(--fg);
+  outline-offset: 3px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .roi-segment:hover input:not(:checked) + span {
+    color: var(--fg);
+    box-shadow: inset 0 0 0 1px var(--faint);
+  }
+}
+
+/* The on/off switch: a square knob in a square track. */
+.roi-switch {
+  position: relative;
+  flex-shrink: 0;
+  width: 2.75rem;
+  height: 1.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background-color: var(--line-strong);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.roi-switch-knob {
+  position: absolute;
+  top: 0.1875rem;
+  left: 0.1875rem;
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: 1px;
+  background-color: var(--muted);
+  transition:
+    transform 0.2s var(--ease-quiet),
+    background-color 0.2s ease;
+}
+
+.roi-switch[aria-checked="true"] {
+  background-color: var(--fg);
+}
+
+.roi-switch[aria-checked="true"] .roi-switch-knob {
+  background-color: var(--bg);
+  transform: translateX(1.25rem);
+}
+
+/* A module: a card that brightens when it is switched on. */
+.roi-module {
+  padding: 1.25rem;
+  border-radius: 4px;
+  background-color: var(--raised);
+  box-shadow: inset 0 0 0 1px var(--line);
+  transition: box-shadow 0.2s ease;
+}
+
+.roi-module[data-on] {
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+}
+
+.roi-module-fields {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+  transition: opacity 0.2s ease;
+}
+
+.roi-module:not([data-on]) .roi-module-fields {
+  opacity: 0.35;
+}
+
+@media (min-width: 40rem) {
+  .roi-module-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.roi-warning {
+  margin: 0;
+  padding: 0.875rem 1rem;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1px var(--fg);
+  font-size: 0.875rem;
+}
+
+.roi-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.9375rem;
+  cursor: pointer;
+}
+
+.roi-check input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.roi-check-box {
+  position: relative;
+  flex-shrink: 0;
+  width: 1.125rem;
+  height: 1.125rem;
+  margin-top: 0.125rem;
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 1px var(--faint);
+  transition: background-color 0.15s ease;
+}
+
+.roi-check input:checked + .roi-check-box {
+  background-color: var(--fg);
+  box-shadow: inset 0 0 0 1px var(--fg);
+}
+
+.roi-check input:checked + .roi-check-box::after {
+  content: "";
+  position: absolute;
+  inset: 0.3125rem;
+  background-color: var(--bg);
+}
+
+.roi-check input:focus-visible + .roi-check-box {
+  outline: 2px solid var(--fg);
+  outline-offset: 3px;
+}
+
+/* The summary: held in view beside the inputs on a wide screen. */
+.roi-summary {
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  border-radius: 4px;
+  background-color: var(--raised);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.roi-hero {
+  font-size: clamp(2.75rem, 6vw, 4.5rem);
+  font-weight: 500;
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+}
+
+/* Bars, drawn with transforms so a change never reflows the page. */
+.roi-bar {
+  position: relative;
+  height: 0.75rem;
+  overflow: hidden;
+}
+
+.roi-bar-seg {
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;
+  transition: transform 0.45s var(--ease-quiet);
+}
+
+.roi-year {
+  position: relative;
+  display: grid;
+  flex: 1;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  align-items: end;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: default;
+}
+
+.roi-year:focus-visible {
+  outline-offset: 4px;
+}
+
+.roi-col {
+  display: block;
+  height: 100%;
+  transform-origin: bottom center;
+  transition:
+    transform 0.45s var(--ease-quiet),
+    opacity 0.2s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .roi-year:hover .roi-col {
+    opacity: 0.8;
+  }
+}
+
+.roi-tip {
+  position: absolute;
+  bottom: calc(100% + 0.75rem);
+  z-index: 5;
+  min-width: 12rem;
+  padding: 0.75rem 0.875rem;
+  border-radius: 3px;
+  background-color: var(--bg);
+  box-shadow:
+    inset 0 0 0 1px var(--line-strong),
+    0 8px 24px rgb(0 0 0 / 0.25);
+  pointer-events: none;
+  translate: -50% 0;
+}
+
+/* On a phone, the headline figure follows the inputs at the screen's foot. */
+.roi-dock {
+  position: fixed;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  left: 0.75rem;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  height: 3.25rem;
+  padding: 0 1rem;
+  border-radius: 4px;
+  background-color: color-mix(in oklab, var(--raised) 88%, transparent);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+  color: var(--fg);
+  backdrop-filter: blur(12px);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(calc(100% + 1rem));
+  transition:
+    transform 0.3s var(--ease-quiet),
+    opacity 0.2s ease;
+}
+
+.roi-dock[data-show] {
+  opacity: 1;
+  pointer-events: auto;
+  transform: none;
 }
 
 /* ---- motion ----------------------------------------------------------- */

@@ -18,7 +18,7 @@ const ARROW: [number, number][] = [
   [6, 2],
 ];
 
-function PixelArrow({ down = false }: { down?: boolean }) {
+export function PixelArrow({ down = false }: { down?: boolean }) {
   return (
     <svg
       viewBox="0 0 7 5"
@@ -48,6 +48,10 @@ export function Button({ cta, small = false }: { cta: Cta; small?: boolean }) {
   return (
     <a
       href={cta.href}
+      download={cta.download}
+      {...(cta.href.startsWith("https://")
+        ? { target: "_blank", rel: "noreferrer noopener" }
+        : {})}
       className={`btn btn-${cta.tone} ${small ? "btn-sm" : ""}`}
     >
       {cta.label}
