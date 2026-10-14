@@ -4,6 +4,7 @@ import { Button } from "./Button";
 import { Container } from "./Container";
 import { HeaderShell } from "./HeaderShell";
 import { Logo } from "./Mark";
+import { NavLinks } from "./NavLinks";
 import { ThemeToggle } from "./ThemeToggle";
 
 export function Header() {
@@ -11,21 +12,17 @@ export function Header() {
     <HeaderShell>
       <Container className="flex h-16 items-center justify-between gap-6">
         <div className="flex items-center gap-10">
-          <a href="#main" aria-label={site.name} className="text-fg">
+          {/*
+            Plain anchors between pages, on purpose: a full navigation is what
+            lets the browser run the cross-page view transition, and it gives
+            each page a fresh Lenis and ScrollTrigger setup.
+          */}
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+          <a href="/#main" aria-label={site.name} className="text-fg">
             <Logo />
           </a>
 
-          <nav aria-label="Primary" className="hidden items-center gap-7 md:flex">
-            {site.nav.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="text-[0.875rem] text-muted transition-colors duration-200 hover:text-fg"
-              >
-                {link.label}
-              </a>
-            ))}
-          </nav>
+          <NavLinks links={site.nav} />
         </div>
 
         <div className="flex items-center gap-2.5">

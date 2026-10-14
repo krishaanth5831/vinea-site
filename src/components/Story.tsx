@@ -284,8 +284,20 @@ export function Story() {
               ))}
             </div>
 
-            <p className="rise t-mono mt-8 mb-0 text-muted" style={at(0.65)}>
-              {hero.note}
+            <p
+              className="rise t-mono mt-8 mb-0 flex flex-wrap items-center gap-x-5 gap-y-2 text-muted"
+              style={at(0.65)}
+            >
+              <span>{hero.note}</span>
+              {hero.noteLinks.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="text-fg underline decoration-line-strong underline-offset-4 transition-colors duration-200 hover:decoration-fg"
+                >
+                  {link.label}
+                </a>
+              ))}
             </p>
           </Container>
         </div>

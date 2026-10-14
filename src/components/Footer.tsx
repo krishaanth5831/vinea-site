@@ -17,7 +17,7 @@ export function Footer() {
           <p className="t-mono m-0 text-muted">{site.location}</p>
         </div>
 
-        <nav aria-label="Elsewhere" className="flex gap-8">
+        <nav aria-label="Elsewhere" className="flex flex-wrap gap-x-8 gap-y-3">
           {links.map((link) => (
             <a
               key={link.href}
