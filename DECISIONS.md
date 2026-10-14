@@ -270,7 +270,7 @@ the rest of the square-one story is untouched for now.
 slides and the calculator carry `data-numbers`; `audit:copy` and
 `check:responsive` cut those regions out and still fail on a single digit
 anywhere else, including the opening prose of the new pages. The rule's
-own source says "no numbers unless K7 asks", and he asked for both.
+own source says "no numbers unless K7 asks", and both were asked for.
 
 **Which deck, and what was cut.** The page carries "Vinea Pitch Deck v5
 Send", the reading copy with sourced figures, trimmed because a public page
@@ -325,8 +325,9 @@ function, the method is printed under the calculator, and
 
 **Storage: a private Vercel Blob store, one file per estimate.** It needs no
 new account or terms screen, and private stores have no public URLs. The
-store itself has to be created in the dashboard: the API connection used for
-this build was refused (403). The steps are in the README. Postgres would be the move once
+API connection used for this build could not create a store (403), so the
+existing private store `vinea-website-blob` (Frankfurt) was connected to
+`vinea-site` in the dashboard instead. The README says how. Postgres would be the move once
 there are enough rows to query; the CSV export covers reading them until
 then. The export sits behind HTTP Basic auth against `ROI_EXPORT_KEY`, so it
 opens in a browser with a password prompt and no admin page to build.

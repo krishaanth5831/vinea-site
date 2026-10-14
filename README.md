@@ -107,26 +107,18 @@ fields. Add `?format=json` for the raw records.
 - Locally `ROI_EXPORT_KEY` lives in `.env.local`, which git ignores. Without
   it, the export route answers 404.
 
-**Setup still to do in the Vercel dashboard, before this reaches `main`.**
-The API connection could not create the store (it returned 403), and
-without a store a production save answers 503:
+**How it is set up on Vercel** (October 2026, all in the dashboard):
 
-1. **Storage → Create → Blob.** Name it `vinea-roi-estimates`, access
-   **Private**, region **Frankfurt (fra1)**. Connect it to `vinea-site` for
-   **Production** and **Preview**. Its credentials then reach the functions
-   on their own (`BLOB_STORE_ID` and OIDC); nothing to copy by hand.
-2. **vinea-site → Settings → Environment Variables.** Add `ROI_EXPORT_KEY`,
-   type **Sensitive**, for Production and Preview. Use the value from
-   `.env.local`, or any long password of your own.
-3. **Prove it on a preview:** save one estimate on the branch's preview URL,
-   open `/api/roi/export` there, see the row, then delete that file in the
-   store's browser.
-- In `npm run dev`, without Blob credentials, saves go to
-  `.data/roi-submissions.jsonl` instead, so local testing never writes to
-  the live store. `next start` without credentials refuses to save.
-- To delete someone's data on request: find their file in the Blob store in
-  the Vercel dashboard (Storage → the store → Browser, folder `roi/`) and
-  delete it.
+1. The private Blob store `vinea-website-blob`, in Frankfurt (fra1), is
+   connected to `vinea-site` for **Production** and **Preview**. That adds
+   `BLOB_STORE_ID`; the functions sign in to the store with OIDC (Settings →
+   Security, Team issuer), so there is no read-write token to manage. The
+   store is also still connected to the old `vinea-website` project, which
+   does not use it.
+2. `ROI_EXPORT_KEY` is a **Secret** variable for Production and Preview.
+   Change it there to change the export password; a redeploy picks it up.
+3. Without the store, a production save answers 503, so check the store is
+   still connected before blaming the code.
 
 ## Pointing getvinea.nl at this project
 
