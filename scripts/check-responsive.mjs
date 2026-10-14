@@ -14,13 +14,18 @@
  * the schematic both legitimately extend past the viewport under the clip, so
  * that version reports an overflow on a clean page.
  *
+ * Every page is scanned. Digits are allowed only inside regions marked
+ * `data-numbers` (the deck's slides and the ROI calculator); everywhere else
+ * a single digit fails the page.
+ *
  *   npm run build && npm start &   # or any running server
  *   npm run check:responsive -- http://localhost:3000
  */
 import { existsSync } from "node:fs";
 import puppeteer from "puppeteer-core";
 
-const URL = process.argv[2] ?? "http://localhost:3000";
+const BASE = (process.argv[2] ?? "http://localhost:3000").replace(/\/$/, "");
+const ROUTES = ["/", "/deck", "/roi"];
 
 const CHROME = [
   "/opt/google/chrome/chrome",
@@ -44,7 +49,7 @@ const browser = await puppeteer.launch({
  * @param settleMs 0 scrolls the moment the page loads, which is how a reader
  * outruns hydration. Both cases have to pass.
  */
-async function scan(width, height, label, settleMs, reducedMotion = false) {
+async function scan(route, width, height, label, settleMs, reducedMotion = false) {
   const page = await browser.newPage();
   await page.setViewport({ width, height });
   if (reducedMotion) {
@@ -60,7 +65,7 @@ async function scan(width, height, label, settleMs, reducedMotion = false) {
       }
     }).observe({ type: "layout-shift", buffered: true });
   });
-  await page.goto(URL, { waitUntil: "networkidle0" });
+  await page.goto(BASE + route, { waitUntil: "networkidle0" });
   if (settleMs) await new Promise((r) => setTimeout(r, settleMs));
 
   if (!reducedMotion) {
@@ -75,8 +80,9 @@ async function scan(width, height, label, settleMs, reducedMotion = false) {
   const result = await page.evaluate(() => {
     const revealed = [...document.querySelectorAll("[data-reveal]")];
     const body = document.body.cloneNode(true);
-    body.querySelectorAll("script,style,noscript,svg").forEach((n) => n.remove());
+    body.querySelectorAll("script,style,noscript,svg,[data-numbers]").forEach((n) => n.remove());
     const spoken = [...document.querySelectorAll("[aria-label],[alt],[title]")]
+      .filter((e) => !e.closest("[data-numbers]"))
       .map((e) => e.getAttribute("aria-label") ?? e.getAttribute("alt") ?? e.getAttribute("title") ?? "")
       .join(" ");
     const digits = `${body.innerText ?? ""} ${spoken}`.match(/\d/g);
@@ -94,7 +100,7 @@ async function scan(width, height, label, settleMs, reducedMotion = false) {
   const bad =
     result.hidden > 0 || result.overflow || result.cls > 0.01 || result.digits > 0;
   console.log(
-    `${bad ? "FAIL" : "ok  "}  ${label.padEnd(30)} reveals ${result.reveals}` +
+    `${bad ? "FAIL" : "ok  "}  ${route.padEnd(6)} ${label.padEnd(28)} reveals ${result.reveals}` +
       `  hidden ${result.hidden}  overflow ${result.overflow}` +
       `  CLS ${result.cls}  digits ${result.digits}`,
   );
@@ -102,13 +108,18 @@ async function scan(width, height, label, settleMs, reducedMotion = false) {
   return bad;
 }
 
-const failures = [
-  await scan(390, 844, "mobile, scrolled at once", 0),
-  await scan(390, 844, "mobile, hydration settled", 2500),
-  await scan(1440, 900, "desktop", 0),
-  await scan(390, 844, "mobile, reduced motion", 1500, true),
-].filter(Boolean);
+const failures = [];
+for (const route of ROUTES) {
+  failures.push(
+    await scan(route, 390, 844, "mobile, scrolled at once", 0),
+    await scan(route, 390, 844, "mobile, hydration settled", 2500),
+    await scan(route, 1440, 900, "desktop", 0),
+    await scan(route, 1440, 900, "desktop, hydration settled", 2500),
+    await scan(route, 390, 844, "mobile, reduced motion", 1500, true),
+  );
+}
+const failed = failures.filter(Boolean);
 
 await browser.close();
-console.log(failures.length ? "\nFAIL" : "\nPASS");
-process.exit(failures.length ? 1 : 0);
+console.log(failed.length ? "\nFAIL" : "\nPASS");
+process.exit(failed.length ? 1 : 0);
