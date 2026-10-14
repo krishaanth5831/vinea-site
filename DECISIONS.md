@@ -329,8 +329,11 @@ API connection used for this build could not create a store (403), so the
 existing private store `vinea-website-blob` (Frankfurt) was connected to
 `vinea-site` in the dashboard instead. The README says how. Postgres would be the move once
 there are enough rows to query; the CSV export covers reading them until
-then. The export sits behind HTTP Basic auth against `ROI_EXPORT_KEY`, so it
-opens in a browser with a password prompt and no admin page to build.
+then. The export has no password, at the owner's request. It answers only on
+the project's `*.vercel.app` addresses, which Deployment Protection already
+puts behind a Vercel login, and returns 404 on getvinea.nl. The lock is
+therefore Vercel's login, and turning Deployment Protection off would open
+the route, which the route's own comment warns about.
 
 **A record says which answers were given.** Role, country, crop and heating
 pipes start unanswered and are stored as `unanswered` until chosen, and each

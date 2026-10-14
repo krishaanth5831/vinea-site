@@ -1,37 +1,35 @@
-import { timingSafeEqual } from "node:crypto";
-
 import { loadSubmissions, toCsv } from "@/lib/submissions";
 
 /*
- * Every saved estimate as a spreadsheet, for Vinea only.
+ * Every saved estimate as a spreadsheet, for Vinea only, with no password.
  *
- * Open /api/roi/export in a browser and it asks for a password: any user
- * name, and the value of ROI_EXPORT_KEY as the password. Add ?format=json
- * for the raw records. With no key set, the route does not exist.
+ * It answers only on the project's own *.vercel.app addresses, which Vercel
+ * Deployment Protection (Settings → Deployment Protection, Standard) puts
+ * behind a Vercel login, and on localhost for development. On getvinea.nl,
+ * the one public address, it does not exist. So: open
+ *
+ *   https://vinea-site-krishaanth-ramaraj.vercel.app/api/roi/export
+ *
+ * while logged in to Vercel, and the CSV downloads. Add ?format=json for the
+ * raw records.
+ *
+ * ⚠️ This leans entirely on Deployment Protection. If it is ever switched
+ * off, or widened to "none", these addresses become public and so does
+ * this route. Turn the route off first.
  */
 
 export const dynamic = "force-dynamic";
 
-function authorised(request: Request, key: string): boolean {
-  const header = request.headers.get("authorization") ?? "";
-  if (!header.startsWith("Basic ")) return false;
-  const decoded = Buffer.from(header.slice(6), "base64").toString("utf8");
-  const password = decoded.slice(decoded.indexOf(":") + 1);
-  const a = Buffer.from(password);
-  const b = Buffer.from(key);
-  return a.length === b.length && timingSafeEqual(a, b);
+function servedHere(request: Request): boolean {
+  const host = (request.headers.get("x-forwarded-host") ?? request.headers.get("host") ?? "")
+    .split(":")[0]
+    .toLowerCase();
+  if (host === "localhost" || host === "127.0.0.1") return true;
+  return host.endsWith(".vercel.app");
 }
 
 export async function GET(request: Request) {
-  const key = process.env.ROI_EXPORT_KEY;
-  if (!key) return new Response("Not found", { status: 404 });
-
-  if (!authorised(request, key)) {
-    return new Response("Password required", {
-      status: 401,
-      headers: { "WWW-Authenticate": 'Basic realm="Vinea ROI estimates", charset="UTF-8"' },
-    });
-  }
+  if (!servedHere(request)) return new Response("Not found", { status: 404 });
 
   const rows = await loadSubmissions();
   const headers = { "cache-control": "no-store", "x-robots-tag": "noindex" };

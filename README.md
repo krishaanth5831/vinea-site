@@ -95,17 +95,19 @@ under `roi/` in a **private** Vercel Blob store connected to this project.
 Private means no file has a public URL. No IP address, cookie or user agent
 is kept; an email is only accepted with the consent box ticked.
 
-**To read them:** open <https://www.getvinea.nl/api/roi/export> in a browser.
-It asks for a password: any user name, and the value of `ROI_EXPORT_KEY` as
-the password. You get a CSV with one row per estimate, every input
-(including which modules were switched on), the result, and the contact
-fields. Add `?format=json` for the raw records.
+**To read them:** log in to Vercel, then open
+<https://vinea-site-krishaanth-ramaraj.vercel.app/api/roi/export>. The CSV
+downloads, one row per estimate: every input (including which modules were
+switched on), the result, and the contact fields. Add `?format=json` for the
+raw records. There is no password. The route only answers on the project's
+own `*.vercel.app` addresses, which Deployment Protection puts behind a
+Vercel login, and on localhost; on getvinea.nl it does not exist.
 
+- ⚠️ That makes Deployment Protection the lock. If it is ever switched off
+  (Settings → Deployment Protection), turn the export route off first.
 - Each row also has a `changed` column: the inputs the reader actually
   touched. Anything not listed there is still the calculator's default, and
   role, country, crop and heating pipes read `unanswered` until chosen.
-- Locally `ROI_EXPORT_KEY` lives in `.env.local`, which git ignores. Without
-  it, the export route answers 404.
 
 **How it is set up on Vercel** (October 2026, all in the dashboard):
 
@@ -115,8 +117,8 @@ fields. Add `?format=json` for the raw records.
    Security, Team issuer), so there is no read-write token to manage. The
    store is also still connected to the old `vinea-website` project, which
    does not use it.
-2. `ROI_EXPORT_KEY` is a **Secret** variable for Production and Preview.
-   Change it there to change the export password; a redeploy picks it up.
+2. Deployment Protection is on (Standard), so every `*.vercel.app` address
+   needs a Vercel login. The export route depends on that.
 3. Without the store, a production save answers 503, so check the store is
    still connected before blaming the code.
 

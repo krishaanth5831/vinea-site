@@ -12,7 +12,7 @@ import { computeRoi, MODULE_IDS, type RoiInput } from "./roi";
  *
  * In production: a private Vercel Blob store, one JSON file per estimate
  * under `roi/`. Private means nothing is reachable by URL; the only way to
- * read them back is the export route, behind a password.
+ * read them back is the export route, behind a Vercel login.
  *
  * In development, without Blob credentials: a JSON-lines file in `.data/`,
  * which git ignores, so a local run never writes to the live store.
