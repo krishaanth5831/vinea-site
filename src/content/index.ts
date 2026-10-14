@@ -7,3 +7,5 @@ export { why } from "./why";
 export { question } from "./question";
 export { heard } from "./heard";
 export { talk } from "./talk";
+export { deck } from "./deck";
+export { roi } from "./roi";

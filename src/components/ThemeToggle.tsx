@@ -39,7 +39,10 @@ export function ThemeToggle() {
       Math.max(x, window.innerWidth - x),
       Math.max(y, window.innerHeight - y),
     );
+    root.classList.add("vt-theme");
     const transition = document.startViewTransition(apply);
+    const done = () => root.classList.remove("vt-theme");
+    transition.finished.then(done, done);
     transition.ready
       .then(() => {
         root.animate(

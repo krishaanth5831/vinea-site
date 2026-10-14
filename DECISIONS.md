@@ -251,3 +251,109 @@ against the deployed URL is still worth doing.
 
 **No analytics, no CMS, no database, no auth**, as specified. Vercel's own
 analytics are not enabled either, since that is a dashboard toggle.
+
+## The deck and the calculator
+
+Added in October 2026, on a branch, at the founder's request: the pitch deck
+on its own page, and an ROI calculator for growers that keeps what they
+enter.
+
+**Two new pages, not two new sections.** `/deck` and `/roi` are long and
+built for a different job from the home page, which stays a single thread
+read in under a minute. The header links to both from `md` up (the home
+page's own sections join from `lg`, where they fit), and so do the footer
+and a line under the hero. The hero's old note, "No hardware. No pitch.
+Just questions.", sat badly next to a pitch deck, so it became that line;
+the rest of the square-one story is untouched for now.
+
+**Figures are allowed in two marked places, and nowhere else.** The deck's
+slides and the calculator carry `data-numbers`; `audit:copy` and
+`check:responsive` cut those regions out and still fail on a single digit
+anywhere else, including the opening prose of the new pages. The rule's
+own source says "no numbers unless K7 asks", and both were asked for.
+
+**Which deck, and what was cut.** The page carries "Vinea Pitch Deck v5
+Send", the reading copy with sourced figures, trimmed because a public page
+reaches growers as well as investors:
+- the data-licensing paragraph is cut from the business model, since the
+  narrative keeps it for investor pitches only;
+- the line about eternal.ag's founder's earlier company is cut;
+- the thank-you slide carries `krishaanth@getvinea.nl` rather than a gmail;
+- "Where the hours go" now says what the WUR shares are shares of. The
+  source gives 29%, 26% and 21% as shares of the six main crop jobs it
+  studied, not of every hour on the farm. The Canva deck still says "of
+  them" after the per-hectare total; worth the same fix there.
+
+**The deck is rebuilt in the site's own drawing, not embedded.** The Canva
+deck's forest, lime and Anton would fight a black-and-white page, and a PDF
+in a frame is neither readable on a phone nor searchable. The slides are
+text in the site's type, alternating ink and paper the way the printed
+deck alternates colours, with drawings made of the mark's cells where a
+slide has a figure: cells lit for "a third" and "four in five", a split bar
+for where the hours go, SPINE carrying its modules. The PDF download is
+printed from this page, so it carries the same trims.
+
+**One motion vocabulary, still.** The deck uses `expo.out` for anything
+entering, lines rising out of masks for headlines, and the stack's
+"settle back" from the refusals, scrubbed with `ease: none`. The stack is
+measured off the list rather than the slides, because a stuck slide reports
+where it is stuck. A conditions object passed to `gsap.matchMedia` only
+runs while one condition matches, so the deck adds an always-true one;
+without it, phones never set up their reveals and every slide stayed blank.
+
+**Vinea's cost is a share of the labour it replaces, never a price.** The
+calculator needs a cost to show a saving, and the standing rule is no Vinea
+price figures and pricing always provisional. Rent is a slider, "as a share
+of the labour it replaces", defaulting to 70% and tagged provisional. That
+default is the one number here that is a Vinea decision rather than a
+source; change it in `DEFAULT_INPUT` in `src/lib/roi.ts`.
+
+**Every default says where it comes from.** Hours per hectare (9,450) and the
+harvest and leaf-removal shares come from the WUR GWorkS tomato report and
+link to it. Lowering is an estimate (the six main jobs leave about a quarter
+of the hours to clipping, lowering and truss pruning; a third of that), as
+are scouting, labour cost, wage growth and hours per worker. How much of a
+job robots take over is "your assumption", never a stated capability: a
+throughput or uptime figure would read as a traction claim. The grower
+interview's harvesting cost of €5 per m² is shown beside the reader's own
+figure as a cross-check.
+
+**The totals add up.** eternal.ag's own calculator shows five-year totals
+that do not reconcile with its lines. Here every figure comes from one pure
+function, the method is printed under the calculator, and
+`npm run check:roi` asserts that the lines add to the totals.
+
+**Storage: a private Vercel Blob store, one file per estimate.** It needs no
+new account or terms screen, and private stores have no public URLs. The
+API connection used for this build could not create a store (403), so the
+existing private store `vinea-website-blob` (Frankfurt) was connected to
+`vinea-site` in the dashboard instead. The README says how. Postgres would be the move once
+there are enough rows to query; the CSV export covers reading them until
+then. The export has no password, at the owner's request. It answers only on
+the project's `*.vercel.app` addresses, which Deployment Protection already
+puts behind a Vercel login, and returns 404 on getvinea.nl. The lock is
+therefore Vercel's login, and turning Deployment Protection off would open
+the route, which the route's own comment warns about.
+
+**A record says which answers were given.** Role, country, crop and heating
+pipes start unanswered and are stored as `unanswered` until chosen, and each
+record lists the inputs the reader actually changed. Without that, a row
+reading "grower, Netherlands, pipe rails, truss tomatoes" could just be the
+defaults nobody touched.
+
+**Saving is explicit, and contact is optional.** Nothing is stored until the
+reader presses save. No IP, cookie or user agent is kept. An email is only
+accepted with the consent box ticked, the privacy line names who keeps the
+data, why, and how to have it deleted, and a hidden field plus a minimum
+time on the page turn away simple bots. A full privacy notice is still
+owed before this is pushed hard; the narrative already flags GDPR for the
+capture work, and this is the same lawyer conversation.
+
+**Plain anchors between pages.** Full navigations let the browser run a
+cross-document view transition, and give each page a fresh Lenis and
+ScrollTrigger setup. The theme switch's own view-transition rules are now
+scoped to a class it sets, so they no longer cancel the page transition.
+
+**The footer's LinkedIn link is fixed.** It was a guess built from the name;
+it now points at the profile behind the deck's QR code.
+
