@@ -17,5 +17,9 @@ export const hero: HeroContent = {
     { label: "What went wrong", href: "#why", tone: "secondary" },
   ],
 
-  note: "No hardware. No pitch. Just questions.",
+  note: "Where it's heading",
+  noteLinks: [
+    { label: "Read the deck", href: "/deck" },
+    { label: "Run your numbers", href: "/roi" },
+  ],
 };

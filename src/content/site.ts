@@ -13,16 +13,24 @@ export const site: SiteContent = {
   location: "Westland, Netherlands",
   person: "Krishaanth Ramaraj",
 
+  /*
+   * Absolute, so they work from /deck and /roi too. On the home page Lenis
+   * still catches them as same-page anchors and glides there.
+   */
   nav: [
-    { label: "What went wrong", href: "#why" },
-    { label: "The question", href: "#question" },
-    { label: "Refusals", href: "#refusals" },
+    { label: "What went wrong", href: "/#why" },
+    { label: "The question", href: "/#question" },
+    { label: "Refusals", href: "/#refusals" },
+    { label: "The deck", href: "/deck" },
+    { label: "ROI calculator", href: "/roi" },
   ],
 
   footerLinks: [
+    { label: "The deck", href: "/deck" },
+    { label: "ROI calculator", href: "/roi" },
     {
       label: "LinkedIn",
-      href: "https://www.linkedin.com/in/krishaanth-ramaraj/",
+      href: "https://www.linkedin.com/in/krishaanth-ramaraj-230046282",
       external: true,
     },
     {
