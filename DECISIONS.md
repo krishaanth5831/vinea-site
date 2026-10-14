@@ -272,17 +272,27 @@ slides and the calculator carry `data-numbers`; `audit:copy` and
 anywhere else, including the opening prose of the new pages. The rule's
 own source says "no numbers unless K7 asks", and both were asked for.
 
-**Which deck, and what was cut.** The page carries "Vinea Pitch Deck v5
-Send", the reading copy with sourced figures, trimmed because a public page
-reaches growers as well as investors:
+**Which deck, and what was cut.** The page carries "Vinea Pitch Deck v6
+Send" (since 14 October 2026; v5 Send before it), the reading copy with
+sourced figures, trimmed because a public page reaches growers as well as
+investors:
 - the data-licensing paragraph is cut from the business model, since the
   narrative keeps it for investor pitches only;
 - the line about eternal.ag's founder's earlier company is cut;
 - the thank-you slide carries `krishaanth@getvinea.nl` rather than a gmail;
-- "Where the hours go" now says what the WUR shares are shares of. The
-  source gives 29%, 26% and 21% as shares of the six main crop jobs it
-  studied, not of every hour on the farm. The Canva deck still says "of
-  them" after the per-hectare total; worth the same fix there.
+- the WUR shares say what they are shares of. The source gives 29%, 26%
+  and 21% as shares of the six main crop jobs it studied, not of every
+  hour on the farm.
+
+v6 tells one story instead of repeating the crew idea four times: the
+problem, the robots that have tried, why they stall, then Vinea. The
+capture kit folds into "Crews teach the robots", "Where the hours go" folds
+into the problem, and "Every crop under glass" becomes two slides: an
+expansion plan by hectares and a market slide. The market slide sizes TAM,
+SAM and SOM by harvesting spend alone at the grower interview's €5 per m²,
+so it uses no wage assumption beyond what the deck already quotes; it is
+labour spend, never Vinea revenue. Sources and the method are in the
+vault's "(C) Vinea Pitch v6 Send — Copy, Numbers and Sources".
 
 **The deck is rebuilt in the site's own drawing, not embedded.** The Canva
 deck's forest, lime and Anton would fight a black-and-white page, and a PDF

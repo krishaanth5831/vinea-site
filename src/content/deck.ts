@@ -6,15 +6,15 @@ const BOOK_A_CALL =
 const LINKEDIN = "https://www.linkedin.com/in/krishaanth-ramaraj-230046282" as const;
 
 /**
- * The pitch deck, from "Vinea Pitch Deck v5 Send" in the vault, trimmed for a
+ * The pitch deck, from "Vinea Pitch Deck v6 Send" in the vault, trimmed for a
  * public page that growers read as well as investors:
  *
  * - the data-licensing paragraph is cut from the business model (investors
  *   only, by the narrative's own rule);
  * - the line about eternal.ag's founder's earlier company is cut;
  * - the thank-you slide carries the getvinea.nl address, not a gmail one;
- * - "Where the hours go" says what the WUR shares are shares *of*: the six
- *   main crop jobs, not every hour on the farm.
+ * - the WUR shares say what they are shares *of*: the six main crop jobs,
+ *   not every hour on the farm.
  *
  * Figures are allowed here, and only here and on /roi. Each slide that has
  * one names its source. See DECISIONS.md, "The deck and the calculator".
@@ -58,10 +58,21 @@ export const deck: DeckContent = {
     {
       id: "the-problem",
       kicker: "The problem",
+      corner: { label: "Source: Wageningen UR, 2005–2010", href: "https://edepot.wur.nl/176513" },
       title: ["Still done", "by hand"],
       body: [
-        "Greenhouses still run on hands. Harvesting, deleafing, lowering and rehanging the plants and scouting for pests are all done manually, all season. The crews come through agencies, and every season they are harder to find and cost more, on margins that are already thin.",
+        "Greenhouses still run on hands. A hectare of greenhouse tomatoes takes about 9,450 hours of work a year. Of the six main crop jobs, harvesting takes 29% of the hours, removing old leaves 26%, and de-shooting and twisting the plants another 21%. Scouting for pests comes on top. Crews do all of it, all season, and every one of those hours is paid.",
       ],
+      figure: {
+        kind: "split",
+        parts: [
+          { label: "Harvesting", share: 0.29, tag: "BLUSH" },
+          { label: "Removing old leaves", share: 0.26, tag: "SHEAR" },
+          { label: "De-shooting and twisting", share: 0.21 },
+          { label: "Clipping, lowering, truss pruning", share: 0.24 },
+        ],
+        caption: "Hours across the six main crop jobs, tomato",
+      },
     },
     {
       id: "the-cost",
@@ -72,7 +83,7 @@ export const deck: DeckContent = {
       },
       title: ["A third of", "the bill"],
       body: [
-        "In 2021 the average Dutch greenhouse vegetable farm paid almost €975,000 in wages, out of almost €2.9 million in total costs. That is more than it spent on energy. One Westland tomato grower told us that harvesting alone costs €5 per m² every year.",
+        "In 2021 the average Dutch greenhouse vegetable farm paid almost €975,000 in wages, out of almost €2.9 million in total costs. One Westland tomato grower told us that harvesting alone costs €5 per m² every year. Since then, costs have risen faster than what growers earn.",
       ],
       figure: {
         kind: "cells",
@@ -91,7 +102,7 @@ export const deck: DeckContent = {
       },
       title: ["One in five", "at a loss"],
       body: [
-        "In 2025, 20% of Dutch greenhouse vegetable farms made a loss, the first time in more than ten years. Revenue rose 8%, while costs and depreciation rose 13%.",
+        "In 2025, 20% of Dutch greenhouse vegetable farms made a loss, the first time in more than ten years. Across Dutch greenhouse horticulture, revenue rose 8% while costs and depreciation rose 13%. A grower can't fix that by hiring fewer people, because the crop still needs the same hours.",
       ],
       figure: {
         kind: "cells",
@@ -110,7 +121,7 @@ export const deck: DeckContent = {
       },
       title: ["Four in five", "from abroad"],
       body: [
-        "About 67,000 people work in Dutch greenhouses, and an estimated 80% of them come from abroad, now more often from Romania and Bulgaria than from Poland. The number of workers per hectare has barely moved since 2000, so growing a greenhouse still means hiring more people.",
+        "About 67,000 people work in Dutch greenhouses, and an estimated 80% of them come from abroad, increasingly from Romania and Bulgaria rather than Poland. The area one worker looks after has barely changed since 2000, so a bigger greenhouse still means more people, hired from the same agencies every grower is competing for.",
       ],
       figure: {
         kind: "cells",
@@ -121,30 +132,54 @@ export const deck: DeckContent = {
       },
     },
     {
-      id: "the-work",
-      kicker: "The work",
-      corner: { label: "Source: Wageningen UR", href: "https://edepot.wur.nl/176513" },
-      title: ["Where the", "hours go"],
-      body: [
-        "A hectare of greenhouse tomatoes takes about 9,450 hours of work a year. Of the six main crop jobs, harvesting takes 29% of the hours, removing old leaves 26%, and de-shooting and twisting the plants another 21%. BLUSH and SHEAR are built for the first two.",
-      ],
+      id: "the-competition",
+      kicker: "The competition",
+      corner: { label: "Sources: press releases" },
+      title: ["Years in.", "Millions in."],
+      body: ["Robots were meant to fix this, and the money has been there for years."],
       figure: {
-        kind: "split",
-        parts: [
-          { label: "Harvesting", share: 0.29, tag: "BLUSH" },
-          { label: "Removing old leaves", share: 0.26, tag: "SHEAR" },
-          { label: "De-shooting and twisting", share: 0.21 },
-          { label: "Clipping, lowering, truss pruning", share: 0.24 },
+        kind: "table",
+        columns: ["Company", "Since", "Raised"],
+        rows: [
+          ["MetoMotion (GRoW)", "2016", "A $5M round led by Ridder in 2021"],
+          ["SAIA Agrobotics", "2017", "Over €20M. The greenhouse is rebuilt around a fixed robot"],
+          ["Four Growers", "2018", "$15M, with Y Combinator among the backers"],
+          ["eternal.ag", "2025", "€8M in 2026"],
+          ["Tortuga AgTech", "—", "$50M over eight years, then its assets went to Oishii in 2025"],
         ],
-        caption: "Hours across the six main crop jobs, tomato",
       },
+    },
+    {
+      id: "adoption",
+      kicker: "Adoption",
+      corner: {
+        label: "Sources: AgriDirect, WUR, trade press",
+        href: "https://www.proeftuinprecisielandbouw.nl/nppl_r-jaarevent-tuinbouw-4-werkomstandigheden-beinvloeden-prestatie-oogstrobots/",
+      },
+      title: ["Still in", "trials"],
+      body: [
+        "In a 2019 survey of over 1,400 Dutch growers, 11% of glasshouse growers used a robot of any kind, mostly for spraying, and 2.6% planned to invest in robotics. In a 2025 WUR test, GRoW picked half the trusses staff marked ripe; 40% of ripe trusses failed its picking conditions, and in 1.5 hours it stopped twice and needed a person six times.",
+        "eternal.ag has run one robot at Van Noord Growers since September 2025 and planned three for summer 2026. Four Growers reports up to 50% labour savings at Westburg. Each robot does one job, and the crop has to fit the machine.",
+      ],
     },
     {
       id: "the-insight",
       kicker: "The insight",
       title: ["Skill lives", "in the crew"],
       body: [
-        "This work is skilled. Knowing which tomato is ready, which leaf comes off and where the whitefly starts is judgement people build up on the job. That judgement lives in the crew, and the crew is the part growers can no longer hire. When a crew leaves, its know-how leaves with it.",
+        "What these robots get wrong are judgement calls: which truss is ready, which leaf comes off, where the whitefly starts. Crews make those calls all day, from experience built up on the job. That judgement lives in the crew, and the crew is the part growers can no longer hire. When a crew leaves at the end of the season, its know-how leaves with it.",
+      ],
+    },
+    {
+      id: "why-now",
+      kicker: "Why now",
+      corner: {
+        label: "Source: AI Business, Nov 2024",
+        href: "https://aibusiness.com/automation/startup-looks-to-develop-physical-artificial-intelligence-raises-400m",
+      },
+      title: ["Learning", "from people"],
+      body: [
+        "That judgement can now be taught. Robot foundation models learn a new task from recorded demonstrations, and Physical Intelligence alone raised $400 million in 2024 to build them. What these models lack is data from inside working greenhouses, and nobody records it there, because the people with the skill are out on the crop rows.",
       ],
     },
     {
@@ -152,15 +187,8 @@ export const deck: DeckContent = {
       kicker: "How it works",
       title: ["Crews teach", "the robots"],
       body: [
-        "Crews wear capture gear on their normal shifts. For hands-on jobs they hold a tool with the same jaws as our robot, plus a camera, so what they do maps straight onto what the robot can do. For scouting, we track where an experienced scout looks while they say what they see. Each job's recordings train a robot skill on top of an open robot foundation model.",
-      ],
-    },
-    {
-      id: "the-capture-kit",
-      kicker: "The product",
-      title: ["The capture", "kit"],
-      body: [
-        "For picking, deleafing and rehanging, the crew uses a handheld tool with the same soft fin-ray jaws as the robot and a camera looking along them. Every grip, cut and release is recorded from the robot's point of view, so it trains a skill without translation. For scouting, eye-tracking glasses and a microphone record where an experienced scout looks and what they say they see, so the recording labels itself.",
+        "Vinea records crews on their normal shifts, and the work itself doesn't change. For picking, deleafing and rehanging, the crew uses a handheld tool with the same soft fin-ray jaws as the robot and a camera looking along them, so every grip and cut is recorded from the robot's point of view.",
+        "For scouting, eye-tracking glasses and a microphone record where an experienced scout looks and what they say they see, so the recording labels itself. Each job's recordings train a robot skill on top of an open robot foundation model.",
       ],
     },
     {
@@ -168,7 +196,7 @@ export const deck: DeckContent = {
       kicker: "The platform",
       title: ["Modules for", "every job"],
       body: [
-        "Each skill runs on SPINE, a base that rides the heating pipes already in the greenhouse. On top sits the module for the job: BLUSH harvests, SHEAR deleafs, HOIST lowers and rehangs, and RAVEN scouts. A new job means recording the crew doing it and shipping a module, and the greenhouse stays as it is.",
+        "Every skill runs on SPINE, a base that rides the heating pipes already laid between the crop rows. On top sits the module for the job: BLUSH harvests, SHEAR deleafs, HOIST lowers and rehangs, and RAVEN scouts. A new job means recording the crew doing it and shipping a module. The greenhouse stays as it is, and the grower deals with one platform for the whole crew's work.",
       ],
       figure: {
         kind: "modules",
@@ -186,48 +214,9 @@ export const deck: DeckContent = {
       kicker: "The product",
       title: ["How BLUSH", "picks"],
       body: [
-        "A camera above the row finds a ripe tomato within reach and marks it. A robot foundation model, trained on crew recordings, steers the arm to that fruit. Just before the jaws close, a second camera on the gripper checks the colour around the stem and calls off the pick if the fruit isn't ready. The soft fin-ray jaws wrap around the tomato instead of squeezing it.",
+        "BLUSH is the first module. A camera above the row finds a ripe tomato within reach and marks it. The picking model, trained on crew recordings, steers the arm to that fruit. Just before the jaws close, a second camera on the gripper checks the colour around the stem and calls off the pick if the fruit isn't ready. The soft fin-ray jaws wrap around the tomato instead of squeezing it.",
       ],
       figure: { kind: "steps", steps: ["Find", "Steer", "Check", "Wrap"] },
-    },
-    {
-      id: "why-now",
-      kicker: "Why now",
-      corner: {
-        label: "Source: AI Business, Nov 2024",
-        href: "https://aibusiness.com/automation/startup-looks-to-develop-physical-artificial-intelligence-raises-400m",
-      },
-      title: ["Learning", "from people"],
-      body: [
-        "Robot foundation models can now learn a new task from recorded demonstrations, and Physical Intelligence alone raised $400 million in 2024 to build them. What these models lack is data from inside working greenhouses, and nobody is collecting it there. Vinea collects it from the crews who already do the work.",
-      ],
-    },
-    {
-      id: "the-competition",
-      kicker: "The competition",
-      corner: { label: "Sources: press releases" },
-      title: ["Years in.", "Millions in."],
-      body: [],
-      figure: {
-        kind: "table",
-        columns: ["Company", "Since", "Raised"],
-        rows: [
-          ["MetoMotion (GRoW)", "2016", "A $5M round led by Ridder in 2021"],
-          ["SAIA Agrobotics", "2017", "Over €20M. Needs a rebuilt greenhouse"],
-          ["Four Growers", "2018", "$15M, with Y Combinator among the backers"],
-          ["eternal.ag", "2025", "€8M in 2026"],
-          ["Tortuga AgTech", "—", "$50M over eight years, then its assets went to Oishii in 2025"],
-        ],
-      },
-    },
-    {
-      id: "adoption",
-      kicker: "Adoption",
-      corner: { label: "Sources: WUR, trade press" },
-      title: ["Still in", "trials"],
-      body: [
-        "Priva's deleafing robot launched in 2021 with a first production run of 50, for more than 9,000 hectares of Dutch glass. In a WUR test in 2025, GRoW picked half the trusses staff had marked ripe, stopped twice in 90 minutes and needed a hand six times. inaho had five trial places for 2026. A WUR researcher expects five to ten years before robots are the norm.",
-      ],
     },
     {
       id: "progress",
@@ -246,19 +235,41 @@ export const deck: DeckContent = {
       ],
     },
     {
-      id: "where-it-goes",
-      kicker: "Where it goes",
+      id: "the-expansion-plan",
+      kicker: "The expansion plan",
       corner: {
-        label: "Source: RaboResearch, 2025",
+        label: "Sources: CBS, RaboResearch, 2025",
         href: "https://topsectortu.nl/wp-content/uploads/2025/03/RaboResearch_Global-greenhouse-update_2025.pdf",
       },
-      title: ["Every crop", "under glass"],
+      title: ["Dutch glass", "first"],
       body: [
-        "The world has about 70,000 hectares of high-tech greenhouses. About half of them are in Europe, and half of that area grows tomatoes. We start with tomatoes in Dutch greenhouses, then add peppers and cucumbers on the same pipe rails. Dutch builders put up glasshouses all over the world, so from there we follow the Dutch greenhouse until any crop under glass can run on SPINE.",
+        "We start where the crop, the pipe rails and the crews are the same, and widen from there. Dutch tomatoes cover 1,767 hectares, over half of it farmed by the ten largest growers. Dutch peppers and cucumbers add another 2,213 hectares on the same pipe rails.",
+        "Europe has 33,637 hectares of high-tech greenhouses, about half of the world's 70,000. Dutch builders put up glasshouses everywhere, and SPINE follows the ones with pipe rails.",
       ],
       figure: {
         kind: "steps",
-        steps: ["Tomatoes, Netherlands", "Peppers and cucumbers", "Across Europe", "Any crop under glass"],
+        steps: ["Dutch tomatoes", "Dutch peppers and cucumbers", "Europe", "The world"],
+      },
+    },
+    {
+      id: "the-market",
+      kicker: "The market",
+      corner: {
+        label: "Sources: RaboResearch, CBS",
+        href: "https://topsectortu.nl/wp-content/uploads/2025/03/RaboResearch_Global-greenhouse-update_2025.pdf",
+      },
+      title: ["World vs", "Netherlands"],
+      body: [
+        "Harvesting alone costs a Westland grower €5 per m², or €50,000 per hectare a year. The world has 3.72 million hectares of greenhouses of every kind. Deleafing, lowering and scouting come on top: in tomatoes, harvesting is under a third of the hours.",
+      ],
+      figure: {
+        kind: "table",
+        columns: ["Market", "Area", "Harvesting, per year"],
+        rows: [
+          ["TAM · World, high-tech glass", "About 70,000 ha", "€3.5 billion at Dutch cost"],
+          ["SAM · Dutch tomatoes, peppers, cucumbers", "3,980 ha", "€199 million"],
+          ["SOM · The ten largest Dutch tomato growers", "More than 880 ha", "Over €44 million"],
+        ],
       },
     },
     {
