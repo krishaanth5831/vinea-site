@@ -71,7 +71,11 @@ function SlideCard({ slide, index }: { slide: Slide; index: number }) {
         </h2>
       )}
 
-      <div className={`slide-foot ${slide.figure && hasBody ? "has-figure" : ""}`}>
+      <div
+        className={`slide-foot ${slide.figure && hasBody ? "has-figure" : ""} ${
+          slide.figure?.kind === "table" ? "has-table" : ""
+        }`}
+      >
         {hasBody ? (
         <div className="slide-body">
           {slide.body.map((paragraph) => (
