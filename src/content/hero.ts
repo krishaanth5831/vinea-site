@@ -1,23 +1,20 @@
 import type { HeroContent } from "./types";
+import { BOOK_A_CALL } from "./site";
 
 export const hero: HeroContent = {
-  eyebrow: "Back to square one",
+  eyebrow: "Greenhouse robotics",
 
-  heading: ["Growers liked it.", "Nobody needed it."],
+  heading: ["Greenhouse robots,", "taught by the crew."],
 
   lead:
-    "I pitched a glasshouse robot and walked out with polite yeses. Want, not need. So I stopped describing the robot and started over.",
+    "Vinea records how greenhouse crews do their work, turns it into robot skills, and runs them on one platform inside the greenhouses growers already have.",
 
   ctas: [
-    {
-      label: "Book a call",
-      href: "mailto:krishaanth@getvinea.nl?subject=Talking%20about%20glasshouse%20work",
-      tone: "primary",
-    },
-    { label: "What went wrong", href: "#why", tone: "secondary" },
+    { label: "Book a call", href: BOOK_A_CALL, tone: "primary" },
+    { label: "How it works", href: "#how", tone: "secondary" },
   ],
 
-  note: "Where it's heading",
+  note: "Also here",
   noteLinks: [
     { label: "Read the deck", href: "/deck" },
     { label: "Run your numbers", href: "/roi" },

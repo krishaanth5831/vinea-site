@@ -1,3 +1,4 @@
+import { EMAIL } from "./site";
 import type { Provenance, RoiContent } from "./types";
 
 const WUR = "https://edepot.wur.nl/176513" as const;
@@ -145,7 +146,7 @@ export const roi: RoiContent = {
     legendWithVinea: "With Vinea",
     yearLabel: "Year",
     crossCheck:
-      "Harvesting comes to {value} per m² a year here. One Westland tomato grower told us theirs costs €5.",
+      "Harvesting comes to {value} per m² a year here. One Westland tomato grower told me theirs costs €5.",
     rentNote: "Rent covers SPINE, the modules and their service.",
   },
 
@@ -206,9 +207,9 @@ export const roi: RoiContent = {
     submit: "Save estimate",
     sending: "Saving",
     done: "Saved. Thank you.",
-    doneWithEmail: "Saved. I'll reply from krishaanth@getvinea.nl.",
-    error: "That didn't save. Try again, or email krishaanth@getvinea.nl.",
+    doneWithEmail: `Saved. I'll reply from ${EMAIL}.`,
+    error: `That didn't save. Try again, or email ${EMAIL}.`,
     privacy:
-      "Nothing is stored until you press save: no cookies, no tracking. Vinea keeps what you enter to learn what greenhouses need, and to reply if you asked. Email krishaanth@getvinea.nl to have it deleted.",
+      `Nothing is stored until you press save: no cookies, no tracking. Vinea keeps what you enter to learn what greenhouses need, and to reply if you asked. Email ${EMAIL} to have it deleted.`,
   },
 };

@@ -9,6 +9,10 @@
  * are marked `data-numbers` in the markup and are cut out before checking,
  * so the rule still binds every other line of every page, including the
  * opening prose of /deck and /roi.
+ *
+ * Email addresses are cut out before any check: the contact address holds
+ * digits, and an address is not a figure. Only text shaped like an address
+ * is cut, so a digit anywhere else still fails.
  */
 import { readFileSync } from "node:fs";
 
@@ -28,6 +32,8 @@ function decode(text) {
     .replace(/&gt;/g, ">")
     .replace(/&nbsp;/g, " ");
 }
+
+const EMAIL = /[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g;
 
 const VOID = new Set(["area", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track", "wbr"]);
 
@@ -87,7 +93,7 @@ function linesOf(raw) {
     .replace(/<[^>]+>/g, "\n");
 
   return [...decode(visible).split("\n"), ...spoken]
-    .map((line) => line.trim())
+    .map((line) => line.replace(EMAIL, "<email>").trim())
     .filter(Boolean);
 }
 

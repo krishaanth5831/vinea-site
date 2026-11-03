@@ -16,7 +16,8 @@
  *
  * Every page is scanned. Digits are allowed only inside regions marked
  * `data-numbers` (the deck's slides and the ROI calculator); everywhere else
- * a single digit fails the page.
+ * a single digit fails the page. Email addresses are cut out first: the
+ * contact address holds digits, and it is an address, not a figure.
  *
  *   npm run build && npm start &   # or any running server
  *   npm run check:responsive -- http://localhost:3000
@@ -85,7 +86,9 @@ async function scan(route, width, height, label, settleMs, reducedMotion = false
       .filter((e) => !e.closest("[data-numbers]"))
       .map((e) => e.getAttribute("aria-label") ?? e.getAttribute("alt") ?? e.getAttribute("title") ?? "")
       .join(" ");
-    const digits = `${body.innerText ?? ""} ${spoken}`.match(/\d/g);
+    const digits = `${body.innerText ?? ""} ${spoken}`
+      .replace(/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g, " ")
+      .match(/\d/g);
     return {
       reveals: revealed.length,
       hidden: revealed.filter((e) => parseFloat(getComputedStyle(e).opacity) < 0.95).length,

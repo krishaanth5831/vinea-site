@@ -367,3 +367,65 @@ scoped to a class it sets, so they no longer cancel the page transition.
 **The footer's LinkedIn link is fixed.** It was a guess built from the name;
 it now points at the profile behind the deck's QR code.
 
+
+
+## The status rebuild (2026-11-03)
+
+The home page no longer tells the "back to square one" story. That story,
+and its one question ("what automation have you already been shown, and why
+didn't you buy it?"), date from late September. Since then the grower
+meetings replaced blank-slate questions with hypotheses, and they moved the
+bar: growers compare a robot with a person, not with other robots. The page
+now says what Vinea is, how it works, the modules and how far along each
+is, where Vinea stands, and a roadmap.
+
+**Order:** story (why Vinea) → the bar → why growers haven't bought → how it
+works → modules → where it stands → roadmap → talk. The Story stage, its
+timeline and the closing rebuild of the mark are unchanged; only the beats
+changed.
+
+**"Too narrow" became "Too fixed".** The meetings disproved "one robot per
+job" as the real objection, so that card went. It's replaced by the finding
+that agency crews can be scaled to the busy weeks and let go, and a bought
+robot can't. That's why Vinea is rented. Its idle-column drawing already
+showed that, so the drawing stays.
+
+**Where it stands.** Traction is stated as it is, including what hasn't
+happened: no letter of intent signed, nothing run in a working greenhouse.
+No counts (meetings, episodes) and no grower names. Naming a grower needs
+their permission. No cofounder line: outward, Vinea is presented as a solo
+founder. No data-licensing line, by the narrative's own rule.
+
+**Module stages** are three words: in simulation, designed, not started.
+Only BLUSH and SHEAR are "in simulation". HOIST is designed in CAD. RAVEN
+and SPINE haven't started, and SPINE comes last by the founder's decision.
+
+### The email address
+
+The getvinea.nl mailbox stopped receiving mail on 2026-11-03, so every link
+now goes to the founder's gmail. The address is defined once (`EMAIL` in
+`site.ts`), and every mailto link is built from it. It holds digits, so both
+copy checks cut out email-shaped text before the digit check. Only text
+shaped like an address is cut, and a digit anywhere else still fails. This
+was chosen over wrapping the address in `data-numbers`, which stays meant
+for figures. `public/vinea-deck.pdf` has to be reprinted with
+`npm run export:deck` to pick up the new address.
+
+### The deck, corrected
+
+`/deck` was corrected on the site and no longer matches the Canva v6 Send
+word for word:
+- **How it works:** the capture tool no longer claims "the same soft fin-ray
+  jaws" for deleafing and rehanging. SHEAR uses rigid jaws with a blade, and
+  HOIST has no fin-ray. The founder called that line a mistake on
+  2026-10-27.
+- **How BLUSH harvests:** whole trusses rather than single cherry tomatoes.
+  The truss is ready when its tip fruit is colouring and most of the rest
+  are ripe. A blade at the fingertips cuts the stalk and pads hold it. The
+  steps are Find, Steer, Cut, Hold.
+- **Progress:** rewritten to match the bench and the simulation as they are.
+- **Competition:** Polybot added, as "backed by SPRIND". Sources give
+  different amounts (a validation grant, and close to a million), so the
+  slide gives none.
+- "told us" became "told me" and "We start" became "Vinea starts", for the
+  solo framing.

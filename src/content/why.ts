@@ -2,11 +2,11 @@ import type { WhyContent } from "./types";
 
 export const why: WhyContent = {
   id: "why",
-  eyebrow: "What went wrong",
+  eyebrow: "Why Vinea",
 
   beats: [
-    "Every grower said yes to my robot.",
-    "It was politeness, not pain.",
-    "So I stopped pitching. Back to square one.",
+    "Greenhouses still run on hands.",
+    "The hands get harder to hire every season.",
+    "So Vinea learns the work from the crews.",
   ],
 };

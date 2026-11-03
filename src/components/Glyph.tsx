@@ -10,8 +10,8 @@ import { S } from "./Mark";
 /*
  * A small drawing for each refusal, in the mark's own cells. Each one ships
  * showing its point at rest — the cut vine, the gap between runners, the one
- * busy column, the machine stalled mid-row — and plays as a loop while it is
- * on screen.
+ * busy column of the season, the machine stalled mid-row — and plays as a
+ * loop while it is on screen.
  */
 
 type Cell = [c: number, r: number];
@@ -71,8 +71,8 @@ function Slow() {
   );
 }
 
-/** Too narrow: one column of the year is busy, and the rest sits idle. */
-function Narrow() {
+/** Too fixed: a crew is sized to the busy weeks; a bought machine sits idle the rest. */
+function Fixed() {
   const year: Cell[] = range(0, 6).flatMap((c) => range(1, 5).map((r) => [c, r] as Cell));
   return (
     <>
@@ -101,7 +101,7 @@ function Risky() {
   );
 }
 
-const DRAWINGS = [Rough, Slow, Narrow, Risky];
+const DRAWINGS = [Rough, Slow, Fixed, Risky];
 
 /** Each loop, built against the drawing's own cells. */
 function loop(svg: SVGSVGElement, kind: number) {

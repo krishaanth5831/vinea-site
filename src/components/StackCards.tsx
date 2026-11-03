@@ -9,7 +9,7 @@ import { useIsomorphicLayoutEffect } from "@/lib/useIsomorphicLayoutEffect";
 import { Glyph } from "./Glyph";
 
 /**
- * The refusals as a stack. Each card holds under the header while the next
+ * What growers told me, as a stack. Each card holds under the header while the next
  * slides up over it, and the one underneath settles back and dims.
  */
 export function StackCards({ findings }: { findings: Finding[] }) {
