@@ -25,8 +25,8 @@ export const status: StatusContent = {
       title: "On the bench",
       items: [
         "A desktop robot arm, with a camera model that tells ripe from unripe tomatoes live, on real fruit.",
-        "A simulated greenhouse row where the arm harvests whole trusses and cuts old leaves, on routes planned around everything it mustn't touch.",
-        "Harvest training data generated in that simulation, published openly.",
+        "A simulated greenhouse row where the arm cuts old leaves on routes planned around everything it mustn't touch.",
+        "Harvest training data from an earlier, single-tomato version of the simulation, published openly. Harvesting is now moving to whole trusses.",
         "A design for the lowering module, and a plan for the crews' capture tool.",
         "Nothing has run in a working greenhouse yet.",
       ],

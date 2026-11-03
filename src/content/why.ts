@@ -7,6 +7,6 @@ export const why: WhyContent = {
   beats: [
     "Greenhouses still run on hands.",
     "The hands get harder to hire every season.",
-    "So Vinea teaches robots the work, from the crews who do it.",
+    "So Vinea learns the work from the crews.",
   ],
 };

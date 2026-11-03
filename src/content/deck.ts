@@ -228,7 +228,7 @@ export const deck: DeckContent = {
       kicker: "Progress",
       title: ["From sim", "to real"],
       body: [
-        "On the bench, a robot arm runs a camera model that tells ripe from unripe tomatoes live, on real fruit. In simulation, the arm harvests whole trusses and cuts old leaves in a greenhouse row, and the harvest training data is published openly. Next: train those skills, run them on real plants, and build the capture tool crews will use. Today the demonstrations come from simulation; at scale, crews record them as they work.",
+        "On the bench, a robot arm runs a camera model that tells ripe from unripe tomatoes live, on real fruit. In simulation, the arm cuts old leaves in a greenhouse row, harvest training data from an earlier single-tomato version is published openly, and harvesting is moving to whole trusses. Next: train those skills, run them on real plants, and build the capture tool crews will use. Today the demonstrations come from simulation; at scale, crews record them as they work.",
       ],
     },
     {

@@ -13,7 +13,7 @@ export const heard: HeardContent = {
     },
     {
       title: "Too slow",
-      body: "A person still picks many times faster than any robot they've seen. That's the comparison they make, not robot against robot.",
+      body: "A person still picks many times faster than the robots on the market today. That's the comparison they make, not robot against robot.",
     },
     {
       title: "Too fixed",
