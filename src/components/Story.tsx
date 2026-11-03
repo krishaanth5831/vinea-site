@@ -44,7 +44,7 @@ function scatter() {
 }
 
 /**
- * The hero and the pivot, on one sticky stage.
+ * The hero and why Vinea exists, on one sticky stage.
  *
  * The reader scrolls: the hero steps back, the mark takes the middle, comes
  * apart while the story is told in three beats, and collapses into the empty
@@ -179,14 +179,14 @@ export function Story() {
       /* autoAlpha, not opacity: the hidden buttons must stop taking taps and focus. */
       tl.to(heroCopy, { y: -90, autoAlpha: 0, duration: 1, ease: "power2.in" }, 0);
 
-      /* Beat one: the polite yes. The mark is whole. */
+      /* Beat one: greenhouses run on hands. The mark is whole. */
       tl.fromTo(label, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5 }, 1);
       tl.fromTo(tickRow, { opacity: 0 }, { opacity: 1, duration: 0.5 }, 1);
       tl.fromTo(beats[0], { opacity: 0, y: 36 }, { opacity: 1, y: 0, duration: 0.6 }, 1.1);
       tl.to(ticks[0], { opacity: 1, duration: 0.2 }, 1.1);
       tl.to(beats[0], { opacity: 0, y: -36, duration: 0.5 }, 2.6);
 
-      /* Beat two: it was politeness. The mark comes apart. */
+      /* Beat two: the hands are leaving. The mark comes apart. */
       cells.forEach((cell, i) => {
         tl.to(
           cell,
@@ -206,7 +206,10 @@ export function Story() {
       tl.to(ticks[1], { opacity: 1, duration: 0.2 }, 3);
       tl.to(beats[1], { opacity: 0, y: -36, duration: 0.5 }, 4.7);
 
-      /* Beat three: back to square one. Every cell falls into the centre. */
+      /*
+       * Beat three: teach the robots. Every cell falls into the centre; the
+       * mark grows back from that cell at the end of the page.
+       */
       cells.forEach((cell) => {
         const c = Number(cell.dataset.c);
         const r = Number(cell.dataset.r);
@@ -243,7 +246,7 @@ export function Story() {
 
   return (
     <section ref={root} aria-labelledby="hero-heading" className="story relative">
-      {/* Where "What went wrong" lands: the first beat, fully in view. */}
+      {/* Where a link to the story lands: the first beat, fully in view. */}
       <span id={why.id} aria-hidden="true" className="story-anchor" />
 
       <div className="story-stage">

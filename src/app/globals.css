@@ -287,7 +287,7 @@ body {
 /* ---- the story -------------------------------------------------------- */
 
 /*
- * The hero and the pivot share one sticky stage: the reader scrolls, the
+ * The hero and the story share one sticky stage: the reader scrolls, the
  * hero steps back, and the mark comes apart and collapses to square one.
  *
  * That only happens with JavaScript, with motion allowed, and on a screen

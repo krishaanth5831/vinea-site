@@ -51,20 +51,28 @@ their own sentences, so text can be changed in one place without touching JSX.
 
 | File          | What it holds                                              |
 | ------------- | ---------------------------------------------------------- |
-| `site.ts`     | Name, meta title and description, nav labels, footer links |
-| `hero.ts`     | Heading, lead, calls to action, the honesty line           |
+| `site.ts`     | Name, meta, nav, footer, and the contact address (`EMAIL`) |
+| `hero.ts`     | Heading, lead and calls to action                          |
 | `why.ts`      | The three beats told while the mark comes apart            |
-| `question.ts` | The one question, and why the refusals matter              |
-| `heard.ts`    | The refusals so far                                        |
+| `question.ts` | The bar: a robot has to beat the person doing the job      |
+| `heard.ts`    | Why growers haven't bought a robot (four cards)            |
+| `how.ts`      | Capture, train, run, learn                                 |
+| `modules.ts`  | SPINE and the four modules, each with its stage            |
+| `status.ts`   | Where Vinea stands: with growers, and on the bench         |
+| `roadmap.ts`  | Now, next, then, later; `current` marks today's stage      |
 | `talk.ts`     | The closing ask and its two buttons                        |
 | `deck.ts`     | The pitch deck, slide by slide, with sources and drawings  |
 | `roi.ts`      | Every label, help line and source on the calculator        |
 | `types.ts`    | The shape of all of the above                              |
 
+Every mailto link is built from `EMAIL` in `site.ts`; change the address
+there and nowhere else. When a module or the roadmap moves on, edit its
+`stage` in `modules.ts` or move `current` in `roadmap.ts`.
+
 The calculator's defaults and arithmetic are in `src/lib/roi.ts`, not in
 `/content`, because the save route runs the same model on the server.
 
-Keep it short. The page is meant to be read in under a minute.
+Keep it short. Every line on the home page should still be true next week.
 
 Editing a string in any of those files changes the page. TypeScript will
 reject a missing or misshapen field at build time.

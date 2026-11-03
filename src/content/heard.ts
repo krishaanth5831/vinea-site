@@ -1,29 +1,29 @@
 import type { HeardContent } from "./types";
 
 export const heard: HeardContent = {
-  id: "refusals",
-  eyebrow: "The refusals so far",
-  heading: "Why growers didn't buy.",
-  lead: "Each one is something today's machines can't do yet.",
+  id: "heard",
+  eyebrow: "What growers told me",
+  heading: "Why they haven't bought a robot.",
+  lead: "Every one of these is a bar Vinea has to clear.",
 
   findings: [
     {
       title: "Too rough",
-      body: "It cut the vine instead of the stem, and fruit fell off the truss on the way to the crate.",
+      body: "Rubber grippers knock fruit off the truss. A good picker cuts the stalk flush at the stem, with lots of small corrections on the way.",
     },
     {
       title: "Too slow",
-      body: "It moved down the row slower than a person does.",
+      body: "A person still picks many times faster than any robot they've seen. That's the comparison they make, not robot against robot.",
     },
     {
-      title: "Too narrow",
-      body: "It did a single job, then stood idle the rest of the year.",
+      title: "Too fixed",
+      body: "An agency crew can be scaled up for the busy weeks and let go the week after. A robot they buy is a commitment for years, busy or idle.",
     },
     {
       title: "Too risky",
-      body: "They'd paid for machines that didn't deliver before. And when one stops mid-row, who fixes it?",
+      body: "They've paid for machines that didn't deliver. And when one stops mid-row, who fixes it?",
     },
   ],
 
-  note: "Early notes. Not the answer yet.",
+  note: "From grower meetings and Dutch trade press. Still learning.",
 };

@@ -1,7 +1,5 @@
 import type { DeckContent } from "./types";
-
-const BOOK_A_CALL =
-  "mailto:krishaanth@getvinea.nl?subject=Talking%20about%20glasshouse%20work" as const;
+import { BOOK_A_CALL } from "./site";
 
 const LINKEDIN = "https://www.linkedin.com/in/krishaanth-ramaraj-230046282" as const;
 
@@ -12,9 +10,15 @@ const LINKEDIN = "https://www.linkedin.com/in/krishaanth-ramaraj-230046282" as c
  * - the data-licensing paragraph is cut from the business model (investors
  *   only, by the narrative's own rule);
  * - the line about eternal.ag's founder's earlier company is cut;
- * - the thank-you slide carries the getvinea.nl address, not a gmail one;
+ * - the contact links use the address in site.ts (the founder's gmail since
+ *   2026-11-03, because the getvinea.nl inbox stopped receiving mail);
  * - the WUR shares say what they are shares *of*: the six main crop jobs,
  *   not every hour on the farm.
+ *
+ * Corrected on the site on 2026-11-03, so it no longer matches the Canva v6
+ * Send word for word: the capture tool no longer claims fin-ray jaws for
+ * every job, BLUSH harvests whole trusses, the progress slide is current,
+ * and Polybot is in the competition table.
  *
  * Figures are allowed here, and only here and on /roi. Each slide that has
  * one names its source. See DECISIONS.md, "The deck and the calculator".
@@ -83,7 +87,7 @@ export const deck: DeckContent = {
       },
       title: ["A third of", "the bill"],
       body: [
-        "In 2021 the average Dutch greenhouse vegetable farm paid almost €975,000 in wages, out of almost €2.9 million in total costs. One Westland tomato grower told us that harvesting alone costs €5 per m² every year. Since then, costs have risen faster than what growers earn.",
+        "In 2021 the average Dutch greenhouse vegetable farm paid almost €975,000 in wages, out of almost €2.9 million in total costs. One Westland tomato grower told me that harvesting alone costs €5 per m² every year. Since then, costs have risen faster than what growers earn.",
       ],
       figure: {
         kind: "cells",
@@ -145,6 +149,7 @@ export const deck: DeckContent = {
           ["SAIA Agrobotics", "2017", "Over €20M. The greenhouse is rebuilt around a fixed robot"],
           ["Four Growers", "2018", "$15M, with Y Combinator among the backers"],
           ["eternal.ag", "2025", "€8M in 2026"],
+          ["Polybot", "2025", "Backed by SPRIND. Learns truss harvesting from human demonstrations"],
           ["Tortuga AgTech", "—", "$50M over eight years, then its assets went to Oishii in 2025"],
         ],
       },
@@ -187,7 +192,7 @@ export const deck: DeckContent = {
       kicker: "How it works",
       title: ["Crews teach", "the robots"],
       body: [
-        "Vinea records crews on their normal shifts, and the work itself doesn't change. For picking, deleafing and rehanging, the crew uses a handheld tool with the same soft fin-ray jaws as the robot and a camera looking along them, so every grip and cut is recorded from the robot's point of view.",
+        "Vinea records crews on their normal shifts, and the work itself doesn't change. For harvesting and deleafing, the crew uses a handheld tool shaped like the robot's gripper, with a camera looking along it, so every cut is recorded from the robot's point of view.",
         "For scouting, eye-tracking glasses and a microphone record where an experienced scout looks and what they say they see, so the recording labels itself. Each job's recordings train a robot skill on top of an open robot foundation model.",
       ],
     },
@@ -212,18 +217,18 @@ export const deck: DeckContent = {
     {
       id: "how-blush-picks",
       kicker: "The product",
-      title: ["How BLUSH", "picks"],
+      title: ["How BLUSH", "harvests"],
       body: [
-        "BLUSH is the first module. A camera above the row finds a ripe tomato within reach and marks it. The picking model, trained on crew recordings, steers the arm to that fruit. Just before the jaws close, a second camera on the gripper checks the colour around the stem and calls off the pick if the fruit isn't ready. The soft fin-ray jaws wrap around the tomato instead of squeezing it.",
+        "BLUSH is the first module, and it harvests whole trusses. A camera facing the row finds a truss that's ready by the grower's own rule: the fruit at the tip has started to colour and most of the rest are ripe. The harvesting model, trained on crew recordings, steers the arm to the stalk through the crowded crop. One close of the fingers cuts the stalk flush with a blade at the tips, and pads keep holding the truss on its way to the crate.",
       ],
-      figure: { kind: "steps", steps: ["Find", "Steer", "Check", "Wrap"] },
+      figure: { kind: "steps", steps: ["Find", "Steer", "Cut", "Hold"] },
     },
     {
       id: "progress",
       kicker: "Progress",
       title: ["From sim", "to real"],
       body: [
-        "I built a simulation where a robot harvests a whole greenhouse. Now it's becoming real: a robot arm learns from demonstrations I record, and a camera model tells ripe from unripe tomatoes live, on real fruit. Next come ripeness checks on the gripper and a test greenhouse where the arm picks cherry tomatoes. Today I teach the arm by hand; at scale, crews teach it as they work.",
+        "On the bench, a robot arm runs a camera model that tells ripe from unripe tomatoes live, on real fruit. In simulation, the arm harvests whole trusses and cuts old leaves in a greenhouse row, and the harvest training data is published openly. Next: train those skills, run them on real plants, and build the capture tool crews will use. Today the demonstrations come from simulation; at scale, crews record them as they work.",
       ],
     },
     {
@@ -243,7 +248,7 @@ export const deck: DeckContent = {
       },
       title: ["Dutch glass", "first"],
       body: [
-        "We start where the crop, the pipe rails and the crews are the same, and widen from there. Dutch tomatoes cover 1,767 hectares, over half of it farmed by the ten largest growers. Dutch peppers and cucumbers add another 2,213 hectares on the same pipe rails.",
+        "Vinea starts where the crop, the pipe rails and the crews are the same, and widen from there. Dutch tomatoes cover 1,767 hectares, over half of it farmed by the ten largest growers. Dutch peppers and cucumbers add another 2,213 hectares on the same pipe rails.",
         "Europe has 33,637 hectares of high-tech greenhouses, about half of the world's 70,000. Dutch builders put up glasshouses everywhere, and SPINE follows the ones with pipe rails.",
       ],
       figure: {

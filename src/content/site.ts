@@ -1,15 +1,28 @@
 import type { SiteContent } from "./types";
 
-const BOOK_A_CALL =
-  "mailto:krishaanth@getvinea.nl?subject=Talking%20about%20glasshouse%20work" as const;
+/*
+ * The one address on the site. Every mailto link is built from it, so it
+ * can't drift between pages again. It's the founder's personal inbox,
+ * because the getvinea.nl mailbox stopped receiving mail (2026-11-03).
+ *
+ * It holds digits, so the copy checks exempt email-shaped text from the
+ * digit rule; see DECISIONS.md, "The email address".
+ */
+export const EMAIL = "krishaanth2007@gmail.com" as const;
+
+export const mailto = (subject: string) =>
+  `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}` as const;
+
+export const BOOK_A_CALL = mailto("Talking about greenhouse work");
+export const INVESTOR_HELLO = mailto("Vinea — investor question");
 
 export const site: SiteContent = {
   name: "Vinea",
-  metaTitle: "Vinea — back to square one",
+  metaTitle: "Vinea — greenhouse robots taught by the crew",
   metaDescription:
-    "I pitched a glasshouse robot and got polite yeses. Now I ask growers one thing: what automation have you already been shown, and why didn't you buy it?",
+    "Vinea turns the way greenhouse crews work into robot skills, and runs them on one platform inside the greenhouses growers already have. How it works, where it stands, and what comes next.",
   url: "https://getvinea.nl",
-  email: "krishaanth@getvinea.nl",
+  email: EMAIL,
   location: "Westland, Netherlands",
   person: "Krishaanth Ramaraj",
 
@@ -18,9 +31,9 @@ export const site: SiteContent = {
    * still catches them as same-page anchors and glides there.
    */
   nav: [
-    { label: "What went wrong", href: "/#why" },
-    { label: "The question", href: "/#question" },
-    { label: "Refusals", href: "/#refusals" },
+    { label: "How it works", href: "/#how" },
+    { label: "Where it stands", href: "/#now" },
+    { label: "Roadmap", href: "/#roadmap" },
     { label: "The deck", href: "/deck" },
     { label: "ROI calculator", href: "/roi" },
   ],

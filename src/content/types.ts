@@ -61,9 +61,71 @@ export type WhyContent = {
 export type QuestionContent = {
   id: string;
   eyebrow: string;
-  /** The one question every call now turns on. */
+  /** One line, typed out as the thread reaches it: the bar Vinea builds against. */
   question: string;
   body: string;
+};
+
+export type HowStep = {
+  /** One word, in the pixel face. */
+  label: string;
+  title: string;
+  body: string;
+};
+
+export type HowContent = {
+  id: string;
+  eyebrow: string;
+  heading: string;
+  lead: string;
+  /** Exactly four, in order: the strip of cells on each card lights its own. */
+  steps: [HowStep, HowStep, HowStep, HowStep];
+};
+
+export type ModuleStage = "sim" | "design" | "idea";
+
+export type ModuleItem = {
+  name: string;
+  job: string;
+  body: string;
+  stage: ModuleStage;
+};
+
+export type ModulesContent = {
+  id: string;
+  eyebrow: string;
+  heading: string;
+  lead: string;
+  /** How each stage reads on the page. */
+  stages: Record<ModuleStage, string>;
+  items: ModuleItem[];
+};
+
+export type StatusContent = {
+  id: string;
+  eyebrow: string;
+  heading: string;
+  lead: string;
+  columns: [
+    { title: string; items: string[] },
+    { title: string; items: string[] },
+  ];
+  links: { label: string; href: `https://${string}` }[];
+};
+
+export type RoadmapStage = {
+  label: string;
+  title: string;
+  items: string[];
+  /** The stage Vinea is in today. Exactly one should carry it. */
+  current?: boolean;
+};
+
+export type RoadmapContent = {
+  id: string;
+  eyebrow: string;
+  heading: string;
+  stages: RoadmapStage[];
 };
 
 export type Finding = {

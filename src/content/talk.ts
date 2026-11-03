@@ -1,21 +1,14 @@
 import type { TalkContent } from "./types";
+import { BOOK_A_CALL, INVESTOR_HELLO } from "./site";
 
 export const talk: TalkContent = {
   id: "talk",
   eyebrow: "Talk to me",
-  heading: ["Shown a machine you didn't buy?", "Tell me why."],
-  lead: "I don't have the answer yet. The next weeks are calls, notes, and growers telling me what I got wrong.",
+  heading: ["Grow under glass?", "Let's talk."],
+  lead: "I'm looking for growers who will put a robot up against their own crew, and for engineers who have kept machines running in a greenhouse every day.",
 
   ctas: [
-    {
-      label: "Book a call",
-      href: "mailto:krishaanth@getvinea.nl?subject=Talking%20about%20glasshouse%20work",
-      tone: "primary",
-    },
-    {
-      label: "Investor? Say hello",
-      href: "mailto:krishaanth@getvinea.nl?subject=Vinea%20%E2%80%94%20investor%20question",
-      tone: "secondary",
-    },
+    { label: "Book a call", href: BOOK_A_CALL, tone: "primary" },
+    { label: "Investor? Say hello", href: INVESTOR_HELLO, tone: "secondary" },
   ],
 };
