@@ -109,6 +109,8 @@ which landed in the same commit as the files.
 in a manual. Line art is the stronger idea here and photography is the
 optional one; if the two had fought, the photographs would have gone.
 
+*Superseded by the night shift below — the picture of the robot is a pinned stage.*
+
 **No pinned or hijacked scrolling.** A pinned horizontal sequence was the
 obvious thing to build with ScrollTrigger and the thing most likely to break at
 phone width. The scroll-driven motion that survived is a marker travelling a
@@ -186,6 +188,8 @@ the robot; it was politeness, not pain; so the pitching stopped. Every call
 now turns on one question — what automation have you already been shown, and
 why didn't you buy it? — and the refusals so far are the findings. "I", not
 "we", because it is one person making the calls.
+
+*Superseded by the night shift below — the mark's story and the thread are gone.*
 
 **One through-line instead of many effects.** The mark comes apart and
 collapses into the empty cell at its own centre — square one. A thread falls
@@ -429,3 +433,65 @@ word for word:
   slide gives none.
 - "told us" became "told me" and "We start" became "Vinea starts", for the
   solo framing.
+
+## The night shift (2026-11-14)
+
+The owner asked for the black-and-white, text-only look to go: colour,
+pictures, stronger motion, a home page that says what Vinea is, and a roadmap
+that reads as one. This section replaces "black and white only", "no
+photographs" and "no pinned scrolling" above.
+
+**The finding that set the direction.** Twenty-odd robotics and farm sites
+were captured and compared. The good ones are not colourful: a quiet dark or
+pale ground, one accent, and a lot of pictures. So the change is a coloured
+ground, one accent and pictures, not many colours.
+
+**Palette: night shift.** A green-black ground and the pink-violet of LED
+grow lights as the one accent. Orange was ruled out because most greenhouse
+and farm robot sites already use it. The accent is kept for the one action,
+the place Vinea is on the roadmap, and the part of a picture being talked
+about.
+
+**Grower first.** The home page is written for a grower: the job and the
+place in the headline, the how in the line under it. "Physical AI" stays in
+the deck. The order is what it is → the jobs → how it learns → objections →
+where it stands → roadmap → the ask. The mark's scroll story, the thread and
+"the bar" section were removed; the Wageningen trial line went with them.
+
+**No footage in the hero, and no simulation frames anywhere.** The owner's
+call: simulated footage of the product looks poor. The hero shows the empty
+aisle, the part that already exists.
+
+**Concept renders, labelled.** The pictures of the robot are rendered in
+Blender from a script in `scripts/blender/`. The robot has not been built at
+full size, so every render carries a "Concept render" label. The site's own
+rule about not overstating traction applies to pictures too.
+
+**A module is the whole arm.** The render shows a base with one module on it
+and no spare tools on the deck, because the modules swap at the end of the
+path, as the simulation's whole-greenhouse demo has it.
+
+**The capture device is not named.** It isn't chosen. The copy says what it
+does ("a small capture device records how they reach, cut and hold") and the
+drawings show a reach as a line of light, which commits to no device.
+
+**Antler is a residency.** The page says Vinea is being built "in Antler's
+residency". It is not called backing or funding, because there is none until
+Antler's investment committee decides.
+
+**No dates, still.** The roadmap says when in words (this autumn, this
+winter, next season), since the no-digits rule stands.
+
+**Objections get answers.** "What growers told me" used to list why growers
+haven't bought a robot and stop. Each now carries what Vinea does about it,
+worded as the plan it is.
+
+**Corrected claims.** "Published openly" (the harvest data is no longer
+public), "on top of an open robot foundation model" (today's training is a
+smaller model taught by a scripted teacher in simulation) and the handheld
+capture tool were taken out of the home page and the deck text.
+
+**Left open.** The deck PDF has not been reprinted with the corrected text.
+There is no founder photo and no booking link yet; both were suggested. The
+getvinea.nl mailbox is still broken, so mail still goes to the founder's
+personal address.

@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { PointerGlow } from "@/components/PointerGlow";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { site } from "@/content";
 import { CHROME, THEME_KEY } from "@/lib/theme";
@@ -83,6 +84,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: themeScript }}
         />
         <SmoothScroll />
+        <PointerGlow />
 
         <a
           href="#main"

@@ -38,9 +38,11 @@ export type SiteContent = {
 };
 
 export type HeroContent = {
-  eyebrow: string;
-  /** Two lines, set large. */
-  heading: [string, string];
+  /** The line above the headline: where Vinea is today, said plainly. */
+  status: string;
+  /** A line each, set large. `accent` is the phrase in them that is lit. */
+  heading: string[];
+  accent: string;
   lead: string;
   ctas: [Cta, Cta];
   /** A short lead-in, then the two pages that say where Vinea is going. */
@@ -48,57 +50,83 @@ export type HeroContent = {
   noteLinks: [NavLink, NavLink];
 };
 
-export type WhyContent = {
-  id: string;
-  eyebrow: string;
-  /**
-   * Read one at a time as the mark comes apart: the polite yes, what it
-   * really was, and square one.
-   */
-  beats: [string, string, string];
-};
-
-export type QuestionContent = {
-  id: string;
-  eyebrow: string;
-  /** One line, typed out as the thread reaches it: the bar Vinea builds against. */
-  question: string;
+/** One labelled part of the picture of the robot. */
+export type WhatPart = {
+  key: "base" | "module" | "swap";
+  name: string;
   body: string;
 };
 
-export type HowStep = {
-  /** One word, in the pixel face. */
+/** One module the base can carry; each has its own picture. */
+export type WhatModule = {
+  key: "harvest" | "deleaf" | "lower";
+  /** The job, as the button says it. */
   label: string;
-  title: string;
+  /** The module's name, in the label face. */
+  name: string;
+  line: string;
+};
+
+/** One beat of the walk through the picture: what the robot is doing, and what to notice. */
+export type WhatBeat = {
+  /** Matches a beat in the rendered sequence; see `SEQ` in src/lib/renders.ts. */
+  key: "look" | "reach" | "carry" | "swap1" | "deleaf" | "swap2" | "lower" | "wire";
+  name: string;
   body: string;
 };
 
-export type HowContent = {
+export type WhatContent = {
   id: string;
   eyebrow: string;
   heading: string;
   lead: string;
-  /** Exactly four, in order: the strip of cells on each card lights its own. */
-  steps: [HowStep, HowStep, HowStep, HowStep];
+  /** Said on every picture: none of them is a photograph. */
+  badge: string;
+  /** What the robot's camera says about a truss, drawn over the picture while it looks. */
+  scan: { ready: string; wait: string };
+  beats: WhatBeat[];
+  /** The same idea in three plain lines, where the sequence isn't played. */
+  parts: [WhatPart, WhatPart, WhatPart];
+  modulesLabel: string;
+  modules: [WhatModule, WhatModule, WhatModule];
 };
 
-export type ModuleStage = "sim" | "design" | "idea";
+export type JobStage = "sim" | "design" | "soon";
 
-export type ModuleItem = {
+export type JobItem = {
+  /** Picks the tile's picture. */
+  key: "harvest" | "deleaf" | "lower" | "scout" | "base";
   name: string;
   job: string;
   body: string;
-  stage: ModuleStage;
+  stage: JobStage;
 };
 
-export type ModulesContent = {
+export type JobsContent = {
   id: string;
   eyebrow: string;
   heading: string;
   lead: string;
   /** How each stage reads on the page. */
-  stages: Record<ModuleStage, string>;
-  items: ModuleItem[];
+  stages: Record<JobStage, string>;
+  items: JobItem[];
+};
+
+export type LearnStep = {
+  /** One word. */
+  label: string;
+  title: string;
+  body: string;
+};
+
+export type LearnContent = {
+  id: string;
+  eyebrow: string;
+  heading: string;
+  lead: string;
+  steps: [LearnStep, LearnStep, LearnStep];
+  /** What has not happened yet, said under the steps. */
+  note: string;
 };
 
 export type StatusContent = {
@@ -106,6 +134,8 @@ export type StatusContent = {
   eyebrow: string;
   heading: string;
   lead: string;
+  /** Short facts about who is building it, shown as chips. */
+  facts: string[];
   columns: [
     { title: string; items: string[] },
     { title: string; items: string[] },
@@ -114,6 +144,8 @@ export type StatusContent = {
 };
 
 export type RoadmapStage = {
+  /** When, in words: the site carries no dates. */
+  when: string;
   label: string;
   title: string;
   items: string[];
@@ -121,17 +153,33 @@ export type RoadmapStage = {
   current?: boolean;
 };
 
+export type RoadmapLane = {
+  name: string;
+  job: string;
+  /** How many of the lane's steps are done, counting from the first. */
+  reached: number;
+};
+
 export type RoadmapContent = {
   id: string;
   eyebrow: string;
   heading: string;
+  /** The tag on the current stage. */
+  here: string;
   stages: RoadmapStage[];
+  lanes: {
+    heading: string;
+    /** The steps every module goes through, in order. */
+    steps: [string, string, string, string];
+    rows: RoadmapLane[];
+  };
 };
 
-export type Finding = {
-  /** Short, and doubles as the legend label under the mark. */
+/** Something growers hold against robots, and what Vinea does about it. */
+export type Objection = {
   title: string;
-  body: string;
+  worry: string;
+  answer: string;
 };
 
 export type HeardContent = {
@@ -139,8 +187,8 @@ export type HeardContent = {
   eyebrow: string;
   heading: string;
   lead: string;
-  /** Exactly four: each has its own pixel drawing, in this order. */
-  findings: [Finding, Finding, Finding, Finding];
+  answerLabel: string;
+  items: Objection[];
   note: string;
 };
 

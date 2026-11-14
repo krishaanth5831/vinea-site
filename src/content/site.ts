@@ -18,12 +18,12 @@ export const INVESTOR_HELLO = mailto("Vinea — investor question");
 
 export const site: SiteContent = {
   name: "Vinea",
-  metaTitle: "Vinea — greenhouse robots taught by the crew",
+  metaTitle: "Vinea — greenhouse robots taught by your crew",
   metaDescription:
-    "Vinea turns the way greenhouse crews work into robot skills, and runs them on one platform inside the greenhouses growers already have. How it works, where it stands, and what comes next.",
+    "Vinea is building robots that harvest trusses and cut leaves in the greenhouse you already have. They learn each job from recordings of your own crew and ride the heating pipes between your rows.",
   url: "https://getvinea.nl",
   email: EMAIL,
-  location: "Westland, Netherlands",
+  location: "Amsterdam-based. Serving growers all over the Netherlands.",
   person: "Krishaanth Ramaraj",
 
   /*
@@ -31,8 +31,8 @@ export const site: SiteContent = {
    * still catches them as same-page anchors and glides there.
    */
   nav: [
-    { label: "How it works", href: "/#how" },
-    { label: "Where it stands", href: "/#now" },
+    { label: "What it is", href: "/#what" },
+    { label: "How it learns", href: "/#how" },
     { label: "Roadmap", href: "/#roadmap" },
     { label: "The deck", href: "/deck" },
     { label: "ROI calculator", href: "/roi" },

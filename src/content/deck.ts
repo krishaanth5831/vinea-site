@@ -164,7 +164,7 @@ export const deck: DeckContent = {
       title: ["Still in", "trials"],
       body: [
         "In a 2019 survey of over 1,400 Dutch growers, 11% of glasshouse growers used a robot of any kind, mostly for spraying, and 2.6% planned to invest in robotics. In a 2025 WUR test, GRoW picked half the trusses staff marked ripe; 40% of ripe trusses failed its picking conditions, and in 1.5 hours it stopped twice and needed a person six times.",
-        "eternal.ag has run one robot at Van Noord Growers since September 2025 and planned three for summer 2026. Four Growers reports up to 50% labour savings at Westburg. Each robot does one job, and the crop has to fit the machine.",
+        "eternal.ag has run one robot at Van Noord Growers since September 2025, and announced plans for three by summer 2026. Four Growers reports up to 50% labour savings at Westburg. Each robot does one job, and the crop has to fit the machine.",
       ],
     },
     {
@@ -192,8 +192,8 @@ export const deck: DeckContent = {
       kicker: "How it works",
       title: ["Crews teach", "the robots"],
       body: [
-        "Vinea records crews on their normal shifts, and the work itself doesn't change. For harvesting and deleafing, the crew uses a handheld tool shaped like the robot's gripper, with a camera looking along it, so every cut is recorded from the robot's point of view.",
-        "For scouting, eye-tracking glasses and a microphone record where an experienced scout looks and what they say they see, so the recording labels itself. Each job's recordings train a robot skill on top of an open robot foundation model.",
+        "Vinea records crews on their normal shifts, and the work itself doesn't change. For harvesting and deleafing, a small capture device records how they reach, cut and hold, so each job is learned the way the crew does it.",
+        "For scouting, the record is where an experienced scout looks and what they say they see, so the recording labels itself. Each job's recordings train a robot skill for that job.",
       ],
     },
     {
@@ -219,7 +219,7 @@ export const deck: DeckContent = {
       kicker: "The product",
       title: ["How BLUSH", "harvests"],
       body: [
-        "BLUSH is the first module, and it harvests whole trusses. A camera facing the row finds a truss that's ready by the grower's own rule: the fruit at the tip has started to colour and most of the rest are ripe. The harvesting model, trained on crew recordings, steers the arm to the stalk through the crowded crop. One close of the fingers cuts the stalk flush with a blade at the tips, and pads keep holding the truss on its way to the crate.",
+        "BLUSH is the first module, and it harvests whole trusses. A camera facing the row finds a truss that's ready by the grower's own rule: the fruit at the tip has started to colour and most of the rest are ripe. The harvesting skill steers the arm to the stalk through the crowded crop. One close of the fingers cuts the stalk flush with a blade at the tips, and pads keep holding the truss on its way to the crate.",
       ],
       figure: { kind: "steps", steps: ["Find", "Steer", "Cut", "Hold"] },
     },
@@ -228,7 +228,7 @@ export const deck: DeckContent = {
       kicker: "Progress",
       title: ["From sim", "to real"],
       body: [
-        "On the bench, a robot arm runs a camera model that tells ripe from unripe tomatoes live, on real fruit. In simulation, the arm cuts old leaves in a greenhouse row, harvest training data from an earlier single-tomato version is published openly, and harvesting is moving to whole trusses. Next: train those skills, run them on real plants, and build the capture tool crews will use. Today the demonstrations come from simulation; at scale, crews record them as they work.",
+        "On the bench, a robot arm runs a camera model that tells ripe from unripe tomatoes live, on real fruit. In simulation, the arm harvests whole trusses and cuts old leaves in a greenhouse row, and the first learned skills are training. Next: run them on real plants, and test the capture device crews will use. Today a scripted teacher in simulation provides the demonstrations; at scale, crews record them as they work.",
       ],
     },
     {
@@ -291,7 +291,7 @@ export const deck: DeckContent = {
       kicker: "Why me",
       title: ["Krishaanth", "Ramaraj"],
       body: [
-        "At Degla AI, a YC-backed drone startup, I built and tuned drones, precision work of the kind Vinea needs. I made the harvest simulation and I'm building the real robot myself, while studying Electrical Engineering at TU/e and bartending on the side. I've interviewed tomato growers on what labour costs them and why they haven't bought a robot yet, and built Vinea around their answers.",
+        "At Degla AI, a YC-backed drone startup, I built and tuned drones, precision work of the kind Vinea needs. I made the harvest simulation and I'm building the real robot myself, in Antler's residency in Amsterdam, while studying Electrical Engineering at TU/e and bartending on the side. I've interviewed tomato growers on what labour costs them and why they haven't bought a robot yet, and built Vinea around their answers.",
       ],
     },
     {
