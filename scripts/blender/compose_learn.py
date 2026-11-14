@@ -18,6 +18,7 @@ from pathlib import Path
 from PIL import Image, ImageChops, ImageFilter
 
 OUT = Path(__file__).resolve().parents[2] / "public" / "renders"
+FADE = 8  # frames at the end of each loop that dissolve into its first
 
 
 def main(folder: str) -> None:
@@ -42,6 +43,15 @@ def main(folder: str) -> None:
         halo = ImageChops.add(bright.filter(ImageFilter.GaussianBlur(4 * scale)), bright.filter(ImageFilter.GaussianBlur(14 * scale)))
         still = ImageChops.screen(still, halo)
         still.save(full / path.name)
+    # A loop has to end where it starts. Where it doesn't, the last frames
+    # fade into the first one, so the restart is a dissolve and not a jump.
+    for name in ("record", "learn", "work"):
+        loop = sorted(full.glob(f"{name}-[0-9][0-9][0-9].png"))
+        if len(loop) <= FADE:
+            continue
+        first = Image.open(loop[0]).convert("RGB")
+        for n, path in enumerate(loop[-FADE:]):
+            Image.blend(Image.open(path).convert("RGB"), first, (n + 1) / (FADE + 1)).save(path)
     print(len(frames), "frames composed at", size)
     for name in ("record", "learn", "work"):
         poster = full / f"{name}-034.png"
