@@ -117,6 +117,8 @@ export type LearnStep = {
   label: string;
   title: string;
   body: string;
+  /** What the step's loop shows, for someone who can't see it. */
+  alt: string;
 };
 
 export type LearnContent = {
@@ -125,6 +127,8 @@ export type LearnContent = {
   heading: string;
   lead: string;
   steps: [LearnStep, LearnStep, LearnStep];
+  /** The label on each loop: it is a render, not footage. */
+  badge: string;
   /** What has not happened yet, said under the steps. */
   note: string;
 };

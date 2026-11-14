@@ -218,7 +218,7 @@ it stands → roadmap → the ask.
   (see `.what-track` in `globals.css`). Elsewhere three stills stand in and
   the buttons change the module.
 - `Jobs.tsx` is a tile per module, `Learn.tsx` the three steps with their
-  moving drawings, `Heard.tsx` the growers' objections with Vinea's answers.
+  rendered loops (`Clip.tsx` plays them only while on screen), `Heard.tsx` the growers' objections with Vinea's answers.
 - `Roadmap.tsx` is the track that lights up to where Vinea is, and a lane per
   module underneath.
 - `Render.tsx` shows a concept render with the label that says it is one.
