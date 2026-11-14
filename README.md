@@ -213,8 +213,10 @@ it stands → roadmap → the ask.
 - `Hero.tsx` is the opening screen over the empty aisle, with dust drifting
   in the light. Its entrance is CSS, so the heading never waits on JavaScript.
 - `What.tsx` is the picture of the robot. On a wide screen it holds still
-  while the reader scrolls and the module on the base changes (see
-  `.what-track` in `globals.css`); elsewhere the buttons change it.
+  while the reader scrolls through a rendered sequence: the robot looks,
+  cuts a truss, carries it to the crate, and its module is swapped twice
+  (see `.what-track` in `globals.css`). Elsewhere three stills stand in and
+  the buttons change the module.
 - `Jobs.tsx` is a tile per module, `Learn.tsx` the three steps with their
   moving drawings, `Heard.tsx` the growers' objections with Vinea's answers.
 - `Roadmap.tsx` is the track that lights up to where Vinea is, and a lane per
@@ -237,22 +239,40 @@ Every picture of the robot is a concept render made by a script, and the page
 labels each one. None is a photograph or a frame from the simulation.
 
 - `scripts/blender/vinea_scene.py` builds the night greenhouse, the base and
-  the modules, and renders the stills and the short loops.
+  the three modules, and holds the choreography of everything that moves.
 - `scripts/blender/render.sh` runs it in Blender with a memory cap, at the
   lowest CPU priority, on the CPU only. It expects a portable Blender build
   at `~/.cache/vinea-site-tools/` (set `BLENDER` to use another).
 - `scripts/blender/publish.py` turns the results into the WebP files under
   `public/renders/` (needs Pillow).
 
+The scroll sequence in "What it is" is not rendered as whole frames: that
+would take a quarter of an hour a frame on a CPU. It is a still background
+(the "plate") plus a clear layer holding only what moves, and the page lays
+one over the other on a canvas. There are two of them: the robot in the aisle
+(`seq`), and HOIST at the crop wire (`wire`).
+
 ```bash
+# the aisle: background, then the moving layer (frames already done are skipped)
 scripts/blender/render.sh --out /tmp/renders --format PNG \
-  --jobs "what:harvest:1600x900:40,tool:harvest:1200x900:32"
+  --jobs plate:1600x900:36 --seq 0-156 --width 1120 --height 630 --samples 20
+# HOIST at the crop wire: its background and its layer
+scripts/blender/render.sh --out /tmp/renders --format PNG \
+  --wire 0-53 --width 1120 --height 630 --samples 20
+# the job tiles
+scripts/blender/render.sh --out /tmp/renders --format PNG \
+  --jobs "tool-harvest:1200x900:28,tool-deleaf:1200x900:28,base:1200x900:28,scout:960x720:24"
 python scripts/blender/publish.py /tmp/renders
 ```
 
-Each render prints `CALLOUT` lines saying where the base and the arm fall in
-the frame. If the camera or a pose changes, copy them into
-`src/lib/renders.ts`, which is what places the markers on the picture.
+Each run prints a `SEQINFO` or `WIREINFO` line: the frame count, the frame
+each beat starts on, where the layer sits in the frame, and where the trusses
+the robot looks at are. If the camera, the crop or the choreography changes,
+copy it into `src/lib/renders.ts`, which is what the page reads.
+
+The loops in "How it learns" are made the same way (`--learn
+record,learn,work`), then put together by `compose_learn.py` and encoded to
+MP4 by `encode.py`, which uses the encoder inside Blender.
 
 Typeface credits are in [CREDITS.md](./CREDITS.md).
 

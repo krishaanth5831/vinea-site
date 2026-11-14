@@ -467,9 +467,26 @@ Blender from a script in `scripts/blender/`. The robot has not been built at
 full size, so every render carries a "Concept render" label. The site's own
 rule about not overstating traction applies to pictures too.
 
-**A module is the whole arm.** The render shows a base with one module on it
-and no spare tools on the deck, because the modules swap at the end of the
-path, as the simulation's whole-greenhouse demo has it.
+**A module is the whole unit, and the swap is shown in place.** A module is a
+plate with everything for one job on it. In the scroll sequence one lifts off
+the base and the next comes down, where the robot stands. The simulation's
+whole-greenhouse demo does the swap at the end of the path; the page shows it
+in the aisle because that is where the camera is, so the copy says only that
+the base takes on a different module, not where.
+
+**HOIST is its own machine.** It is modelled on the wire-rider design chosen
+in the H.O.I.S.T repo: a tall mast, a beam out over the row and a head that
+rests on the crop wire, with no arm. Its job is shown from a second camera
+under the wire: the head turns a plant's winding hook about the wire to let
+out twine, and the plant comes down. Moving the hook along the wire
+afterwards is not shown.
+
+**A plate and a layer, not whole frames.** A whole frame takes about a
+quarter of an hour on a CPU. The sequences are a still background plus a
+clear layer of only what moves, drawn one over the other on a canvas, which
+cut a frame to under a minute and the whole sequence to a couple of
+megabytes. The marks the robot's camera puts on the trusses while it looks
+are drawn by the page, at positions the render prints.
 
 **The capture device is not named.** It isn't chosen. The copy says what it
 does ("a small capture device records how they reach, cut and hold") and the
