@@ -951,23 +951,35 @@ def build_scene():
     }
 
 
-def clear_view(s, eye, target, near=0.5, along=0.42):
+def clear_view(s, eye, target, near=0.5, along=0.42, fruit=0.0):
     """
     Take out of the picture any leaf that would hang in front of the lens or
     across the middle of the view. Leaves off to the sides stay, out of
-    focus, which is what gives the picture its depth.
+    focus, which is what gives the picture its depth. A close-up also passes
+    `fruit`: trusses nearer the line of sight than that, short of the
+    subject, go too.
     """
     eye = Vector(eye)
     target = Vector(target)
     line = target - eye
     length = line.length
     for obj in [*s["plants"].objects, *s["c"]["heroplant"].objects]:
-        if not obj.data or not obj.data.name.startswith("leaf"):
+        if not obj.data:
+            continue
+        kind = obj.data.name
+        if not kind.startswith(("leaf", "truss")):
             continue
         p = obj.location
-        t = max(0.0, min(1.0, (p - eye).dot(line) / (length * length)))
+        raw = (p - eye).dot(line) / (length * length)
+        t = max(0.0, min(1.0, raw))
         gap = (p - (eye + line * t)).length
-        obj.hide_render = (p - eye).length < near + 0.25 or gap < along
+        if kind.startswith("leaf"):
+            obj.hide_render = (p - eye).length < near + 0.25 or gap < along
+        else:
+            # A truss hangs a hand's length below where it is fixed, so measure from its middle.
+            mid = p + Vector((0, 0, -0.15))
+            tm = max(0.0, min(1.0, (mid - eye).dot(line) / (length * length)))
+            obj.hide_render = fruit > 0 and raw < 0.8 and (mid - (eye + line * tm)).length < fruit
 
 
 def clear_shot(s):
@@ -1411,9 +1423,10 @@ def run_jobs(s):
                 eye, target = point + Vector((-0.36, 0.62, 0.1)), point + Vector((-0.1, 0, -0.03))
             else:
                 # From down the row, so the leaf it is cutting runs across the picture and not into the lens.
+                # The neighbours' trusses that would hang in the way are taken out below.
                 eye, target = point + Vector((-0.1, -0.72, 0.1)), point + Vector((-0.12, 0, -0.03))
             clear_shot(s)
-            clear_view(s, eye, target, near=0.35, along=0.3)
+            clear_view(s, eye, target, near=0.35, along=0.3, fruit=0.28 if mod == "shear" else 0.0)
             add_camera(s["shot"], eye, target, lens=50, fstop=2.2, focus=point)
             static_lights(s)
         elif name == "base":
