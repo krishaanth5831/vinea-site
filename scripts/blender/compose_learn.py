@@ -37,8 +37,9 @@ def main(folder: str) -> None:
         # Bloom: what is bright in the layer, blurred wide and added back.
         black = Image.new("RGBA", size, (0, 0, 0, 255))
         black.alpha_composite(layer)
-        bright = black.convert("RGB").point(lambda v: max(0, v - 150) * 2)
-        halo = ImageChops.add(bright.filter(ImageFilter.GaussianBlur(5)), bright.filter(ImageFilter.GaussianBlur(16)))
+        bright = black.convert("RGB").point(lambda v: max(0, v - 120) * 2)
+        scale = size[0] / 720
+        halo = ImageChops.add(bright.filter(ImageFilter.GaussianBlur(4 * scale)), bright.filter(ImageFilter.GaussianBlur(14 * scale)))
         still = ImageChops.screen(still, halo)
         still.save(full / path.name)
     print(len(frames), "frames composed at", size)

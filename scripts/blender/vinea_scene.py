@@ -1284,7 +1284,11 @@ def run_jobs(s):
             mod = "blush" if name == "tool-harvest" else "shear"
             apply_frame(s, 33 if mod == "blush" else 99)
             point = s["mods"][mod]["tool"].matrix_world @ Vector((0, 0, GRIP[mod]))
-            eye, target = point + Vector((-0.36, 0.62, 0.1)), point + Vector((-0.1, 0, -0.03))
+            if mod == "blush":
+                eye, target = point + Vector((-0.36, 0.62, 0.1)), point + Vector((-0.1, 0, -0.03))
+            else:
+                # From down the row, so the leaf it is cutting runs across the picture and not into the lens.
+                eye, target = point + Vector((-0.1, -0.72, 0.1)), point + Vector((-0.12, 0, -0.03))
             clear_shot(s)
             clear_view(s, eye, target, near=0.35, along=0.3)
             add_camera(s["shot"], eye, target, lens=50, fstop=2.2, focus=point)
@@ -1376,7 +1380,7 @@ def run_learn(s):
     end = tips[-1].copy()
     # A reach starts further back than the arm does: lead in from the aisle.
     start = tips[0] + Vector((-0.2, 0.14, -0.14))
-    lead = [start.lerp(tips[0], k / 7) + Vector((0, 0, 0.05 * math.sin(math.pi * k / 7))) for k in range(7)]
+    lead = [start.lerp(tips[0], k / 7) + Vector((0, 0, 0.02 * math.sin(math.pi * k / 7))) for k in range(7)]
     mean = lead + tips
     n = len(mean)
     offsets = [Vector((-0.02, 0.09, 0.08)), Vector((0.0, -0.05, -0.09)), Vector((-0.03, 0.13, -0.03))]
@@ -1388,12 +1392,12 @@ def run_learn(s):
         return mat, node.inputs["Strength"]
 
     lines = collection("learn")
-    ghost_mat, ghost_strength = glow("trail_ghost", GROW, 60)
-    mean_mat, mean_strength = glow("trail_mean", GROW, 90)
-    bead_mat, _ = glow("bead", (1.0, 0.8, 0.92), 140)
-    ghosts = [tube(f"ghost{k}", [tuple(p) for p in pts], 0.0032, ghost_mat, lines, resolution=4) for k, pts in enumerate(variants)]
-    line = tube("mean", [tuple(p) for p in mean], 0.0045, mean_mat, lines, resolution=4)
-    bead = sphere("bead", 0.011, (0, 0, 0), bead_mat, lines, seg=16)
+    ghost_mat, ghost_strength = glow("trail_ghost", GROW, 22)
+    mean_mat, mean_strength = glow("trail_mean", GROW, 34)
+    bead_mat, _ = glow("bead", (1.0, 0.8, 0.92), 60)
+    ghosts = [tube(f"ghost{k}", [tuple(p) for p in pts], 0.0019, ghost_mat, lines, resolution=4) for k, pts in enumerate(variants)]
+    line = tube("mean", [tuple(p) for p in mean], 0.003, mean_mat, lines, resolution=4)
+    bead = sphere("bead", 0.008, (0, 0, 0), bead_mat, lines, seg=16)
     extras = [*ghosts, line, bead]
 
     eye, target = end + Vector((-0.52, 0.74, 0.13)), end + Vector((-0.17, 0.0, -0.04))
@@ -1408,6 +1412,7 @@ def run_learn(s):
         set_pass(s, "beauty")
         place(0, here=False)
         hide_dynamic(s, False)
+        s["leaf"].hide_render = True
         for obj in extras:
             obj.hide_render = True
         render_still(scene, plate, args.width * 2, args.height * 2, 32)
@@ -1415,8 +1420,9 @@ def run_learn(s):
 
     # The moving layer. The truss and the leaf stay put, so here they only hide what passes behind them.
     set_pass(s, "layer")
-    for obj in s["c"]["dynamic"].objects:
-        obj.is_holdout = True
+    s["leaf"].hide_render = True
+    s["truss"].hide_render = False
+    s["truss"].is_holdout = True
 
     def along(pts, u):
         i = max(0.0, min(1.0, u)) * (len(pts) - 1)
@@ -1436,7 +1442,7 @@ def run_learn(s):
             obj.hide_render = True
         if name == "record":
             place(0, here=False)
-            ghost_strength.default_value = 60 * fade
+            ghost_strength.default_value = 22 * fade
             for k, (obj, pts) in enumerate(zip(ghosts, variants)):
                 a, b = 2 + 16 * k, 16 + 16 * k
                 drawn = ramp(f, a, b)
@@ -1447,18 +1453,18 @@ def run_learn(s):
                     bead.hide_render = False
         elif name == "learn":
             place(0, here=False)
-            ghost_strength.default_value = (34 - 29 * ease(ramp(f, 0, 34))) * fade
+            ghost_strength.default_value = (16 - 13 * ease(ramp(f, 0, 34))) * fade
             for obj in ghosts:
                 obj.data.bevel_factor_end = 1.0
                 obj.hide_render = False
             drawn = ease(ramp(f, 5, 40))
             line.data.bevel_factor_end = drawn
             line.hide_render = drawn <= 0
-            mean_strength.default_value = 90 * fade
+            mean_strength.default_value = 34 * fade
         else:
             line.data.bevel_factor_end = 1.0
             line.hide_render = False
-            mean_strength.default_value = 18
+            mean_strength.default_value = 9
             if f <= 5:
                 t = 0.0
             elif f <= 29:
@@ -1476,8 +1482,8 @@ def run_learn(s):
     for name in [c for c in args.learn.split(",") if c in ("record", "learn", "work")]:
         for f in range(0, LOOP, max(1, int(args.frame)) if args.frame > 0 else 1):
             frame(name, f)
-    for obj in s["c"]["dynamic"].objects:
-        obj.is_holdout = False
+    s["truss"].is_holdout = False
+    s["leaf"].hide_render = False
     for obj in extras:
         obj.hide_render = True
 
