@@ -75,51 +75,88 @@ export function What() {
     mm.add(STAGED, () => {
       const figure = el.querySelector<HTMLElement>(".what-figure");
       const canvas = el.querySelector<HTMLCanvasElement>(".what-canvas");
-      const pen = canvas?.getContext("2d");
+      const pen = canvas?.getContext("2d", { alpha: false });
       if (!figure || !canvas || !pen) return;
       setStaged(true);
 
-      canvas.width = 1600;
-      canvas.height = 900;
-      const plate = new Image();
-      const frames: HTMLImageElement[] = [];
-      const ready: boolean[] = [];
+      /*
+       * Every picture is decoded ahead of time, off the main thread, and
+       * kept as a bitmap. Drawing a frame is then a copy, so the scroll
+       * never waits on an image.
+       */
+      let plate: ImageBitmap | undefined;
+      const frames: (ImageBitmap | undefined)[] = [];
       let want = 0;
+      let drawn = -2;
+      let stopped = false;
+
+      const fit = () => {
+        const ratio = Math.min(window.devicePixelRatio || 1, 2);
+        const width = Math.min(1600, Math.round(canvas.clientWidth * ratio));
+        if (width === 0 || width === canvas.width) return;
+        canvas.width = width;
+        canvas.height = Math.round((width * 9) / 16);
+        drawn = -2;
+      };
 
       /* Draws the frame the scroll is on, or the nearest one that has arrived. */
       const draw = () => {
-        if (!plate.complete || plate.naturalWidth === 0) return;
+        if (!plate) return;
         let f = want;
-        while (f >= 0 && !ready[f]) f--;
+        while (f >= 0 && !frames[f]) f--;
         if (f < 0) {
           f = want;
-          while (f < SEQ.frames && !ready[f]) f++;
+          while (f < SEQ.frames && !frames[f]) f++;
+          if (f >= SEQ.frames) f = -1;
         }
+        if (f === drawn) return;
+        drawn = f;
         const { width, height } = canvas;
         pen.drawImage(plate, 0, 0, width, height);
-        if (f < SEQ.frames && ready[f]) {
+        const layer = f >= 0 ? frames[f] : undefined;
+        if (layer) {
           const { left, right, top, bottom } = SEQ.crop;
-          pen.drawImage(frames[f], left * width, top * height, (right - left) * width, (bottom - top) * height);
+          pen.drawImage(layer, left * width, top * height, (right - left) * width, (bottom - top) * height);
         }
       };
-      plate.onload = draw;
-      plate.src = "/renders/seq/plate.webp";
+
+      const fetchBitmap = (url: string) =>
+        fetch(url)
+          .then((response) => (response.ok ? response.blob() : Promise.reject(new Error(url))))
+          .then((blob) => createImageBitmap(blob));
+
+      fit();
+      const sized = new ResizeObserver(() => {
+        fit();
+        draw();
+      });
+      sized.observe(canvas);
+
+      fetchBitmap("/renders/seq/plate.webp")
+        .then((bitmap) => {
+          if (stopped) return bitmap.close();
+          plate = bitmap;
+          drawn = -2;
+          draw();
+        })
+        .catch(() => {});
 
       /* The frames load in order, a few at a time, once the section is near. */
       let next = 0;
-      let stopped = false;
       const load = () => {
         if (stopped || next >= SEQ.frames) return;
         const i = next++;
-        const image = new Image();
-        image.onload = () => {
-          ready[i] = true;
-          if (Math.abs(i - want) < 4) draw();
-          load();
-        };
-        image.onerror = load;
-        image.src = `/renders/seq/${String(i).padStart(3, "0")}.webp`;
-        frames[i] = image;
+        fetchBitmap(`/renders/seq/${String(i).padStart(3, "0")}.webp`)
+          .then((bitmap) => {
+            if (stopped) return bitmap.close();
+            frames[i] = bitmap;
+            if (Math.abs(i - want) < 6) {
+              drawn = -2;
+              draw();
+            }
+          })
+          .catch(() => {})
+          .finally(load);
       };
       const near = new IntersectionObserver(
         ([entry]) => {
@@ -127,43 +164,50 @@ export function What() {
           near.disconnect();
           for (let k = 0; k < 6; k++) load();
         },
-        { rootMargin: "150% 0px" },
+        { rootMargin: "200% 0px" },
       );
       near.observe(el);
 
-      const st = ScrollTrigger.create({
-        trigger: el,
-        start: "top top",
-        end: "bottom bottom",
-        onUpdate(self) {
-          const p = self.progress;
-          const frame = Math.round(Math.min(1, p / WIRE_AT) * (SEQ.frames - 1));
-          if (frame !== want) {
-            want = frame;
-            draw();
-          }
-          const wire = Math.max(0, Math.min(1, (p - (WIRE_AT - 0.02)) / 0.035));
-          figure.style.setProperty("--wire", wire.toFixed(3));
+      /* Where the scroll is, eased a little so the frames run on instead of jumping. */
+      const state = { p: 0 };
+      const apply = () => {
+        const p = state.p;
+        const frame = Math.round(Math.min(1, p / WIRE_AT) * (SEQ.frames - 1));
+        if (frame !== want) {
+          want = frame;
+          draw();
+        }
+        const wire = Math.max(0, Math.min(1, (p - (WIRE_AT - 0.02)) / 0.035));
+        figure.style.setProperty("--wire", wire.toFixed(3));
 
-          let b = 0;
-          BEAT_STARTS.forEach((start, i) => {
-            if (frame >= start) b = i;
-          });
-          if (p >= WIRE_AT) b = what.beats.length - 1;
-          setBeat((prev) => (prev === b ? prev : b));
+        let b = 0;
+        BEAT_STARTS.forEach((start, i) => {
+          if (frame >= start) b = i;
+        });
+        if (p >= WIRE_AT) b = what.beats.length - 1;
+        setBeat((prev) => (prev === b ? prev : b));
 
-          /* While it looks: first every truss is framed, then the ready one is picked out. */
-          const level = frame < 3 || frame > SEQ.beats.reach + 5 ? 0 : frame < 10 ? 1 : 2;
-          setScan((prev) => (prev === level ? prev : level));
-        },
+        /* While it looks: first every truss is framed, then the ready one is picked out. */
+        const level = frame < 3 || frame > SEQ.beats.reach + 5 ? 0 : frame < 10 ? 1 : 2;
+        setScan((prev) => (prev === level ? prev : level));
+      };
+      const tween = gsap.to(state, {
+        p: 1,
+        ease: "none",
+        onUpdate: apply,
+        scrollTrigger: { trigger: el, start: "top top", end: "bottom bottom", scrub: 0.35 },
       });
-      trigger.current = st;
+      trigger.current = tween.scrollTrigger ?? null;
 
       return () => {
         stopped = true;
         near.disconnect();
-        st.kill();
+        sized.disconnect();
+        tween.scrollTrigger?.kill();
+        tween.kill();
         trigger.current = null;
+        plate?.close();
+        frames.forEach((bitmap) => bitmap?.close());
         setStaged(false);
       };
     });

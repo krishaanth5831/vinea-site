@@ -421,6 +421,7 @@ body::before {
 }
 
 .hero-sky {
+  will-change: transform;
   position: absolute;
   inset: -4% 0 0;
   z-index: -3;
@@ -443,7 +444,6 @@ body::before {
   background:
     radial-gradient(60% 50% at 64% 16%, rgb(255 79 174 / 0.22), transparent 70%),
     radial-gradient(45% 40% at 28% 6%, rgb(157 107 255 / 0.18), transparent 70%);
-  mix-blend-mode: screen;
 }
 
 /* Keeps the words readable over the picture, and lets it fall into the page below. */
@@ -587,8 +587,7 @@ body::before {
   padding: 0.3rem 0.6rem;
   border: 1px solid rgb(255 255 255 / 0.14);
   border-radius: 999px;
-  background-color: rgb(6 13 10 / 0.58);
-  backdrop-filter: blur(6px);
+  background-color: rgb(6 13 10 / 0.72);
   font-family: var(--font-mono);
   font-size: 0.625rem;
   letter-spacing: 0.14em;
@@ -756,8 +755,8 @@ body::before {
     z-index: 3;
     width: min(22rem, 44%);
     border-color: rgb(255 255 255 / 0.13);
-    background-color: rgb(6 13 10 / 0.6);
-    backdrop-filter: blur(14px);
+    /* Solid, not blurred: a blur over a canvas that redraws costs every frame. */
+    background-color: rgb(8 16 12 / 0.86);
   }
 }
 
@@ -844,8 +843,7 @@ body::before {
     left: calc(100% + 0.5rem);
     padding: 0.2rem 0.5rem;
     border-radius: 999px;
-    background-color: rgb(6 13 10 / 0.7);
-    backdrop-filter: blur(6px);
+    background-color: rgb(6 13 10 / 0.85);
     font-family: var(--font-mono);
     font-size: 0.625rem;
     letter-spacing: 0.12em;

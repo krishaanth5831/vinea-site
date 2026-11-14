@@ -20,7 +20,7 @@ from PIL import Image
 # What each render is called on the site.
 NAMES = {"aisle-harvest": "aisle", "base-harvest": "base", "scout-harvest": "scout"}
 # The frames that stand in for the sequence where it isn't played.
-STANDINS = {"what-harvest": 31, "what-deleaf": 99, "what-lower": 150}
+STANDINS = {"what-harvest": 31, "what-deleaf": 99}
 OUT = Path(__file__).resolve().parents[2] / "public" / "renders"
 
 

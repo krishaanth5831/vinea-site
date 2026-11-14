@@ -45,6 +45,7 @@ parser.add_argument(
     default="",
     help="stills from one build, comma separated name:WxH:samples; names: plate, hoist, tool-harvest, tool-deleaf, base, scout, aisle, full-<frame>",
 )
+parser.add_argument("--learn", default="", help="record,learn,work: the loops for How it learns, into <out>/learn")
 parser.add_argument("--seq", default="", help="a-b or a-b:step: the moving layer of the scroll sequence, into <out>/seq")
 args = parser.parse_args(argv)
 
@@ -1320,9 +1321,172 @@ def run_jobs(s):
         print("rendered", name, flush=True)
 
 
+# --------------------------------------------------------------------------
+# the loops for "How it learns"
+# --------------------------------------------------------------------------
+
+LOOP = 60  # frames in each loop
+
+
+def run_learn(s):
+    """
+    Three loops of one reach towards the stalk of a truss.
+
+    Record: a point of light makes the reach three times, each a little
+    different, and leaves a line behind it. Learn: those lines dim and the
+    one reach they share is drawn bright. Work: the tool takes that line in,
+    closes on the stalk, and backs out.
+
+    No person and no capture device is drawn: the device isn't chosen yet,
+    and a line of light commits to nothing.
+
+    Like the scroll sequence, each loop is a still background plus a clear
+    layer of what moves; compose_learn.py puts them together.
+    """
+    import os
+
+    scene, m = s["scene"], s["m"]
+    out = f"{args.out}/learn"
+    os.makedirs(out, exist_ok=True)
+    blush = s["mods"]["blush"]
+    fingers = [c for c in blush["tool"].children if c.name.startswith("finger")]
+    bx, bdz, byaw = aim("blush", CUT, 1.02)
+
+    def place(t, grip=0.0, here=True):
+        """The harvest module with its tool `t` of the way in to the stalk; or nowhere."""
+        for name, mod in s["mods"].items():
+            mod["root"].location.z = MOD_Z + (0.0 if (here and name == "blush") else AWAY)
+        blush["carriage"].location.z = 1.02 - MOD_Z
+        x = 0.17 + (bx - 0.17) * t
+        dz = -0.01 + (bdz + 0.01) * t + 0.05 * math.sin(math.pi * t)
+        set_pose(blush["joints"], reach_pose(x, dz, yaw=byaw, roll=math.pi / 2))
+        for finger in fingers:
+            side = 1 if finger.location.x > 0 else -1
+            finger.rotation_euler = (0, side * (0.1 - 0.22 * grip), 0)
+        bpy.context.view_layer.update()
+
+    # The plant as it stands, and the tool's own path in, read off the arm
+    # so the line and the arm agree.
+    apply_frame(s, 0)
+    steps = 24
+    tips = []
+    for k in range(steps + 1):
+        place(ease(k / steps))
+        tips.append((blush["tool"].matrix_world @ Vector((0, 0, GRIP["blush"]))).copy())
+    end = tips[-1].copy()
+    # A reach starts further back than the arm does: lead in from the aisle.
+    start = tips[0] + Vector((-0.2, 0.14, -0.14))
+    lead = [start.lerp(tips[0], k / 7) + Vector((0, 0, 0.05 * math.sin(math.pi * k / 7))) for k in range(7)]
+    mean = lead + tips
+    n = len(mean)
+    offsets = [Vector((-0.02, 0.09, 0.08)), Vector((0.0, -0.05, -0.09)), Vector((-0.03, 0.13, -0.03))]
+    variants = [[p + off * (1 - i / (n - 1)) ** 1.3 for i, p in enumerate(mean)] for off in offsets]
+
+    def glow(name, color, strength):
+        mat = emission(name, color, strength)
+        node = next(nd for nd in mat.node_tree.nodes if nd.type == "EMISSION")
+        return mat, node.inputs["Strength"]
+
+    lines = collection("learn")
+    ghost_mat, ghost_strength = glow("trail_ghost", GROW, 60)
+    mean_mat, mean_strength = glow("trail_mean", GROW, 90)
+    bead_mat, _ = glow("bead", (1.0, 0.8, 0.92), 140)
+    ghosts = [tube(f"ghost{k}", [tuple(p) for p in pts], 0.0032, ghost_mat, lines, resolution=4) for k, pts in enumerate(variants)]
+    line = tube("mean", [tuple(p) for p in mean], 0.0045, mean_mat, lines, resolution=4)
+    bead = sphere("bead", 0.011, (0, 0, 0), bead_mat, lines, seg=16)
+    extras = [*ghosts, line, bead]
+
+    eye, target = end + Vector((-0.52, 0.74, 0.13)), end + Vector((-0.17, 0.0, -0.04))
+    clear_shot(s)
+    clear_view(s, eye, target, near=0.35, along=0.3)
+    add_camera(s["shot"], eye, target, lens=42, fstop=2.8, focus=end)
+    static_lights(s)
+
+    # The still background: the plant with its truss, no robot, no lines.
+    plate = f"{out}/plate"
+    if not os.path.exists(plate + ".png"):
+        set_pass(s, "beauty")
+        place(0, here=False)
+        hide_dynamic(s, False)
+        for obj in extras:
+            obj.hide_render = True
+        render_still(scene, plate, args.width * 2, args.height * 2, 32)
+        print("rendered learn plate", flush=True)
+
+    # The moving layer. The truss and the leaf stay put, so here they only hide what passes behind them.
+    set_pass(s, "layer")
+    for obj in s["c"]["dynamic"].objects:
+        obj.is_holdout = True
+
+    def along(pts, u):
+        i = max(0.0, min(1.0, u)) * (len(pts) - 1)
+        lo = int(i)
+        hi = min(lo + 1, len(pts) - 1)
+        return pts[lo].lerp(pts[hi], i - lo)
+
+    def ramp(f, a, b):
+        return max(0.0, min(1.0, (f - a) / (b - a)))
+
+    def frame(name, f):
+        path = f"{out}/{name}-{f:03d}"
+        if os.path.exists(path + ".png"):
+            return
+        fade = 1 - ramp(f, 52, 59)  # every loop lets go of its light at the end, so it can start again clean
+        for obj in extras:
+            obj.hide_render = True
+        if name == "record":
+            place(0, here=False)
+            ghost_strength.default_value = 60 * fade
+            for k, (obj, pts) in enumerate(zip(ghosts, variants)):
+                a, b = 2 + 16 * k, 16 + 16 * k
+                drawn = ramp(f, a, b)
+                obj.data.bevel_factor_end = drawn
+                obj.hide_render = drawn <= 0
+                if a <= f <= b:
+                    bead.location = along(pts, drawn)
+                    bead.hide_render = False
+        elif name == "learn":
+            place(0, here=False)
+            ghost_strength.default_value = (34 - 29 * ease(ramp(f, 0, 34))) * fade
+            for obj in ghosts:
+                obj.data.bevel_factor_end = 1.0
+                obj.hide_render = False
+            drawn = ease(ramp(f, 5, 40))
+            line.data.bevel_factor_end = drawn
+            line.hide_render = drawn <= 0
+            mean_strength.default_value = 90 * fade
+        else:
+            line.data.bevel_factor_end = 1.0
+            line.hide_render = False
+            mean_strength.default_value = 18
+            if f <= 5:
+                t = 0.0
+            elif f <= 29:
+                t = ease((f - 5) / 24)
+            elif f <= 41:
+                t = 1.0
+            else:
+                t = ease(1 - (f - 41) / 18)
+            grip = ease(ramp(f, 28, 34)) * (1 - ease(ramp(f, 41, 47)))
+            place(t, grip=grip)
+        bpy.context.view_layer.update()
+        render_still(scene, path, args.width, args.height, args.samples)
+        print("LEARNFRAME", name, f, flush=True)
+
+    for name in [c for c in args.learn.split(",") if c in ("record", "learn", "work")]:
+        for f in range(0, LOOP, max(1, int(args.frame)) if args.frame > 0 else 1):
+            frame(name, f)
+    for obj in s["c"]["dynamic"].objects:
+        obj.is_holdout = False
+    for obj in extras:
+        obj.hide_render = True
+
+
 def main():
     s = build_scene()
     setup_render()
+    if args.learn:
+        run_learn(s)
     if args.seq:
         run_seq(s)
     if args.jobs:
