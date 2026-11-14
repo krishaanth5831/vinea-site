@@ -11,6 +11,7 @@ stills that stand in for the sequence on a phone are made by laying a frame
 over the plate. Needs Pillow. Safe to run again as more renders arrive.
 """
 
+import json
 import sys
 from pathlib import Path
 
@@ -18,9 +19,6 @@ from PIL import Image
 
 # What each render is called on the site.
 NAMES = {"aisle-harvest": "aisle", "base-harvest": "base", "scout-harvest": "scout"}
-# The part of the frame the moving layer covers: left, top, right, bottom.
-# Must match CROP in vinea_scene.py (which counts from the bottom).
-CROP = (0.24, 0.0, 0.76, 0.74)
 # The frames that stand in for the sequence where it isn't played.
 STANDINS = {"what-harvest": 31, "what-deleaf": 99, "what-lower": 150}
 OUT = Path(__file__).resolve().parents[2] / "public" / "renders"
@@ -57,8 +55,12 @@ def main(folder: str) -> None:
         total += out.stat().st_size
     print("sequence:", len(frames), "frames,", total // 1024, "KB")
 
+    # Where the moving layer sits in the frame, as the scene script wrote it.
+    info = json.loads((src / "seqinfo.json").read_text())
+    crop = info["crop"]
+    print("for src/lib/renders.ts:", json.dumps(info))
     width, height = plate.size
-    box = tuple(round(v * (width if i % 2 == 0 else height)) for i, v in enumerate(CROP))
+    box = (round(crop["left"] * width), round(crop["top"] * height), round(crop["right"] * width), round(crop["bottom"] * height))
     for name, frame in STANDINS.items():
         path = src / "seq" / f"{frame:04d}.png"
         if not path.exists():

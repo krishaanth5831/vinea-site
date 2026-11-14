@@ -890,7 +890,7 @@ def crate(m, coll, root):
 
 
 def leaf_bin(m, coll, root):
-    open_box(m, coll, root, "bin", (0.34, 0.3, 0.36), (0, 0.27, 0.03), m["graphite"])
+    open_box(m, coll, root, "bin", (0.34, 0.3, 0.36), (0, 0.27, 0.03), m["bin"])
     box("bin_light", (0.34, 0.004, 0.008), (0, 0.422, 0.37), m["accent2"], coll, bevel=0, parent=root)
 
 
@@ -901,6 +901,7 @@ def build_scene():
     c = {name: collection(name) for name in names}
     m = make_materials()
     m["crate"] = material("crate", (0.07, 0.11, 0.2), rough=0.45)
+    m["bin"] = material("bin", (0.2, 0.17, 0.3), rough=0.5)
     m["accent2"] = emission("accent2", GROW_SOFT, 16)
     m["accent3"] = emission("accent3", (1.0, 0.86, 0.7), 12)
     setup_world()
@@ -1152,7 +1153,7 @@ def static_lights(s):
 
 SEQ_EYE, SEQ_TARGET = (-0.3, 2.95, 1.16), (0.18, -0.05, 0.92)
 # The part of the frame anything moves in, as fractions: left, right, bottom, top.
-CROP = (0.24, 0.76, 0.26, 1.0)
+CROP = (0.24, 0.76, 0.16, 1.0)
 
 
 def cam_seq(s):
@@ -1200,6 +1201,12 @@ def report_seq(s):
         "base": project(scene, (0.0, 0.5, MOD_Z - 0.12)),
     }
     print("SEQINFO " + json.dumps(info))
+    # Kept beside the renders too, so publish.py lays the frames where they belong.
+    import os
+
+    os.makedirs(args.out, exist_ok=True)
+    with open(f"{args.out}/seqinfo.json", "w") as handle:
+        json.dump(info, handle)
 
 
 def render_still(scene, path, width, height, samples, border=None):

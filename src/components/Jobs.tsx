@@ -8,7 +8,7 @@ import { SectionHead } from "./SectionHead";
 const ART: Record<JobItem["key"], string> = {
   harvest: "tool-harvest",
   deleaf: "tool-deleaf",
-  lower: "tool-lower",
+  lower: "hoist",
   scout: "scout",
   base: "base",
 };
@@ -16,7 +16,7 @@ const ART: Record<JobItem["key"], string> = {
 const ALT: Record<JobItem["key"], string> = {
   harvest: "A concept render of the harvest tool closing on the stalk of a ripe truss.",
   deleaf: "A concept render of the deleafing tool at the lowest leaves of a tomato plant.",
-  lower: "A concept render of the lowering tool up in the crop, at the twine the plant hangs from.",
+  lower: "A concept render of the lowering module's head resting on the crop wire, among the winding hooks the plants hang from.",
   scout: "A concept render of the cameras on the mast, facing the row.",
   base: "A concept render of the base's wheels on the heating pipes.",
 };
