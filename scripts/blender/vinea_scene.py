@@ -43,9 +43,10 @@ parser.add_argument("--save-blend", default="")
 parser.add_argument(
     "--jobs",
     default="",
-    help="stills from one build, comma separated name:WxH:samples; names: plate, hoist, tool-harvest, tool-deleaf, base, scout, aisle, full-<frame>",
+    help="stills from one build, comma separated name:WxH:samples; names: plate, tool-harvest, tool-deleaf, base, scout, aisle, full-<frame>",
 )
 parser.add_argument("--learn", default="", help="record,learn,work: the loops for How it learns, into <out>/learn")
+parser.add_argument("--wire", default="", help="a-b or a-b:step: the moving layer of HOIST at the crop wire, into <out>/wire")
 parser.add_argument("--seq", default="", help="a-b or a-b:step: the moving layer of the scroll sequence, into <out>/seq")
 args = parser.parse_args(argv)
 
@@ -424,6 +425,7 @@ def make_truss(m, coll, ripeness, seed):
 
 
 WIRE_Z = 3.98  # the crop wire the plants hang from
+HOOK_Y = -0.2 + 0.05 * 3  # where the hero plant's hook hangs on it: HERO_Y plus the stem's lean at the top
 STEM_TOP = 3.72
 HERO_X, HERO_Y = ROW_X - 0.012, -0.2  # the plant the modules work on
 HERO_LEAN = 0.05
@@ -444,7 +446,7 @@ def make_hook(m, coll):
     return join([bobbin, wire], "hook")
 
 
-def build_rows(m, coll, protos, marks):
+def build_rows(m, coll, protos, marks, hero_coll):
     """Two rows of plants either side of the aisle, and a darker pair beyond."""
     leaves, trusses, hook = protos
     rng = random.Random(3)
@@ -475,10 +477,16 @@ def build_rows(m, coll, protos, marks):
                 t = (z - 0.73) / (STEM_TOP - 0.73)
                 return (px + sway * math.sin(t * 5 + py), py + lean * t * 3, z)
 
+            # The hero plant is kept apart from the rest: HOIST lets it down, so it has to be able to move.
+            into = hero_coll if hero else coll
             pts = [on_stem(0.73 + k / 8 * (STEM_TOP - 0.73)) for k in range(9)]
-            tube("stem", pts, 0.0065, m["stem"], coll, resolution=3)
-            tube("twine", [(p[0] + 0.006, p[1], p[2]) for p in pts[::2]] + [(pts[-1][0], pts[-1][1], WIRE_Z - 0.19)], 0.0012, m["twine"], coll, resolution=1)
-            instance(hook, (pts[-1][0], pts[-1][1], WIRE_Z - 0.115), (0, 0, rng.uniform(-0.3, 0.3)), 1.0, coll)
+            tube("stem", pts, 0.0065, m["stem"], into, resolution=3)
+            if hero:
+                # Its hook and the twine down from it are separate objects, made in build_scene.
+                tube("twine", [(p[0] + 0.006, p[1], p[2]) for p in pts[::2]], 0.0012, m["twine"], into, resolution=1)
+            else:
+                tube("twine", [(p[0] + 0.006, p[1], p[2]) for p in pts[::2]] + [(pts[-1][0], pts[-1][1], WIRE_Z - 0.19)], 0.0012, m["twine"], into, resolution=1)
+                instance(hook, (pts[-1][0], pts[-1][1], WIRE_Z - 0.115), (0, 0, rng.uniform(-0.3, 0.3)), 1.0, into)
 
             # Trusses in the picking zone: ripe at the bottom, green above.
             heights = [(0.98 + rng.uniform(-0.05, 0.05), "ripe"), (1.27 + rng.uniform(-0.05, 0.05), "turning"), (1.56 + rng.uniform(-0.05, 0.05), "green")]
@@ -492,7 +500,7 @@ def build_rows(m, coll, protos, marks):
                 if hero:
                     yaw = math.pi + (0.5 if ripeness == "turning" else -0.4)
                     marks.append((ripeness, Vector(on_stem(z)) + Vector((math.cos(yaw) * 0.13, math.sin(yaw) * 0.13, 0))))
-                instance(src, on_stem(z), (0, 0, yaw), rng.uniform(0.9, 1.08), coll)
+                instance(src, on_stem(z), (0, 0, yaw), rng.uniform(0.9, 1.08), into)
             # Leaves from just above the ripening truss upwards. Below it the
             # crew has already taken them off, which is what deleafing is.
             z = (1.66 if hero else 1.36) + rng.uniform(0, 0.1)
@@ -501,7 +509,7 @@ def build_rows(m, coll, protos, marks):
                 angle += 2.4 + rng.uniform(-0.3, 0.3)
                 src = rng.choice(leaves)
                 tilt = rng.uniform(-0.75, -0.2)
-                instance(src, on_stem(z), (tilt, 0, angle), rng.uniform(0.9, 1.3), coll)
+                instance(src, on_stem(z), (tilt, 0, angle), rng.uniform(0.9, 1.3), into)
                 z += rng.uniform(0.1, 0.17) if near else rng.uniform(0.16, 0.26)
             y += spacing
 
@@ -646,8 +654,8 @@ def build_hoist_module(m, coll, base, light):
     box("hoist_beam", (1.02, 0.07, 0.055), (0.45, 0.13, 0.03), m["shell"], coll, bevel=0.014, parent=carriage)
     box("hoist_beam_rail", (0.98, 0.012, 0.02), (0.45, 0.168, 0.03), m["steel"], coll, bevel=0.002, parent=carriage)
     # The head, which slides along the beam.
-    head = empty("hoist_head", (0.25, 0.2, 0.03), coll, parent=carriage)
-    box("head_slide", (0.16, 0.05, 0.11), (0.05, -0.01, 0), m["graphite"], coll, bevel=0.012, parent=head)
+    head = empty("hoist_head", (0.25, HOOK_Y - 0.16 - (MAST_Y + 0.08), 0.03), coll, parent=carriage)
+    box("head_slide", (0.16, 0.1, 0.11), (0.05, 0.03, 0), m["graphite"], coll, bevel=0.012, parent=head)
     box("head_plate", (0.016, 0.3, 0.38), (0.128, 0.16, 0.02), m["shell"], coll, bevel=0.006, parent=head)
     box("head_shelf", (0.14, 0.3, 0.016), (0.062, 0.16, 0.205), m["shell"], coll, bevel=0.005, parent=head)
     for sy in (-1, 1):
@@ -655,12 +663,12 @@ def build_hoist_module(m, coll, base, light):
         cyl("saddle", 0.03, 0.022, (0.07, 0.16 + sy * 0.09, 0.16), m["graphite"], coll, rot=(0, math.pi / 2, 0), parent=head, bevel=0.005)
         cyl("saddle_hub", 0.012, 0.03, (0.07, 0.16 + sy * 0.09, 0.16), m["steel"], coll, rot=(0, math.pi / 2, 0), parent=head, bevel=0.002)
         box("saddle_arm", (0.012, 0.012, 0.06), (0.052, 0.16 + sy * 0.09, 0.182), m["steel"], coll, bevel=0.002, parent=head)
-    # The rotor that takes the hook and flips it.
-    rotor = empty("rotor", (0.07, 0.16, 0.07), coll, parent=head)
-    cyl("rotor_disc", 0.04, 0.018, (0, 0, 0), m["steel"], coll, rot=(0, math.pi / 2, 0), parent=rotor, bevel=0.004)
-    cyl("rotor_ring", 0.042, 0.005, (0.011, 0, 0), light, coll, rot=(0, math.pi / 2, 0), parent=rotor, bevel=0)
-    box("rotor_fork", (0.012, 0.012, 0.07), (0.016, 0.018, 0.02), m["steel"], coll, bevel=0.002, parent=rotor)
-    box("rotor_fork", (0.012, 0.012, 0.07), (0.016, -0.018, 0.02), m["steel"], coll, bevel=0.002, parent=rotor)
+    # The rotor that takes the hook and flips it. It turns about the wire, beside where the hook hangs.
+    rotor = empty("rotor", (0.07, 0.105, 0.13), coll, parent=head)
+    cyl("rotor_disc", 0.036, 0.02, (0, 0, 0), m["steel"], coll, rot=(math.pi / 2, 0, 0), parent=rotor, bevel=0.004)
+    cyl("rotor_ring", 0.039, 0.006, (0, 0.012, 0), light, coll, rot=(math.pi / 2, 0, 0), parent=rotor, bevel=0)
+    for sz in (-1, 1):
+        cyl("rotor_pin", 0.005, 0.07, (0, 0.045, sz * 0.022), m["steel"], coll, rot=(math.pi / 2, 0, 0), parent=rotor, bevel=0, verts=12)
     # The pair of drums that hold the twine, below the rotor.
     box("capstan_arm", (0.03, 0.05, 0.2), (0.108, 0.16, -0.1), m["graphite"], coll, bevel=0.008, parent=head)
     for sy in (-1, 1):
@@ -898,7 +906,7 @@ def leaf_bin(m, coll, root):
 def build_scene():
     clear()
     scene = bpy.context.scene
-    names = ("greenhouse", "plants", "prototypes", "base", "modules", "dynamic", "shot")
+    names = ("greenhouse", "plants", "heroplant", "wirework", "prototypes", "base", "modules", "dynamic", "shot")
     c = {name: collection(name) for name in names}
     m = make_materials()
     m["crate"] = material("crate", (0.07, 0.11, 0.2), rough=0.45)
@@ -925,13 +933,22 @@ def build_scene():
     for obj in proto.objects:
         obj.location = (0, 0, -50)  # out of sight; only their copies are in the picture
     marks = []
-    build_rows(m, c["plants"], (leaves, trusses, hook), marks)
+    build_rows(m, c["plants"], (leaves, trusses, hook), marks, c["heroplant"])
+    hero_plant = [(obj, obj.location.copy()) for obj in c["heroplant"].objects]
+    # The hero plant's winding hook hangs from a pivot on the wire, so it can be flipped about it,
+    # and the twine from it to the plant is its own line, so it can pay out.
+    pivot = empty("hook_pivot", (ROW_X, HOOK_Y, WIRE_Z), c["wirework"])
+    instance(hook, (0, 0, -0.115), (0, 0, 0), 1.0, c["wirework"], parent=pivot)
+    hero_twine = tube("hero_twine", [(ROW_X, HOOK_Y, WIRE_Z - 0.19), (HERO_X + 0.006, HOOK_Y, STEM_TOP)], 0.0012, m["twine"], c["wirework"], resolution=1)
     # The two things that get taken off the hero plant. They move, so they
     # are their own objects and never part of the still background.
     truss = instance(trusses["ripe"][0], hero_stem(1.0), (0, 0, TRUSS_YAW), TRUSS_SCALE, c["dynamic"])
     leaf = instance(leaves[0], hero_stem(LEAF_Z), (-0.35, 0, math.pi / 2), 1.15, c["dynamic"])
     marks.insert(0, ("ripe", hero_stem(1.0) + Vector((math.cos(TRUSS_YAW) * 0.13, math.sin(TRUSS_YAW) * 0.13, 0))))
-    return {"m": m, "c": c, "scene": scene, "base": base, "mods": mods, "truss": truss, "leaf": leaf, "marks": marks, "plants": c["plants"], "shot": c["shot"]}
+    return {
+        "m": m, "c": c, "scene": scene, "base": base, "mods": mods, "truss": truss, "leaf": leaf, "marks": marks,
+        "plants": c["plants"], "shot": c["shot"], "hero_plant": hero_plant, "pivot": pivot, "hero_twine": hero_twine,
+    }
 
 
 def clear_view(s, eye, target, near=0.5, along=0.42):
@@ -944,7 +961,7 @@ def clear_view(s, eye, target, near=0.5, along=0.42):
     target = Vector(target)
     line = target - eye
     length = line.length
-    for obj in s["plants"].objects:
+    for obj in [*s["plants"].objects, *s["c"]["heroplant"].objects]:
         if not obj.data or not obj.data.name.startswith("leaf"):
             continue
         p = obj.location
@@ -1127,7 +1144,7 @@ def layer_collections(root, names, out):
     return out
 
 
-def set_pass(s, kind):
+def set_pass(s, kind, hero_moves=False):
     """
     "beauty" renders everything. "layer" renders only what moves, on a clear
     background, with the greenhouse and the cart still there to hide it where
@@ -1138,8 +1155,9 @@ def set_pass(s, kind):
     scene.render.film_transparent = layer
     scene.render.image_settings.color_mode = "RGBA" if layer else "RGB"
     scene.use_nodes = not layer  # no bloom on the layer: it would smear into the clear part
-    for lc in layer_collections(bpy.context.view_layer.layer_collection, ("greenhouse", "plants", "base"), []):
-        lc.holdout = layer
+    still = ("greenhouse", "plants", "base") if hero_moves else ("greenhouse", "plants", "base", "heroplant", "wirework")
+    for lc in layer_collections(bpy.context.view_layer.layer_collection, ("greenhouse", "plants", "base", "heroplant", "wirework"), []):
+        lc.holdout = layer and lc.name in still
 
 
 def static_lights(s):
@@ -1248,6 +1266,124 @@ def run_seq(s):
         print("SEQFRAME", f, f"{time.time() - started:.1f}s", flush=True)
 
 
+# --------------------------------------------------------------------------
+# HOIST at the crop wire
+# --------------------------------------------------------------------------
+
+WIRE_LAST = 53
+WIRE_BEATS = {"wire": 0, "flip": 15, "end": WIRE_LAST}
+WIRE_EYE, WIRE_TARGET = (0.02, 0.82, 3.12), (0.7, -0.1, 3.8)
+WIRE_CROP = (0.0, 1.0, 0.0, 1.0)
+LOWER_BY = 0.24  # how far the plant comes down
+
+
+def cam_wire(s):
+    """From below the crop wire, looking up at the head and the hooks."""
+    clear_shot(s)
+    clear_view(s, WIRE_EYE, WIRE_TARGET, near=0.4, along=0.5)
+    add_camera(s["shot"], WIRE_EYE, WIRE_TARGET, lens=30, fstop=3.2, focus=(0.8, -0.05, 3.9))
+    add_light(s["shot"], "SPOT", (0.0, 0.2, 3.0), (0.8, -0.2, 3.9), 120, color=(1.0, 0.96, 0.9), size=0.05, spot=1.4)
+    add_light(s["shot"], "AREA", (-0.9, 1.6, 3.2), (0.4, -0.2, 3.7), 40, color=(0.7, 0.82, 1.0), size=1.0)
+
+
+def apply_wire(s, f):
+    """
+    HOIST doing its job. The head comes up under the wire and settles its
+    wheels on it beside the hero plant's hook. The rotor turns the hook twice
+    about the wire, which lets out two loops of twine, and the plant comes down
+    by that much while the head holds it. Then the head lifts off and leaves.
+    """
+    mods = s["mods"]
+    for name, mod in mods.items():
+        mod["root"].location.z = MOD_Z + (0.0 if name == "hoist" else AWAY)
+    hoist = mods["hoist"]
+    on_wire = WIRE_Z + 0.03 - 0.19  # the carriage height that rests the wheels on the wire
+    car = track([(0, on_wire - 0.42), (12, on_wire), (45, on_wire), (WIRE_LAST, on_wire - 0.3)], f)
+    hoist["carriage"].location.z = car - MOD_Z
+    hoist["head"].location.x = ROW_X - 0.07
+    turn = track([(15, 0.0), (38, 2 * math.tau)], f)
+    hoist["rotor"].rotation_euler = (0, turn, 0)
+    s["pivot"].rotation_euler = (0, turn, 0)
+    drop = LOWER_BY * ease((f - 18) / 24) if f > 18 else 0.0
+    for obj, home in s["hero_plant"]:
+        obj.location = home - Vector((0, 0, drop))
+    s["truss"].location = hero_stem(1.0) - Vector((0, 0, drop))
+    s["leaf"].location = hero_stem(LEAF_Z) - Vector((0, 0, drop))
+    bpy.context.view_layer.update()
+    # The twine runs from the foot of the bobbin, wherever the flip has put it, to the top of the plant.
+    foot = s["pivot"].matrix_world @ Vector((0, 0, -0.195))
+    points = s["hero_twine"].data.splines[0].points
+    points[0].co = (*foot, 1)
+    points[1].co = (HERO_X + 0.006, HOOK_Y, STEM_TOP - drop, 1)
+    bpy.context.view_layer.update()
+
+
+def rest_hero(s):
+    """Put the hero plant, its hook and its twine back as they hang."""
+    for obj, home in s["hero_plant"]:
+        obj.location = home
+    s["pivot"].rotation_euler = (0, 0, 0)
+    points = s["hero_twine"].data.splines[0].points
+    points[0].co = (ROW_X, HOOK_Y, WIRE_Z - 0.195, 1)
+    points[1].co = (HERO_X + 0.006, HOOK_Y, STEM_TOP, 1)
+    bpy.context.view_layer.update()
+
+
+def report_wire(s):
+    import json
+    import os
+
+    info = {
+        "frames": WIRE_LAST + 1,
+        "beats": WIRE_BEATS,
+        "crop": {"left": WIRE_CROP[0], "right": WIRE_CROP[1], "top": round(1 - WIRE_CROP[3], 4), "bottom": round(1 - WIRE_CROP[2], 4)},
+    }
+    print("WIREINFO " + json.dumps(info))
+    os.makedirs(args.out, exist_ok=True)
+    with open(f"{args.out}/wireinfo.json", "w") as handle:
+        json.dump(info, handle)
+
+
+def set_hero_hidden(s, hidden):
+    for name in ("heroplant", "wirework"):
+        for obj in s["c"][name].objects:
+            obj.hide_render = hidden
+
+
+def run_wire(s):
+    """HOIST at the wire: a still background without the hero plant, then the layer of everything that moves."""
+    import os
+    import time
+
+    scene = s["scene"]
+    spec, _, step = args.wire.partition(":")
+    first, last = (int(v) for v in spec.split("-"))
+    cam_wire(s)
+    report_wire(s)
+    plate = f"{args.out}/plate2"
+    if not os.path.exists(plate + ".png"):
+        set_pass(s, "beauty")
+        park_modules(s)
+        hide_dynamic(s, True)
+        set_hero_hidden(s, True)
+        render_still(scene, plate, 1600, 900, 36)
+        print("rendered plate2", flush=True)
+    set_pass(s, "layer", hero_moves=True)
+    set_hero_hidden(s, False)
+    hide_dynamic(s, False)
+    os.makedirs(f"{args.out}/wire", exist_ok=True)
+    for f in range(first, last + 1, int(step or 1)):
+        path = f"{args.out}/wire/{f:04d}"
+        if os.path.exists(path + ".png"):
+            continue
+        started = time.time()
+        apply_wire(s, f)
+        render_still(scene, path, args.width, args.height, args.samples, border=WIRE_CROP)
+        print("WIREFRAME", f, f"{time.time() - started:.1f}s", flush=True)
+    rest_hero(s)
+    set_hero_hidden(s, False)
+
+
 def run_jobs(s):
     scene = s["scene"]
     for job in [j for j in args.jobs.split(",") if j]:
@@ -1267,19 +1403,6 @@ def run_jobs(s):
             # One whole frame of the sequence, to check the layers against.
             cam_seq(s)
             apply_frame(s, int(name[5:]))
-        elif name == "hoist":
-            # HOIST at its work: the head on the crop wire, seen from below.
-            apply_frame(s, LAST)
-            hoist = s["mods"]["hoist"]
-            hoist["carriage"].location.z = WIRE_Z + 0.03 - 0.19 - MOD_Z
-            hoist["head"].location.x = ROW_X - 0.07
-            bpy.context.view_layer.update()
-            eye, target = (-0.25, 1.05, 2.85), (0.64, -0.2, 3.76)
-            clear_shot(s)
-            clear_view(s, eye, target, near=0.4, along=0.5)
-            add_camera(s["shot"], eye, target, lens=30, fstop=2.8, focus=(0.75, -0.2, 3.9))
-            add_light(s["shot"], "SPOT", (0.0, 0.2, 3.0), (0.8, -0.2, 3.9), 120, color=(1.0, 0.96, 0.9), size=0.05, spot=1.4)
-            add_light(s["shot"], "AREA", (-0.9, 1.6, 3.2), (0.4, -0.2, 3.7), 40, color=(0.7, 0.82, 1.0), size=1.0)
         elif name in ("tool-harvest", "tool-deleaf"):
             mod = "blush" if name == "tool-harvest" else "shear"
             apply_frame(s, 33 if mod == "blush" else 99)
@@ -1495,6 +1618,8 @@ def main():
         run_learn(s)
     if args.seq:
         run_seq(s)
+    if args.wire:
+        run_wire(s)
     if args.jobs:
         run_jobs(s)
     if args.save_blend:

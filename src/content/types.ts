@@ -69,8 +69,8 @@ export type WhatModule = {
 
 /** One beat of the walk through the picture: what the robot is doing, and what to notice. */
 export type WhatBeat = {
-  /** Matches a beat in the rendered sequence; see `SEQ` in src/lib/renders.ts. */
-  key: "look" | "reach" | "carry" | "swap1" | "deleaf" | "swap2" | "lower" | "wire";
+  /** Matches a beat in the rendered sequences; see `SEQ` and `WIRE` in src/lib/renders.ts. */
+  key: "look" | "reach" | "carry" | "swap1" | "deleaf" | "swap2" | "lower" | "wire" | "flip";
   name: string;
   body: string;
 };

@@ -19,3 +19,14 @@ export const SEQ = {
     { ready: false, x: 0.3598, y: 0.2271, h: 0.1831 },
   ],
 } as const;
+
+/**
+ * The second sequence, which follows the first: HOIST at the crop wire, from
+ * a camera under the wire. Printed as a WIREINFO line.
+ */
+export const WIRE = {
+  /** public/renders/wire/000.webp onwards. */
+  frames: 54,
+  beats: { wire: 0, flip: 15 },
+  crop: { left: 0, right: 1, top: 0, bottom: 1 },
+} as const;

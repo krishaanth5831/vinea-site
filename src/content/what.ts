@@ -53,7 +53,12 @@ export const what: WhatContent = {
     {
       key: "wire",
       name: "At the crop wire",
-      body: "The head rests on the wire, flips the winding hook to let out twine, and holds the plant while it comes down.",
+      body: "The head comes up under the wire and rests its wheels on it, beside the winding hook a plant hangs from.",
+    },
+    {
+      key: "flip",
+      name: "It lets the plant down",
+      body: "It turns the hook about the wire, which lets out twine a loop at a time, and holds the plant while it comes down.",
     },
   ],
 

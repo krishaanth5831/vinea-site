@@ -650,7 +650,7 @@ body::before {
 }
 
 .what-canvas,
-.what-wire,
+.what-cut,
 .what-scanline,
 .what-mark,
 .what-panel,
@@ -762,7 +762,7 @@ body::before {
 
 @media (prefers-reduced-motion: no-preference) and (min-width: 64rem) and (min-height: 40rem) {
   .js .what-track {
-    height: 640svh;
+    height: 820svh;
   }
 
   .js .what-sticky {
@@ -791,12 +791,15 @@ body::before {
     height: 100%;
   }
 
-  /* The last beat cuts to the head on the crop wire. */
-  .js .what-wire {
+  /* The camera changes for the crop wire; the picture dips through dark as it does. */
+  .js .what-cut {
     position: absolute;
     inset: 0;
+    z-index: 1;
     display: block;
-    opacity: var(--wire, 0);
+    background-color: #060d0a;
+    opacity: var(--cut, 0);
+    pointer-events: none;
   }
 
   /*

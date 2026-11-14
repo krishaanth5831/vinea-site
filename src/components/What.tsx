@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { what, type WhatBeat } from "@/content";
 import { ScrollTrigger, gsap, prefersReducedMotion } from "@/lib/gsap";
 import { scrollToY } from "@/lib/lenis";
-import { SEQ } from "@/lib/renders";
+import { SEQ, WIRE } from "@/lib/renders";
 import { useIsomorphicLayoutEffect } from "@/lib/useIsomorphicLayoutEffect";
 import { Container } from "./Container";
 import { Render } from "./Render";
@@ -18,8 +18,8 @@ import { SectionHead } from "./SectionHead";
 const STAGED =
   "(prefers-reduced-motion: no-preference) and (min-width: 64rem) and (min-height: 40rem)";
 
-/** How far through the scroll the rendered frames run; past it, the view cuts to the crop wire. */
-const WIRE_AT = 0.93;
+/** How far through the scroll the first sequence runs; past it, the view is at the crop wire. */
+const WIRE_AT = SEQ.frames / (SEQ.frames + WIRE.frames * 1.6);
 
 /** Which module is on the base, or on its way to it, in each beat. */
 const MODULE_OF: Record<WhatBeat["key"], number> = {
@@ -31,6 +31,7 @@ const MODULE_OF: Record<WhatBeat["key"], number> = {
   swap2: 2,
   lower: 2,
   wire: 2,
+  flip: 2,
 };
 
 /** The frame each module's button goes to. */
@@ -39,8 +40,9 @@ const MODULE_FRAME = [SEQ.beats.reach, SEQ.beats.deleaf, SEQ.beats.lower];
 /** The stills that stand in for the sequence where it isn't played. */
 const STILLS = ["what-harvest", "what-deleaf", "hoist"];
 
+/** Each beat's start, counted in frames straight through both sequences. */
 const BEAT_STARTS = what.beats.map((beat) =>
-  beat.key === "wire" ? Number.POSITIVE_INFINITY : SEQ.beats[beat.key],
+  beat.key === "wire" || beat.key === "flip" ? SEQ.frames + WIRE.beats[beat.key] : SEQ.beats[beat.key],
 );
 
 /**
@@ -84,8 +86,9 @@ export function What() {
        * kept as a bitmap. Drawing a frame is then a copy, so the scroll
        * never waits on an image.
        */
-      let plate: ImageBitmap | undefined;
+      const plates: (ImageBitmap | undefined)[] = [undefined, undefined];
       const frames: (ImageBitmap | undefined)[] = [];
+      const total = SEQ.frames + WIRE.frames;
       let want = 0;
       let drawn = -2;
       let stopped = false;
@@ -99,23 +102,32 @@ export function What() {
         drawn = -2;
       };
 
-      /* Draws the frame the scroll is on, or the nearest one that has arrived. */
+      /*
+       * Draws the frame the scroll is on, or the nearest one of the same
+       * sequence that has arrived. Frames count straight through: the
+       * aisle first, then the crop wire.
+       */
       const draw = () => {
+        const second = want >= SEQ.frames;
+        const plate = plates[second ? 1 : 0];
         if (!plate) return;
+        const lo = second ? SEQ.frames : 0;
+        const hi = second ? total : SEQ.frames;
         let f = want;
-        while (f >= 0 && !frames[f]) f--;
-        if (f < 0) {
+        while (f >= lo && !frames[f]) f--;
+        if (f < lo) {
           f = want;
-          while (f < SEQ.frames && !frames[f]) f++;
-          if (f >= SEQ.frames) f = -1;
+          while (f < hi && !frames[f]) f++;
+          if (f >= hi) f = -1;
         }
-        if (f === drawn) return;
-        drawn = f;
+        const key = f < 0 ? -1 - (second ? 1 : 0) * 2 : f;
+        if (key === drawn) return;
+        drawn = key;
         const { width, height } = canvas;
         pen.drawImage(plate, 0, 0, width, height);
         const layer = f >= 0 ? frames[f] : undefined;
         if (layer) {
-          const { left, right, top, bottom } = SEQ.crop;
+          const { left, right, top, bottom } = second ? WIRE.crop : SEQ.crop;
           pen.drawImage(layer, left * width, top * height, (right - left) * width, (bottom - top) * height);
         }
       };
@@ -132,21 +144,27 @@ export function What() {
       });
       sized.observe(canvas);
 
-      fetchBitmap("/renders/seq/plate.webp")
-        .then((bitmap) => {
-          if (stopped) return bitmap.close();
-          plate = bitmap;
-          drawn = -2;
-          draw();
-        })
-        .catch(() => {});
+      ["/renders/seq/plate.webp", "/renders/wire/plate.webp"].forEach((url, i) => {
+        fetchBitmap(url)
+          .then((bitmap) => {
+            if (stopped) return bitmap.close();
+            plates[i] = bitmap;
+            drawn = -2;
+            draw();
+          })
+          .catch(() => {});
+      });
 
       /* The frames load in order, a few at a time, once the section is near. */
       let next = 0;
       const load = () => {
-        if (stopped || next >= SEQ.frames) return;
+        if (stopped || next >= total) return;
         const i = next++;
-        fetchBitmap(`/renders/seq/${String(i).padStart(3, "0")}.webp`)
+        const url =
+          i < SEQ.frames
+            ? `/renders/seq/${String(i).padStart(3, "0")}.webp`
+            : `/renders/wire/${String(i - SEQ.frames).padStart(3, "0")}.webp`;
+        fetchBitmap(url)
           .then((bitmap) => {
             if (stopped) return bitmap.close();
             frames[i] = bitmap;
@@ -172,19 +190,23 @@ export function What() {
       const state = { p: 0 };
       const apply = () => {
         const p = state.p;
-        const frame = Math.round(Math.min(1, p / WIRE_AT) * (SEQ.frames - 1));
+        /* The aisle fills the first part of the scroll, the crop wire the rest. */
+        const frame =
+          p < WIRE_AT
+            ? Math.round((p / WIRE_AT) * (SEQ.frames - 1))
+            : SEQ.frames + Math.round(((p - WIRE_AT) / (1 - WIRE_AT)) * (WIRE.frames - 1));
         if (frame !== want) {
           want = frame;
           draw();
         }
-        const wire = Math.max(0, Math.min(1, (p - (WIRE_AT - 0.02)) / 0.035));
-        figure.style.setProperty("--wire", wire.toFixed(3));
+        /* A short dip through dark covers the change of camera. */
+        const cut = Math.max(0, 1 - Math.abs(p - WIRE_AT) / 0.012);
+        figure.style.setProperty("--cut", cut.toFixed(3));
 
         let b = 0;
         BEAT_STARTS.forEach((start, i) => {
           if (frame >= start) b = i;
         });
-        if (p >= WIRE_AT) b = what.beats.length - 1;
         setBeat((prev) => (prev === b ? prev : b));
 
         /* While it looks: first every truss is framed, then the ready one is picked out. */
@@ -206,7 +228,7 @@ export function What() {
         tween.scrollTrigger?.kill();
         tween.kill();
         trigger.current = null;
-        plate?.close();
+        plates.forEach((bitmap) => bitmap?.close());
         frames.forEach((bitmap) => bitmap?.close());
         setStaged(false);
       };
@@ -268,9 +290,9 @@ export function What() {
                 <canvas
                   className="what-canvas"
                   role="img"
-                  aria-label="A rendered sequence: the robot looks along the row, cuts a ripe truss and carries it to its crate, then its module is swapped for the deleafing module and then for the lowering module."
+                  aria-label="A rendered sequence: the robot looks along the row, cuts a ripe truss and carries it to its crate; its module is swapped for the deleafing module and then for the lowering module, whose head rests on the crop wire, turns a plant's winding hook and lets the plant down."
                 />
-                <Render name="hoist" alt="" className="what-wire" />
+                <span aria-hidden="true" className="what-cut" />
                 <span className="render-tag">{what.badge}</span>
 
                 <span aria-hidden="true" className="what-scanline" />
