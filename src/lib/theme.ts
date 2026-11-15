@@ -7,4 +7,4 @@
 export const THEME_KEY = "vinea-theme";
 
 /** Browser-chrome colour for each theme, matching `--bg`. */
-export const CHROME = { dark: "#090a0b", light: "#fbfbfb" } as const;
+export const CHROME = { dark: "#060d0a", light: "#f3f6ee" } as const;

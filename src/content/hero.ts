@@ -2,16 +2,17 @@ import type { HeroContent } from "./types";
 import { BOOK_A_CALL } from "./site";
 
 export const hero: HeroContent = {
-  eyebrow: "Greenhouse robotics",
+  status: "In simulation today. Looking for pilot growers.",
 
-  heading: ["Greenhouse robots,", "taught by the crew."],
+  heading: ["The night shift,", "taught by your crew."],
+  accent: "your crew",
 
   lead:
-    "Vinea records how greenhouse crews do their work, turns it into robot skills, and runs them on one platform inside the greenhouses growers already have.",
+    "Vinea is building robots that harvest trusses and cut leaves between your rows. They learn each job from recordings of your own people, and ride the heating pipes you already have.",
 
   ctas: [
     { label: "Book a call", href: BOOK_A_CALL, tone: "primary" },
-    { label: "How it works", href: "#how", tone: "secondary" },
+    { label: "See what it is", href: "#what", tone: "secondary" },
   ],
 
   note: "Also here",

@@ -1,26 +1,26 @@
 import { Heard } from "@/components/Heard";
-import { How } from "@/components/How";
-import { Modules } from "@/components/Modules";
-import { Question } from "@/components/Question";
+import { Hero } from "@/components/Hero";
+import { Jobs } from "@/components/Jobs";
+import { Learn } from "@/components/Learn";
 import { Roadmap } from "@/components/Roadmap";
 import { Status } from "@/components/Status";
-import { Story } from "@/components/Story";
 import { Talk } from "@/components/Talk";
+import { What } from "@/components/What";
 
 /**
- * One page, one line through it. The story says why Vinea exists; a thread
- * falls from it through the bar robots have to clear, why growers haven't
- * bought, how Vinea works, the modules, where it stands and what comes
- * next, and into the ask, where the mark grows back.
+ * The home page, written for a grower. It says what Vinea is before why:
+ * what it is building, a picture of it, the jobs it does, how it learns
+ * them, what it does about the reasons growers haven't bought a robot, where
+ * it stands today, what comes next, and the ask.
  */
 export default function Home() {
   return (
     <>
-      <Story />
-      <Question />
+      <Hero />
+      <What />
+      <Jobs />
+      <Learn />
       <Heard />
-      <How />
-      <Modules />
       <Status />
       <Roadmap />
       <Talk />

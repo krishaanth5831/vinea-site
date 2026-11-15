@@ -24,7 +24,7 @@ export function Label({
 }) {
   return (
     <p className={`t-label m-0 inline-flex items-center gap-2.5 text-muted ${className}`}>
-      <span aria-hidden="true" className="size-1.5 bg-fg" />
+      <span aria-hidden="true" className="size-1.5 rounded-full bg-accent shadow-[0_0_0.6rem_var(--glow)]" />
       {children}
     </p>
   );

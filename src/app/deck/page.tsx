@@ -5,7 +5,6 @@ import { Container, Label } from "@/components/Container";
 import { Deck } from "@/components/deck/Deck";
 import { Reveal } from "@/components/Reveal";
 import { SplitReveal } from "@/components/SplitReveal";
-import { Thread } from "@/components/Thread";
 import { deck } from "@/content";
 
 export const metadata: Metadata = {
@@ -68,7 +67,6 @@ export default function DeckPage() {
       </section>
 
       <section aria-labelledby="deck-next" className="deck-outro pb-section">
-        <Thread />
         <Container className="mt-10 flex flex-col items-center text-center">
           <Reveal>
             <Label>{outro.eyebrow}</Label>

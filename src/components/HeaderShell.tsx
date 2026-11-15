@@ -47,7 +47,7 @@ export function HeaderShell({ children }: { children: ReactNode }) {
       <div
         ref={bar}
         aria-hidden="true"
-        className="scroll-progress absolute right-0 -bottom-px left-0 h-px bg-fg"
+        className="scroll-progress absolute right-0 -bottom-px left-0 h-px bg-accent"
       />
     </header>
   );

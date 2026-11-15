@@ -5,7 +5,7 @@ export const talk: TalkContent = {
   id: "talk",
   eyebrow: "Talk to me",
   heading: ["Grow under glass?", "Let's talk."],
-  lead: "I'm looking for growers who will put a robot up against their own crew, and for engineers who have kept machines running in a greenhouse every day.",
+  lead: "I'm looking for growers who will put a robot up against their own crew for a pilot season, and for engineers who have kept machines running in a greenhouse every day.",
 
   ctas: [
     { label: "Book a call", href: BOOK_A_CALL, tone: "primary" },

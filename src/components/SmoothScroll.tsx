@@ -25,8 +25,8 @@ export function SmoothScroll() {
       autoRaf: false,
       /* Same-page hash links are handed to Lenis instead of jumping. */
       anchors: { offset: -72 },
-      /* A little heavier than the default, so the page glides. */
-      lerp: 0.085,
+      /* A touch heavier than the default: the page glides, but stays under the hand. */
+      lerp: 0.11,
       smoothWheel: true,
     });
 

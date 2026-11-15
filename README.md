@@ -200,29 +200,79 @@ supports one; the header stays put while the page beneath it changes.
 
 ## How the page is drawn
 
-Black and white. Dark is the default; the switch in the header flips to light
+The night shift: a greenhouse after dark. The ground is a green that is
+almost black, the text a warm white, and the one accent is the pink-violet of
+LED grow lights. Dark is the default; the switch in the header flips to light
 and remembers it. Colours are tokens in `src/app/globals.css`, one block per
 theme, and nothing else names a colour.
 
-The page is one line. The mark comes apart and collapses to square one, a
-thread falls from that square through every section, and the mark grows back
-at the end.
+The home page is written for a grower and says what Vinea is before why:
+hero → what it is → the jobs → how it learns → what growers told me → where
+it stands → roadmap → the ask.
 
+- `Hero.tsx` is the opening screen over the empty aisle, with dust drifting
+  in the light. Its entrance is CSS, so the heading never waits on JavaScript.
+- `What.tsx` is the picture of the robot. On a wide screen it holds still
+  while the reader scrolls through a rendered sequence: the robot looks,
+  cuts a truss, carries it to the crate, and its module is swapped twice
+  (see `.what-track` in `globals.css`). Elsewhere three stills stand in and
+  the buttons change the module.
+- `Jobs.tsx` is a tile per module, `Learn.tsx` the three steps with their
+  rendered loops (`Clip.tsx` plays them only while on screen), `Heard.tsx` the growers' objections with Vinea's answers.
+- `Roadmap.tsx` is the track that lights up to where Vinea is, and a lane per
+  module underneath.
+- `Render.tsx` shows a concept render with the label that says it is one.
+- `PointerGlow.tsx` puts a pool of light under the pointer on any card
+  marked `data-glow`.
 - `Mark.tsx` is the Vinea diamond and wordmark as SVG, in `currentColor`.
   `src/app/icon.svg` is the same mark as the favicon.
-- `Story.tsx` is the hero and the pivot on one sticky stage. The layout is
-  chosen in CSS before paint (see `.story` in `globals.css`); without motion,
-  JavaScript or a tall enough screen it is a plain stack.
-- `Thread.tsx` is a length of the line that opens each later section.
-- `Question.tsx` types the question out as the thread reaches it.
-- `StackCards.tsx` and `Glyph.tsx` are the refusals and their drawings.
-- `RebuildMark.tsx` grows the mark back out of square one.
 - `SplitReveal.tsx` raises headings line by line; `Reveal.tsx` fades the rest.
   Both ship content visible and only hide what is still below the fold.
 - `HeaderShell.tsx` hides the header while scrolling down and draws the
   progress hairline.
 - `SmoothScroll.tsx` sets up Lenis and hands scroll updates to ScrollTrigger.
   Under reduced motion Lenis is never constructed at all.
+
+## The renders
+
+Every picture of the robot is a concept render made by a script, and the page
+labels each one. None is a photograph or a frame from the simulation.
+
+- `scripts/blender/vinea_scene.py` builds the night greenhouse, the base and
+  the three modules, and holds the choreography of everything that moves.
+- `scripts/blender/render.sh` runs it in Blender with a memory cap, at the
+  lowest CPU priority, on the CPU only. It expects a portable Blender build
+  at `~/.cache/vinea-site-tools/` (set `BLENDER` to use another).
+- `scripts/blender/publish.py` turns the results into the WebP files under
+  `public/renders/` (needs Pillow).
+
+The scroll sequence in "What it is" is not rendered as whole frames: that
+would take a quarter of an hour a frame on a CPU. It is a still background
+(the "plate") plus a clear layer holding only what moves, and the page lays
+one over the other on a canvas. There are two of them: the robot in the aisle
+(`seq`), and HOIST at the crop wire (`wire`).
+
+```bash
+# the aisle: background, then the moving layer (frames already done are skipped)
+scripts/blender/render.sh --out /tmp/renders --format PNG \
+  --jobs plate:1600x900:36 --seq 0-156 --width 1120 --height 630 --samples 20
+# HOIST at the crop wire: its background and its layer
+scripts/blender/render.sh --out /tmp/renders --format PNG \
+  --wire 0-53 --width 1120 --height 630 --samples 20
+# the job tiles
+scripts/blender/render.sh --out /tmp/renders --format PNG \
+  --jobs "tool-harvest:1200x900:28,tool-deleaf:1200x900:28,base:1200x900:28,scout:960x720:24"
+python scripts/blender/publish.py /tmp/renders
+```
+
+Each run prints a `SEQINFO` or `WIREINFO` line: the frame count, the frame
+each beat starts on, where the layer sits in the frame, and where the trusses
+the robot looks at are. If the camera, the crop or the choreography changes,
+copy it into `src/lib/renders.ts`, which is what the page reads.
+
+The loops in "How it learns" are made the same way (`--learn
+record,learn,work`), then put together by `compose_learn.py` and encoded to
+MP4 by `encode.py`, which uses the encoder inside Blender.
 
 Typeface credits are in [CREDITS.md](./CREDITS.md).
 
