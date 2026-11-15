@@ -488,9 +488,20 @@ cut a frame to under a minute and the whole sequence to a couple of
 megabytes. The marks the robot's camera puts on the trusses while it looks
 are drawn by the page, at positions the render prints.
 
-**The capture device is not named.** It isn't chosen. The copy says what it
-does ("a small capture device records how they reach, cut and hold") and the
-drawings show a reach as a line of light, which commits to no device.
+**The capture device is not named, but it is shown.** It isn't chosen. The
+copy says what it does ("a small capture device records how they reach, cut
+and hold"). The first version of the loops showed a reach as bare lines of
+light, to commit to no device; the owner found that it explained nothing
+(2026-11-15) and picked the picture: a gloved hand cutting a truss with
+snips, with a small camera strapped behind the wrist. That is the wrist unit
+from the capture plan and the leading candidate. If the device changes, the
+Record loop is re-rendered; the words don't have to change.
+
+**The three loops are one job, three times.** Record is the crew member's
+hand and the wrist camera. Learn is recordings, as small screens, travelling
+into an arm drawn in light that rehearses the reach: the owner's choice of
+how to picture training. Work is the robot's arm making the same cut and
+carrying the truss away.
 
 **Antler is a residency.** The page says Vinea is being built "in Antler's
 residency". It is not called backing or funding, because there is none until

@@ -272,7 +272,10 @@ copy it into `src/lib/renders.ts`, which is what the page reads.
 
 The loops in "How it learns" are made the same way (`--learn
 record,learn,work`), then put together by `compose_learn.py` and encoded to
-MP4 by `encode.py`, which uses the encoder inside Blender.
+MP4 by `encode.py`, which uses the encoder inside Blender. They are a crew
+member's hand with a camera behind the wrist, recordings travelling into an
+arm drawn in light, and the robot making the same cut. `--frames 0,20,36`
+renders only those frames of each loop, for a quick look before the full run.
 
 Typeface credits are in [CREDITS.md](./CREDITS.md).
 
