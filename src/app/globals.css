@@ -649,6 +649,14 @@ body::before {
   left: 1rem;
 }
 
+/* The loops put their screens in the bottom right corner. */
+.learn-frame > .render-tag {
+  top: 0.75rem;
+  right: auto;
+  bottom: auto;
+  left: 0.75rem;
+}
+
 .what-canvas,
 .what-cut,
 .what-scanline,
