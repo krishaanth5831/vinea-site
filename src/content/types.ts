@@ -232,15 +232,42 @@ export type DeckFigure =
   /** Steps in order, joined by the thread. */
   | { kind: "steps"; steps: string[] }
   /** Competitors as rows, rather than a paragraph. */
-  | { kind: "table"; columns: [string, string, string]; rows: [string, string, string][] };
+  | { kind: "table"; columns: [string, string, string]; rows: [string, string, string][] }
+  /** Three headline figures side by side, each with what it counts. */
+  | { kind: "stats"; stats: { value: string; text: string }[] }
+  /**
+   * A clip or a still from the deck, one or two stacked. Clips play only
+   * while their slide is the current one; `caption` says what the picture
+   * is (concept illustration, simulation, mock-up), as every picture must.
+   */
+  | {
+      kind: "media";
+      items: {
+        /** File name in `public/deck/`, without extension. */
+        name: string;
+        type: "video" | "image";
+        /** Width over height. */
+        ratio: "16/9" | "8/9";
+        /** What a screen reader hears. */
+        alt: string;
+        caption: string;
+      }[];
+    };
 
 export type Slide = {
   /** Anchor for the slide, and the key the rail links to. */
   id: string;
   /** The small label above the headline. */
   kicker: string;
-  /** Top right of the slide: where its figures come from, or the byline. */
-  corner?: { label: string; href?: `https://${string}` };
+  /**
+   * Top right of the slide: where its figures come from, or the byline.
+   * A slide with several sources lists the rest in `more`, each linked.
+   */
+  corner?: {
+    label: string;
+    href?: `https://${string}`;
+    more?: { label: string; href: `https://${string}` }[];
+  };
   /** Set in capitals, one or two lines. */
   title: [string] | [string, string];
   /** Paragraphs. Empty when a figure carries the slide on its own. */

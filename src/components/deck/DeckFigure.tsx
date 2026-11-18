@@ -1,4 +1,9 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+
 import type { DeckFigure as Figure } from "@/content";
+import { prefersReducedMotion } from "@/lib/gsap";
 
 /*
  * The drawings beside the slides, built from the mark's own square cells.
@@ -150,8 +155,94 @@ function Table({ figure }: { figure: Extract<Figure, { kind: "table" }> }) {
   );
 }
 
-export function DeckFigure({ figure }: { figure: Figure }) {
+function Stats({ figure }: { figure: Extract<Figure, { kind: "stats" }> }) {
+  return (
+    <div className="fig-stats grid w-full gap-6 sm:grid-cols-3">
+      {figure.stats.map((stat) => (
+        <div key={stat.value} className="fig-row grid content-start gap-3">
+          <p className="fig-stat-value m-0">{stat.value}</p>
+          <p className="m-0 max-w-[22rem] text-[clamp(0.9375rem,1.25vw,1.125rem)] leading-snug text-[var(--s-muted)]">
+            {stat.text}
+          </p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+type MediaItem = Extract<Figure, { kind: "media" }>["items"][number];
+
+/**
+ * One of the deck's clips. It plays from its first frame each time its
+ * slide becomes the current one, so a reader sees the whole take, and it
+ * pauses when the slide is left. The stack keeps covered slides on screen,
+ * so "on screen" is not enough to decide. Under reduced motion it never
+ * starts on its own; the controls are shown instead, and the poster stands
+ * in until someone presses play. Print gets the poster as an image.
+ */
+function DeckClip({ item, active }: { item: MediaItem; active: boolean }) {
+  const ref = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = ref.current;
+    if (!video) return;
+    if (prefersReducedMotion()) {
+      video.controls = true;
+      return;
+    }
+    if (active) {
+      video.currentTime = 0;
+      video.play().catch(() => {});
+    } else {
+      video.pause();
+    }
+  }, [active]);
+
+  return (
+    <>
+      <video
+        ref={ref}
+        className="fig-media-video"
+        src={`/deck/${item.name}.mp4`}
+        poster={`/deck/${item.name}.webp`}
+        aria-label={item.alt}
+        muted
+        loop
+        playsInline
+        preload="metadata"
+      />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img className="fig-media-print" src={`/deck/${item.name}.webp`} alt="" aria-hidden="true" />
+    </>
+  );
+}
+
+function Media({ figure, active }: { figure: Extract<Figure, { kind: "media" }>; active: boolean }) {
+  return (
+    <div className="fig-media" data-count={figure.items.length}>
+      {figure.items.map((item) => (
+        <figure key={item.name} className="fig-media-item m-0" data-ratio={item.ratio}>
+          <div className="fig-media-frame">
+            {item.type === "video" ? (
+              <DeckClip item={item} active={active} />
+            ) : (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img src={`/deck/${item.name}.webp`} alt={item.alt} loading="lazy" decoding="async" />
+            )}
+          </div>
+          <figcaption className="t-mono mt-3 text-[var(--s-muted)]">{item.caption}</figcaption>
+        </figure>
+      ))}
+    </div>
+  );
+}
+
+export function DeckFigure({ figure, active = false }: { figure: Figure; active?: boolean }) {
   switch (figure.kind) {
+    case "stats":
+      return <Stats figure={figure} />;
+    case "media":
+      return <Media figure={figure} active={active} />;
     case "cells":
       return <Cells figure={figure} />;
     case "split":
