@@ -172,8 +172,10 @@ code change is needed as part of the switch.
 
 ## The deck and the calculator
 
-`/deck` is the pitch deck, "Vinea Pitch Deck v6 Send" from the vault, trimmed
-for a public page (see DECISIONS.md). On a screen at least `64rem` wide and
+`/deck` is the pitch deck, "Vinea Pitch Deck v9 Send" from the vault, trimmed
+for a public page (see DECISIONS.md). Its clips and stills live in
+`public/deck/`; a clip plays from its start while its slide is the current
+one, and shows controls instead under reduced motion. On a screen at least `64rem` wide and
 `37.5rem` tall, with motion allowed, the slides are a sticky stack: each
 holds while the next rises over it and the one beneath settles back. Each
 slide's headline rises out of its masks, its text follows, and its drawing
