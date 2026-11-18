@@ -523,3 +523,55 @@ capture tool were taken out of the home page and the deck text.
 There is no founder photo and no booking link yet; both were suggested. The
 getvinea.nl mailbox is still broken, so mail still goes to the founder's
 personal address.
+
+## The deck moves to v9 Send (2026-11-18)
+
+The owner asked for the current deck on the site, with its animations,
+renders and clips all playing, once the deck was ready. `/deck` now carries
+"Vinea Pitch Deck v9 Send" (13 slides, cut down from the 21-page v8 Send),
+replacing v6 Send. It is still rebuilt in the site's own type and tones, not
+embedded. This section replaces "Which deck, and what was cut" above for the
+slide list; the reasons for each trim there still hold.
+
+**Simulation footage, on this page only.** The night-shift rule says no
+simulation frames anywhere. The owner's request for the deck's clips is the
+exception, and it is limited to `/deck`: the home page still shows only
+concept renders. Every picture on the deck says what it is in its caption
+(concept illustration, illustration, simulation, scripted mock-up), and the
+mock-up's caption says its arms are stand-ins.
+
+**What the page keeps from the site's own rules, against the Canva text.**
+- The data-licensing paragraph stays out of the business model.
+- The pilot line ("a grower has seen the full-system demo, and we are
+  working out a first pilot") is out: traction is only ever stated as a
+  denial here.
+- "On top of an open robot foundation model" stays out of the text, as it
+  was on 2026-11-14. The explainer clips still carry that label, as the
+  concept they illustrate.
+- The WUR shares stay shares of the six main crop jobs; lowering is one of
+  them, so only scouting comes "on top". The Canva v9 was corrected to match.
+- Polybot stays "backed by SPRIND", without an amount.
+- For space, the competition paragraph is shorter than the Canva one, and
+  the Four Growers savings claim is left out.
+
+**Media.** The clips and stills live in `public/deck/` under neutral names.
+They come from the deck's media folder outside the repo. The clips were
+re-encoded once to H.264 at 1600x900, CRF 24, with the index at the front
+(faststart), so they start streaming at once; together they weigh about
+5 MB. Each clip has a WebP poster taken from a moment that shows the job
+(the explainer clips' first frame already holds their end state).
+
+**Playback.** A clip plays from its first frame each time its slide becomes
+the current one and pauses when the slide is left, so a reader sees each
+take whole. The stack keeps covered slides on screen, which is why the
+slide index decides, not an intersection observer. Under reduced motion
+nothing starts on its own and the clips show their controls. Print shows
+the poster as an image.
+
+**Fit.** On a staged slide the figure column is a size container, and a
+picture is held to the height the headline leaves, so a short screen gets
+a smaller picture rather than one that runs off the slide. Table slides get
+a slightly smaller headline, and on screens under 50rem tall the table
+rows tighten. Checked at 1920x1080, 1440x900, 1366x768, 1280x720 and a
+phone: every slide fits, and only the current slide's clips play.
+`public/vinea-deck.pdf` was reprinted from the page (13 pages).

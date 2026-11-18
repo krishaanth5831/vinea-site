@@ -22,7 +22,7 @@ const STAGED =
 /** Ink and paper alternate, so no two neighbouring slides share a colour. */
 const tone = (i: number) => (i % 2 === 0 ? "ink" : "paper");
 
-function SlideCard({ slide, index }: { slide: Slide; index: number }) {
+function SlideCard({ slide, index, active }: { slide: Slide; index: number; active: boolean }) {
   const titleId = `${slide.id}-title`;
   const layout = slide.layout ?? "content";
   const hasBody = slide.body.length > 0 || Boolean(slide.links?.length) || layout === "end";
@@ -48,6 +48,19 @@ function SlideCard({ slide, index }: { slide: Slide; index: number }) {
             ) : (
               slide.corner.label
             )}
+            {slide.corner.more?.map((source) => (
+              <span key={source.href}>
+                {" · "}
+                <a
+                  href={source.href}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="underline decoration-[var(--s-line)] underline-offset-4 transition-colors duration-200 hover:text-[var(--s-fg)] hover:decoration-[var(--s-fg)]"
+                >
+                  {source.label}
+                </a>
+              </span>
+            ))}
           </p>
         ) : null}
       </div>
@@ -73,8 +86,8 @@ function SlideCard({ slide, index }: { slide: Slide; index: number }) {
 
       <div
         className={`slide-foot ${slide.figure && hasBody ? "has-figure" : ""} ${
-          slide.figure?.kind === "table" ? "has-table" : ""
-        }`}
+          slide.figure?.kind === "table" || slide.figure?.kind === "stats" ? "has-table" : ""
+        } ${slide.figure?.kind === "stats" ? "has-stats" : ""}`}
       >
         {hasBody ? (
         <div className="slide-body">
@@ -101,15 +114,15 @@ function SlideCard({ slide, index }: { slide: Slide; index: number }) {
         </div>
         ) : null}
 
-        {layout === "cover" ? (
+        {layout === "cover" && !slide.figure ? (
           <div className="slide-figure slide-mark" aria-hidden="true">
             <Mark className="block size-[clamp(7rem,22svh,14rem)]" />
           </div>
         ) : null}
 
         {slide.figure ? (
-          <div className="slide-figure">
-            <DeckFigure figure={slide.figure} />
+          <div className="slide-figure" data-kind={slide.figure.kind}>
+            <DeckFigure figure={slide.figure} active={active} />
           </div>
         ) : null}
       </div>
@@ -376,7 +389,7 @@ export function Deck({ slides }: { slides: Slide[] }) {
       <ol ref={listRef} className="deck-list m-0 list-none p-0">
         {slides.map((slide, i) => (
           <li key={slide.id} id={slide.id} className="deck-slide">
-            <SlideCard slide={slide} index={i} />
+            <SlideCard slide={slide} index={i} active={i === active} />
           </li>
         ))}
       </ol>

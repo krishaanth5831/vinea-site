@@ -4,24 +4,28 @@ import { BOOK_A_CALL } from "./site";
 const LINKEDIN = "https://www.linkedin.com/in/krishaanth-ramaraj-230046282" as const;
 
 /**
- * The pitch deck, from "Vinea Pitch Deck v6 Send" in the vault, trimmed for a
- * public page that growers read as well as investors:
+ * The pitch deck, from "Vinea Pitch Deck v9 Send" in the vault (13 slides,
+ * 2026-11-18), trimmed and corrected for a public page that growers read as
+ * well as investors:
  *
  * - the data-licensing paragraph is cut from the business model (investors
  *   only, by the narrative's own rule);
- * - the line about eternal.ag's founder's earlier company is cut;
- * - the contact links use the address in site.ts (the founder's gmail since
- *   2026-11-03, because the getvinea.nl inbox stopped receiving mail);
- * - the WUR shares say what they are shares *of*: the six main crop jobs,
- *   not every hour on the farm.
+ * - the pilot line ("a grower has seen the full-system demo") is cut, under
+ *   the site's rule that traction is only ever stated as a denial;
+ * - "on top of an open robot foundation model" stays out of the text, as it
+ *   was taken out on 2026-11-14: today's training is a smaller model taught
+ *   by a scripted teacher in simulation. The explainer clips still carry
+ *   that label, as the concept they illustrate;
+ * - the WUR shares say what they are shares *of*: the six main crop jobs;
+ * - Polybot stays "backed by SPRIND", and the contact links use site.ts.
  *
- * Corrected on the site on 2026-11-03, so it no longer matches the Canva v6
- * Send word for word: the capture tool no longer claims fin-ray jaws for
- * every job, BLUSH harvests whole trusses, the progress slide is current,
- * and Polybot is in the competition table.
+ * The clips and stills are the deck's own (see `public/deck/`), and each one
+ * says what it is. The simulation footage is here because the owner asked
+ * for the deck's clips on the site; the home page still has none. See
+ * DECISIONS.md, "The deck moves to v9 Send".
  *
  * Figures are allowed here, and only here and on /roi. Each slide that has
- * one names its source. See DECISIONS.md, "The deck and the calculator".
+ * one names its source.
  */
 export const deck: DeckContent = {
   meta: {
@@ -33,7 +37,7 @@ export const deck: DeckContent = {
   intro: {
     eyebrow: "The deck",
     heading: "Vinea, slide by slide.",
-    lead: "What Vinea builds, why growers need it now, and how they would pay for it. Every figure names its source.",
+    lead: "What Vinea builds, how crews teach the robots, and how growers would pay for it. Every figure names its source, and every picture says what it is.",
     ctas: [
       { label: "Start reading", href: "#cover", tone: "primary" },
       {
@@ -55,92 +59,82 @@ export const deck: DeckContent = {
       corner: { label: "Krishaanth Ramaraj · Founder" },
       title: ["Vinea"],
       body: [
+        "Robots that learn greenhouse work from the people who do it.",
         "Vinea turns the way greenhouse crews work into robot skills, and runs them on one platform inside the greenhouses growers already have.",
       ],
       layout: "cover",
+      figure: {
+        kind: "media",
+        items: [
+          {
+            name: "cover",
+            type: "video",
+            ratio: "16/9",
+            alt: "A picker cuts a truss of tomatoes along a path, and a robot arm on a rail base cuts the same truss along the same path.",
+            caption: "Concept illustration",
+          },
+        ],
+      },
     },
     {
       id: "the-problem",
       kicker: "The problem",
-      corner: { label: "Source: Wageningen UR, 2005–2010", href: "https://edepot.wur.nl/176513" },
+      corner: {
+        label: "Sources: Wageningen UR, 2005–2010",
+        href: "https://edepot.wur.nl/176513",
+        more: [
+          {
+            label: "Agrimatie, 2021",
+            href: "https://www.groentennieuws.nl/article/9385193/nederlandse-glasgroentetelers-zien-kosten-met-21-stijgen-in-2021/",
+          },
+          {
+            label: "Agrimatie, 2025",
+            href: "https://www.groentennieuws.nl/article/9794873/inkomen-glastuinbouw-gedaald-door-stijging-kosten/",
+          },
+          {
+            label: "RaboResearch, 2025",
+            href: "https://topsectortu.nl/wp-content/uploads/2025/03/RaboResearch_Global-greenhouse-update_2025.pdf",
+          },
+        ],
+      },
       title: ["Still done", "by hand"],
       body: [
-        "Greenhouses still run on hands. A hectare of greenhouse tomatoes takes about 9,450 hours of work a year. Of the six main crop jobs, harvesting takes 29% of the hours, removing old leaves 26%, and de-shooting and twisting the plants another 21%. Scouting for pests comes on top. Crews do all of it, all season, and every one of those hours is paid.",
+        "A hectare of greenhouse tomatoes takes about 9,450 hours of work a year. Of the six main crop jobs, harvesting takes 29% of the hours, removing old leaves 26% and de-shooting and twisting the plants 21%, with scouting on top. Crews do all of it by hand, hired through the same agencies every grower competes for, and the area one worker looks after has barely changed since 2000.",
       ],
       figure: {
-        kind: "split",
-        parts: [
-          { label: "Harvesting", share: 0.29, tag: "BLUSH" },
-          { label: "Removing old leaves", share: 0.26, tag: "SHEAR" },
-          { label: "De-shooting and twisting", share: 0.21 },
-          { label: "Clipping, lowering, truss pruning", share: 0.24 },
+        kind: "stats",
+        stats: [
+          {
+            value: "A third",
+            text: "of the average Dutch greenhouse vegetable farm's costs in 2021 were wages: almost €975,000 of almost €2.9 million.",
+          },
+          {
+            value: "1 in 5",
+            text: "Dutch greenhouse vegetable farms made a loss in 2025, the first time in more than ten years.",
+          },
+          {
+            value: "80%",
+            text: "of the 67,000 people working in Dutch greenhouses come from abroad, by RaboResearch's estimate.",
+          },
         ],
-        caption: "Hours across the six main crop jobs, tomato",
-      },
-    },
-    {
-      id: "the-cost",
-      kicker: "The cost",
-      corner: {
-        label: "Source: Agrimatie (WUR), 2021",
-        href: "https://www.groentennieuws.nl/article/9385193/nederlandse-glasgroentetelers-zien-kosten-met-21-stijgen-in-2021/",
-      },
-      title: ["A third of", "the bill"],
-      body: [
-        "In 2021 the average Dutch greenhouse vegetable farm paid almost €975,000 in wages, out of almost €2.9 million in total costs. One Westland tomato grower told me that harvesting alone costs €5 per m² every year. Since then, costs have risen faster than what growers earn.",
-      ],
-      figure: {
-        kind: "cells",
-        total: 30,
-        lit: 10,
-        columns: 10,
-        caption: "Wages against total costs, average Dutch greenhouse vegetable farm, 2021",
-      },
-    },
-    {
-      id: "the-margin",
-      kicker: "The margin",
-      corner: {
-        label: "Source: Agrimatie (WUR), 2025",
-        href: "https://www.groentennieuws.nl/article/9794873/inkomen-glastuinbouw-gedaald-door-stijging-kosten/",
-      },
-      title: ["One in five", "at a loss"],
-      body: [
-        "In 2025, 20% of Dutch greenhouse vegetable farms made a loss, the first time in more than ten years. Across Dutch greenhouse horticulture, revenue rose 8% while costs and depreciation rose 13%. A grower can't fix that by hiring fewer people, because the crop still needs the same hours.",
-      ],
-      figure: {
-        kind: "cells",
-        total: 5,
-        lit: 1,
-        columns: 5,
-        caption: "Farms with negative income, 2025",
-      },
-    },
-    {
-      id: "the-workforce",
-      kicker: "The workforce",
-      corner: {
-        label: "Source: RaboResearch, 2025",
-        href: "https://topsectortu.nl/wp-content/uploads/2025/03/RaboResearch_Global-greenhouse-update_2025.pdf",
-      },
-      title: ["Four in five", "from abroad"],
-      body: [
-        "About 67,000 people work in Dutch greenhouses, and an estimated 80% of them come from abroad, increasingly from Romania and Bulgaria rather than Poland. The area one worker looks after has barely changed since 2000, so a bigger greenhouse still means more people, hired from the same agencies every grower is competing for.",
-      ],
-      figure: {
-        kind: "cells",
-        total: 5,
-        lit: 4,
-        columns: 5,
-        caption: "Greenhouse workers from abroad, estimated",
       },
     },
     {
       id: "the-competition",
       kicker: "The competition",
-      corner: { label: "Sources: press releases" },
+      corner: {
+        label: "Sources: press releases",
+        more: [
+          {
+            label: "AgriDirect, WUR",
+            href: "https://www.proeftuinprecisielandbouw.nl/nppl_r-jaarevent-tuinbouw-4-werkomstandigheden-beinvloeden-prestatie-oogstrobots/",
+          },
+        ],
+      },
       title: ["Years in.", "Millions in."],
-      body: ["Robots were meant to fix this, and the money has been there for years."],
+      body: [
+        "Most of these robots are still in trials. In 2019, 11% of Dutch glasshouse growers used a robot of any kind; in a 2025 WUR test, GRoW picked half the trusses staff marked ripe and needed a person six times in 1.5 hours. Most still do one job.",
+      ],
       figure: {
         kind: "table",
         columns: ["Company", "Since", "Raised"],
@@ -148,132 +142,165 @@ export const deck: DeckContent = {
           ["MetoMotion (GRoW)", "2016", "A $5M round led by Ridder in 2021"],
           ["SAIA Agrobotics", "2017", "Over €20M. The greenhouse is rebuilt around a fixed robot"],
           ["Four Growers", "2018", "$15M, with Y Combinator among the backers"],
-          ["eternal.ag", "2025", "€8M in 2026"],
-          ["Polybot", "2025", "Backed by SPRIND. Learns truss harvesting from human demonstrations"],
+          ["Priva Kompano", "—", "Deleafing. Already sold to growers, who co-funded it"],
+          ["eternal.ag", "2025", "€8M in 2026, with a platform planned"],
+          ["Polybot", "2025", "Backed by SPRIND. Learns truss harvesting from human demos"],
           ["Tortuga AgTech", "—", "$50M over eight years, then its assets went to Oishii in 2025"],
         ],
       },
     },
     {
-      id: "adoption",
-      kicker: "Adoption",
-      corner: {
-        label: "Sources: AgriDirect, WUR, trade press",
-        href: "https://www.proeftuinprecisielandbouw.nl/nppl_r-jaarevent-tuinbouw-4-werkomstandigheden-beinvloeden-prestatie-oogstrobots/",
-      },
-      title: ["Still in", "trials"],
-      body: [
-        "In a 2019 survey of over 1,400 Dutch growers, 11% of glasshouse growers used a robot of any kind, mostly for spraying, and 2.6% planned to invest in robotics. In a 2025 WUR test, GRoW picked half the trusses staff marked ripe; 40% of ripe trusses failed its picking conditions, and in 1.5 hours it stopped twice and needed a person six times.",
-        "eternal.ag has run one robot at Van Noord Growers since September 2025, and announced plans for three by summer 2026. Four Growers reports up to 50% labour savings at Westburg. Each robot does one job, and the crop has to fit the machine.",
-      ],
-    },
-    {
       id: "the-insight",
       kicker: "The insight",
-      title: ["Skill lives", "in the crew"],
-      body: [
-        "What these robots get wrong are judgement calls: which truss is ready, which leaf comes off, where the whitefly starts. Crews make those calls all day, from experience built up on the job. That judgement lives in the crew, and the crew is the part growers can no longer hire. When a crew leaves at the end of the season, its know-how leaves with it.",
-      ],
-    },
-    {
-      id: "why-now",
-      kicker: "Why now",
       corner: {
         label: "Source: AI Business, Nov 2024",
         href: "https://aibusiness.com/automation/startup-looks-to-develop-physical-artificial-intelligence-raises-400m",
       },
-      title: ["Learning", "from people"],
+      title: ["Skill lives", "in the crew"],
       body: [
-        "That judgement can now be taught. Robot foundation models learn a new task from recorded demonstrations, and Physical Intelligence alone raised $400 million in 2024 to build them. What these models lack is data from inside working greenhouses, and nobody records it there, because the people with the skill are out on the crop rows.",
-      ],
-    },
-    {
-      id: "how-it-works",
-      kicker: "How it works",
-      title: ["Crews teach", "the robots"],
-      body: [
-        "Vinea records crews on their normal shifts, and the work itself doesn't change. For harvesting and deleafing, a small capture device records how they reach, cut and hold, so each job is learned the way the crew does it.",
-        "For scouting, the record is where an experienced scout looks and what they say they see, so the recording labels itself. Each job's recordings train a robot skill for that job.",
-      ],
-    },
-    {
-      id: "the-platform",
-      kicker: "The platform",
-      title: ["Modules for", "every job"],
-      body: [
-        "Every skill runs on SPINE, a base that rides the heating pipes already laid between the crop rows. On top sits the module for the job: BLUSH harvests, SHEAR deleafs, HOIST lowers and rehangs, and RAVEN scouts. A new job means recording the crew doing it and shipping a module. The greenhouse stays as it is, and the grower deals with one platform for the whole crew's work.",
+        "What these robots get wrong are judgement calls: which truss is ready, which leaf comes off, where the whitefly starts. Crews make those calls all day, and the crew is the part growers can no longer hire.",
+        "Robot foundation models now learn new tasks from recorded demonstrations, and Physical Intelligence raised $400 million in 2024 to build them. What they lack is data from inside working greenhouses.",
       ],
       figure: {
-        kind: "modules",
-        base: "SPINE",
-        modules: [
-          { name: "BLUSH", job: "Harvests" },
-          { name: "SHEAR", job: "Deleafs" },
-          { name: "HOIST", job: "Lowers and rehangs" },
-          { name: "RAVEN", job: "Scouts" },
+        kind: "media",
+        items: [
+          {
+            name: "insight",
+            type: "image",
+            ratio: "8/9",
+            alt: "A picker in a tomato row, with three calls ringed: which truss is ready, which leaf comes off, where the whitefly starts.",
+            caption: "Illustration",
+          },
         ],
       },
     },
     {
-      id: "how-blush-picks",
-      kicker: "The product",
-      title: ["How BLUSH", "harvests"],
+      id: "record",
+      kicker: "How it works · 1 of 3",
+      title: ["Crews record", "their work"],
       body: [
-        "BLUSH is the first module, and it harvests whole trusses. A camera facing the row finds a truss that's ready by the grower's own rule: the fruit at the tip has started to colour and most of the rest are ripe. The harvesting skill steers the arm to the stalk through the crowded crop. One close of the fingers cuts the stalk flush with a blade at the tips, and pads keep holding the truss on its way to the crate.",
-      ],
-      figure: { kind: "steps", steps: ["Find", "Steer", "Cut", "Hold"] },
-    },
-    {
-      id: "progress",
-      kicker: "Progress",
-      title: ["From sim", "to real"],
-      body: [
-        "On the bench, a robot arm runs a camera model that tells ripe from unripe tomatoes live, on real fruit. In simulation, the arm harvests whole trusses and cuts old leaves in a greenhouse row, and the first learned skills are training. Next: run them on real plants, and test the capture device crews will use. Today a scripted teacher in simulation provides the demonstrations; at scale, crews record them as they work.",
-      ],
-    },
-    {
-      id: "the-flywheel",
-      kicker: "The flywheel",
-      title: ["It learns", "as it works"],
-      body: [
-        "Once deployed, every robot records its own work: each pick, each miss and each time a person steps in, so the whole fleet keeps improving. Each new crop starts from what earlier crops taught it, because picking a pepper has a lot in common with picking a tomato. The more greenhouses Vinea runs in, the less new data each new crop and each new greenhouse needs.",
-      ],
-    },
-    {
-      id: "the-expansion-plan",
-      kicker: "The expansion plan",
-      corner: {
-        label: "Sources: CBS, RaboResearch, 2025",
-        href: "https://topsectortu.nl/wp-content/uploads/2025/03/RaboResearch_Global-greenhouse-update_2025.pdf",
-      },
-      title: ["Dutch glass", "first"],
-      body: [
-        "Vinea starts where the crop, the pipe rails and the crews are the same, and widen from there. Dutch tomatoes cover 1,767 hectares, over half of it farmed by the ten largest growers. Dutch peppers and cucumbers add another 2,213 hectares on the same pipe rails.",
-        "Europe has 33,637 hectares of high-tech greenhouses, about half of the world's 70,000. Dutch builders put up glasshouses everywhere, and SPINE follows the ones with pipe rails.",
+        "Pickers wear small cameras on both wrists during normal shifts and work with their own hands and snips. Every cut is recorded twice: what the camera sees, and how the hand moves.",
       ],
       figure: {
-        kind: "steps",
-        steps: ["Dutch tomatoes", "Dutch peppers and cucumbers", "Europe", "The world"],
+        kind: "media",
+        items: [
+          {
+            name: "record",
+            type: "video",
+            ratio: "16/9",
+            alt: "A picker with a camera on the wrist cuts a ripe truss; the wrist camera's view and the hand's path are shown beside them.",
+            caption: "Concept illustration",
+          },
+        ],
+      },
+    },
+    {
+      id: "train",
+      kicker: "How it works · 2 of 3",
+      title: ["Every cut is", "training data"],
+      body: [
+        "Software turns each hand movement into the motion of a robot gripper: the snips closing become the jaws closing. All the recorded cuts train one harvesting skill.",
+      ],
+      figure: {
+        kind: "media",
+        items: [
+          {
+            name: "train",
+            type: "video",
+            ratio: "16/9",
+            alt: "The picker's hand path becomes a gripper path, and the recorded cuts stack up into one harvesting skill.",
+            caption: "Concept illustration",
+          },
+        ],
+      },
+    },
+    {
+      id: "deploy",
+      kicker: "How it works · 3 of 3",
+      title: ["The robot does", "the same job"],
+      body: [
+        "The skill runs on a module that rides the heating pipes already in the greenhouse and repeats the crew's motion on the same crop. Every robot records its own work too, so the skill keeps improving.",
+      ],
+      figure: {
+        kind: "media",
+        items: [
+          {
+            name: "deploy",
+            type: "video",
+            ratio: "16/9",
+            alt: "A robot arm on a rail base follows the same path, cuts the same truss into the crate, and its run flows back into training.",
+            caption: "Concept illustration",
+          },
+        ],
+      },
+    },
+    {
+      id: "tested-in-simulation",
+      kicker: "Progress · BLUSH",
+      title: ["Tested in", "simulation"],
+      body: [
+        "BLUSH, the first module, cuts whole trusses the way crews do. A camera on the mast finds a truss whose tip fruit has coloured, the picking model steers the arm to its stem, and a blade at the fingertips cuts it while pads hold the truss.",
+        "Here BLUSH's learned skill cuts a ripe truss on a plant layout it never trained on and lays it in the crate, in a physics simulation of the SO-101 arm on my bench. It learned from scripted runs; in greenhouses it will learn from crew recordings. Next, the same pipeline runs on the real arm in the test greenhouse.",
+      ],
+      figure: {
+        kind: "media",
+        items: [
+          {
+            name: "blush-sim",
+            type: "video",
+            ratio: "16/9",
+            alt: "In simulation, a yellow robot arm reaches into a row of tomato trusses, cuts one and lays it in a blue crate.",
+            caption: "Simulation · learned skill, one take",
+          },
+        ],
+      },
+    },
+    {
+      id: "the-platform",
+      kicker: "The platform",
+      title: ["One base,", "many jobs"],
+      body: [
+        "Every skill runs on SPINE, a base that rides the heating pipes, with a module on top for each job: BLUSH harvests, SHEAR deleafs, HOIST lowers and rehangs, RAVEN scouts. A new job means recording the crew and shipping a module, and the greenhouse stays as it is.",
+        "Top: the base swaps SHEAR for BLUSH, in a scripted mock-up with stand-in arms. Bottom: SHEAR cuts an old leaf in a scripted training run in simulation.",
+      ],
+      figure: {
+        kind: "media",
+        items: [
+          {
+            name: "module-swap",
+            type: "video",
+            ratio: "16/9",
+            alt: "In a greenhouse mock-up, a rail base parks one module at a stand and picks up another.",
+            caption: "Scripted mock-up, sped up · stand-in arms",
+          },
+          {
+            name: "shear-sim",
+            type: "video",
+            ratio: "16/9",
+            alt: "In simulation, a yellow robot arm reaches into a tomato plant and cuts an old leaf at the stem.",
+            caption: "Simulation · scripted training run",
+          },
+        ],
       },
     },
     {
       id: "the-market",
       kicker: "The market",
       corner: {
-        label: "Sources: RaboResearch, CBS",
+        label: "Sources: RaboResearch, CBS, a grower",
         href: "https://topsectortu.nl/wp-content/uploads/2025/03/RaboResearch_Global-greenhouse-update_2025.pdf",
       },
-      title: ["World vs", "Netherlands"],
+      title: ["Dutch glass", "first"],
       body: [
-        "Harvesting alone costs a Westland grower €5 per m², or €50,000 per hectare a year. The world has 3.72 million hectares of greenhouses of every kind. Deleafing, lowering and scouting come on top: in tomatoes, harvesting is under a third of the hours.",
+        "Vinea starts where the crop, the pipe rails and the crews are the same, and widens from there. Harvesting alone costs a tomato grower €50,000 per hectare a year, by one Westland grower's figure. Deleafing, lowering and scouting come on top, and each new crop starts from what earlier crops taught the robots.",
       ],
       figure: {
         kind: "table",
         columns: ["Market", "Area", "Harvesting, per year"],
         rows: [
-          ["TAM · World, high-tech glass", "About 70,000 ha", "€3.5 billion at Dutch cost"],
-          ["SAM · Dutch tomatoes, peppers, cucumbers", "3,980 ha", "€199 million"],
           ["SOM · The ten largest Dutch tomato growers", "More than 880 ha", "Over €44 million"],
+          ["SAM · Dutch tomatoes, peppers, cucumbers", "3,980 ha", "€199 million"],
+          ["TAM · World, high-tech glass", "About 70,000 ha", "€3.5 billion at Dutch cost"],
         ],
       },
     },
@@ -285,35 +312,48 @@ export const deck: DeckContent = {
         "Growers rent Vinea the way they would hire a crew: a pilot season, then a monthly fee per robot with service included, always priced below the labour it replaces. Pricing stays provisional until after the pilot.",
       ],
       links: [{ label: "Work out what it saves you", href: "/roi", tone: "secondary" }],
+      figure: {
+        kind: "media",
+        items: [
+          {
+            name: "business-sim",
+            type: "image",
+            ratio: "8/9",
+            alt: "A cut truss of tomatoes lying in a blue crate beside the robot's open gripper.",
+            caption: "Simulation",
+          },
+        ],
+      },
     },
     {
       id: "why-me",
       kicker: "Why me",
       title: ["Krishaanth", "Ramaraj"],
       body: [
-        "At Degla AI, a YC-backed drone startup, I built and tuned drones, precision work of the kind Vinea needs. I made the harvest simulation and I'm building the real robot myself, in Antler's residency in Amsterdam, while studying Electrical Engineering at TU/e and bartending on the side. I've interviewed tomato growers on what labour costs them and why they haven't bought a robot yet, and built Vinea around their answers.",
+        "At Degla AI, a YC-backed drone startup, I built and tuned drones. I made the harvest simulation and I'm building the real robot myself, in Antler's residency in Amsterdam. I study Electrical Engineering at TU/e and now work on Vinea full time. I've asked tomato growers what labour costs them and why they haven't bought a robot yet, and built Vinea around their answers.",
       ],
+      figure: {
+        kind: "media",
+        items: [
+          {
+            name: "why-me-sim",
+            type: "image",
+            ratio: "8/9",
+            alt: "Close up, the robot's fingers close on the stem of a tomato truss.",
+            caption: "Simulation of the arm I'm building",
+          },
+        ],
+      },
     },
     {
       id: "lets-talk",
-      kicker: "LinkedIn",
+      kicker: "Krishaanth Ramaraj · Founder",
       title: ["Let's", "talk"],
-      body: ["Connect with me on LinkedIn, or write to me directly."],
-      layout: "talk",
+      body: ["Connect on LinkedIn, book a call, or write to me directly."],
+      layout: "end",
       links: [
         { label: "Connect on LinkedIn", href: LINKEDIN, tone: "primary" },
         { label: "Book a call", href: BOOK_A_CALL, tone: "secondary" },
-      ],
-    },
-    {
-      id: "thank-you",
-      kicker: "Krishaanth Ramaraj · Founder",
-      title: ["Thank you"],
-      body: [],
-      layout: "end",
-      links: [
-        { label: "Book a call", href: BOOK_A_CALL, tone: "primary" },
-        { label: "Run your numbers", href: "/roi", tone: "secondary" },
       ],
     },
   ],
