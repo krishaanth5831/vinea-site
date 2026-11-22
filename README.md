@@ -9,14 +9,17 @@ estimate a reader chooses to save, in a private Vercel Blob store.
 
 **Live at <https://www.getvinea.nl>**, served by the Vercel project
 `vinea-site`, which deploys from `main`. A push to `main` is a production
-deploy to the live domain, so work happens on a branch and reaches `main`
-by pull request.
+deploy to the live domain, so work happens on `dev` and reaches `main` by
+pull request (`dev` → `main`). Pushes to `dev` get a Vercel preview.
 
 ## Local development
 
+Needs Node.js 20.9 or newer (what Next.js 16 requires) and npm.
+
 ```bash
+git switch dev
 npm install
-npm run dev          # http://localhost:3000
+npm run dev          # http://localhost:3000, or the next free port
 ```
 
 Other commands:
@@ -44,30 +47,52 @@ invisible after a full scroll (including when scrolling starts before
 hydration), no horizontal overflow, no layout shift, and no digits in visible
 or screen-reader text. It needs a Chrome binary and skips cleanly without one.
 
+## Layout
+
+```text
+src/
+  app/              routes: / (page.tsx), /deck, /roi, the /api/roi save and
+                    export routes, layout.tsx, globals.css (every style token)
+  components/       the home page's sections and the shared pieces
+    deck/           the slide stack and its figures
+    roi/            the calculator, its fields, results and save form
+  content/          all prose, typed (see below)
+  lib/              the ROI model, saved-estimate storage, GSAP and Lenis
+                    setup, number formats, render frame data
+  fonts/            Geist Pixel, self-hosted
+public/
+  deck/             the deck's clips and stills
+  renders/          concept renders, the scroll sequences (seq/, wire/), loops
+  vinea-deck.pdf    printed from /deck by npm run export:deck
+scripts/            copy audit, ROI and responsive checks, deck export
+  blender/          the scene, render and publish scripts for the renders
+```
+
 ## Where the copy lives
 
 **All prose is in `src/content/`.** Components read from it and never inline
 their own sentences, so text can be changed in one place without touching JSX.
 
-| File          | What it holds                                              |
-| ------------- | ---------------------------------------------------------- |
-| `site.ts`     | Name, meta, nav, footer, and the contact address (`EMAIL`) |
-| `hero.ts`     | Heading, lead and calls to action                          |
-| `why.ts`      | The three beats told while the mark comes apart            |
-| `question.ts` | The bar: a robot has to beat the person doing the job      |
-| `heard.ts`    | Why growers haven't bought a robot (four cards)            |
-| `how.ts`      | Capture, train, run, learn                                 |
-| `modules.ts`  | SPINE and the four modules, each with its stage            |
-| `status.ts`   | Where Vinea stands: with growers, and on the bench         |
-| `roadmap.ts`  | Now, next, then, later; `current` marks today's stage      |
-| `talk.ts`     | The closing ask and its two buttons                        |
-| `deck.ts`     | The pitch deck, slide by slide, with sources and drawings  |
-| `roi.ts`      | Every label, help line and source on the calculator        |
-| `types.ts`    | The shape of all of the above                              |
+| File         | What it holds                                                   |
+| ------------ | --------------------------------------------------------------- |
+| `site.ts`    | Name, meta, nav, footer, and the contact address (`EMAIL`)      |
+| `hero.ts`    | Status line, heading, lead, calls to action                     |
+| `what.ts`    | "What it is": the beats of the sequence, its parts, the modules |
+| `jobs.ts`    | A tile per module (SPINE and the four jobs), each with a stage  |
+| `learn.ts`   | "How it learns": record, learn, work                            |
+| `heard.ts`   | What growers hold against robots, with Vinea's answers          |
+| `status.ts`  | Where Vinea stands: with growers, and on the bench              |
+| `roadmap.ts` | The stages (`current` marks today's) and a lane per module      |
+| `talk.ts`    | The closing ask and its two buttons                             |
+| `deck.ts`    | The pitch deck, slide by slide, with sources and figures        |
+| `roi.ts`     | Every label, help line and source on the calculator             |
+| `types.ts`   | The shape of all of the above                                   |
+| `index.ts`   | Re-exports everything, so components import from `@/content`    |
 
 Every mailto link is built from `EMAIL` in `site.ts`; change the address
-there and nowhere else. When a module or the roadmap moves on, edit its
-`stage` in `modules.ts` or move `current` in `roadmap.ts`.
+there and nowhere else. When a module moves on, edit its `stage` in
+`jobs.ts` and raise its lane's `reached` in `roadmap.ts`; when Vinea moves
+on, move `current` in `roadmap.ts`.
 
 The calculator's defaults and arithmetic are in `src/lib/roi.ts`, not in
 `/content`, because the save route runs the same model on the server.
@@ -137,11 +162,11 @@ kept for reference, and for undoing it.*
 
 The domain used to serve a different, pre-existing Vercel project.
 
-Current state, for reference:
+How it was set up before the move:
 
-- Project **`vinea-website`** holds both `getvinea.nl` and `www.getvinea.nl`
-- `getvinea.nl` redirects to `www.getvinea.nl` with a 308
-- This repo deploys to the separate project **`vinea-site`**
+- Project **`vinea-website`** held both `getvinea.nl` and `www.getvinea.nl`
+- `getvinea.nl` redirected to `www.getvinea.nl` with a 308
+- This repo deployed to the separate project **`vinea-site`**
 
 Both projects are in the same Vercel team, so the domain moves between them
 without any DNS change — the nameserver and record setup stays exactly as it
@@ -166,9 +191,9 @@ doing it in one sitting keeps that to a minute or so.
 To undo, do the same in reverse — the old project is untouched and its
 deployments are all still there.
 
-`metadataBase` in `src/app/layout.tsx` is already set to `https://getvinea.nl`,
-so canonical and Open Graph URLs are correct the moment the domain moves. No
-code change is needed as part of the switch.
+`metadataBase` in `src/app/layout.tsx` is built from `site.url` in
+`src/content/site.ts` (`https://getvinea.nl`), so canonical and Open Graph
+URLs did not need a code change for the switch.
 
 ## The deck and the calculator
 
@@ -178,8 +203,8 @@ for a public page (see DECISIONS.md). Its clips and stills live in
 one, and shows controls instead under reduced motion. On a screen at least `64rem` wide and
 `37.5rem` tall, with motion allowed, the slides are a sticky stack: each
 holds while the next rises over it and the one beneath settles back. Each
-slide's headline rises out of its masks, its text follows, and its drawing
-assembles from the mark's cells. A rail on the right jumps between slides,
+slide's headline rises out of its masks, then its text and the rows of its
+table or figures follow. A rail on the right jumps between slides,
 and the left and right arrow keys step through them. Everywhere else the
 same markup is a plain run of full-bleed slides that reveal as they arrive.
 The gate is in `.deck` CSS and `STAGED` in `deck/Deck.tsx`; keep them equal.
@@ -285,3 +310,12 @@ Typeface credits are in [CREDITS.md](./CREDITS.md).
 
 Judgement calls made during the build, including one place where the brief
 contradicted itself, are written up in [DECISIONS.md](./DECISIONS.md).
+
+## License
+
+Source-available, not open source. [LICENSE](./LICENSE) is the PolyForm
+Strict License 1.0.0 under an "all rights reserved except as granted"
+notice: you may read and run the code for noncommercial purposes, but not
+change or redistribute it. Anything beyond that needs a separate written
+license from Krishaanth Ramaraj. Typeface licences are in
+[CREDITS.md](./CREDITS.md).

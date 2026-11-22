@@ -10,9 +10,10 @@
  * the fair question of whether it hides the overflow this is looking for. It
  * does not — planting a wide element takes documentElement.scrollWidth from
  * the viewport width to the element's width, so the check discriminates.
- * Measuring children's right edges instead would be worse: the crop field and
- * the schematic both legitimately extend past the viewport under the clip, so
- * that version reports an overflow on a clean page.
+ * Measuring children's right edges instead would be worse: elements built to
+ * bleed past the edge (when this was written, the old crop field and
+ * schematic) legitimately extend past the viewport under the clip, so that
+ * version reports an overflow on a clean page.
  *
  * Every page is scanned. Digits are allowed only inside regions marked
  * `data-numbers` (the deck's slides and the ROI calculator); everywhere else

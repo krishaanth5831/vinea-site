@@ -42,3 +42,8 @@ next-env.d.ts
 
 # ROI estimates saved during local development
 /.data/
+
+# local tool output: agent worktrees, brag videos, Python bytecode
+/.claude/
+/brag-output/
+__pycache__/

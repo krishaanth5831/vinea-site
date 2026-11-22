@@ -57,6 +57,9 @@ export const roadmap: RoadmapContent = {
   lanes: {
     heading: "Where each module is",
     steps: ["Designed", "In simulation", "On real plants", "In a greenhouse"],
+    moduleHeader: "Module",
+    reachedLabel: "reached",
+    notYetLabel: "not yet",
     rows: [
       { name: "BLUSH", job: "Harvests", reached: 2 },
       { name: "SHEAR", job: "Deleafs", reached: 2 },

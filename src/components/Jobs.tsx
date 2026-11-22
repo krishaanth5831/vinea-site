@@ -13,14 +13,6 @@ const ART: Record<JobItem["key"], string> = {
   base: "base",
 };
 
-const ALT: Record<JobItem["key"], string> = {
-  harvest: "A concept render of the harvest tool closing on the stalk of a ripe truss.",
-  deleaf: "A concept render of the deleafing tool at the lowest leaves of a tomato plant.",
-  lower: "A concept render of the lowering module's head resting on the crop wire, among the winding hooks the plants hang from.",
-  scout: "A concept render of the cameras on the mast, facing the row.",
-  base: "A concept render of the base's wheels on the heating pipes.",
-};
-
 /** The first two jobs are furthest along and get the wide tiles. */
 const SPAN = ["lg:col-span-3", "lg:col-span-3", "lg:col-span-2", "lg:col-span-2", "lg:col-span-2"];
 
@@ -41,7 +33,7 @@ export function Jobs() {
                 <div className="job-art">
                   <Render
                     name={ART[item.key]}
-                    alt={ALT[item.key]}
+                    alt={item.alt}
                     tag={what.badge}
                     ratio={i < 2 ? "16 / 10" : "4 / 3"}
                     sizes="(min-width: 64rem) 34rem, (min-width: 40rem) 50vw, 100vw"

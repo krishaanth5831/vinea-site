@@ -2,16 +2,15 @@ import type { SVGProps } from "react";
 
 /**
  * The Vinea mark: a diamond of square cells on a seven-by-seven grid, with a
- * half-cell chamfer at each inner corner. Its centre is empty — that empty
- * cell is where the page's story collapses to, and grows back out of.
+ * half-cell chamfer at each inner corner. Its centre cell is empty.
  */
 type Shape = "sq" | "tl" | "tr" | "br" | "bl";
 type Cell = { c: number; r: number; shape: Shape };
 
 /** Cell size; the gap between cells is what is left of each unit. */
-export const S = 0.88;
+const S = 0.88;
 
-export const MARK_CELLS: Cell[] = [
+const MARK_CELLS: Cell[] = [
   /* top arm, running right */
   { c: 3, r: 0, shape: "sq" },
   { c: 4, r: 1, shape: "sq" },
@@ -44,12 +43,11 @@ function points({ c: x, r: y, shape }: Cell): string {
   return corners[shape as keyof typeof corners].join(" ");
 }
 
-/** Where the diamond's hollow centre sits: square one. */
-export const MARK_CENTRE = { c: 3, r: 3 } as const;
-
 /**
- * Each cell is a group around its shape, so scroll motion (on the group) and
- * pointer motion (on the shape) never write to the same transform.
+ * Each cell is a group around its shape, so motion on the group and motion
+ * on the shape never write to the same transform. The deck assembles the
+ * shapes (`.slide-mark .mark-shape`), but only on a cover slide without a
+ * figure; the current cover has a clip, so nothing moves the mark today.
  */
 export function Mark({ children, ...props }: SVGProps<SVGSVGElement>) {
   const size = 6 + S;

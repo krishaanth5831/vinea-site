@@ -65,6 +65,8 @@ export type WhatModule = {
   /** The module's name, in the label face. */
   name: string;
   line: string;
+  /** What the module's still shows, for someone who can't see it. */
+  alt: string;
 };
 
 /** One beat of the walk through the picture: what the robot is doing, and what to notice. */
@@ -82,6 +84,8 @@ export type WhatContent = {
   lead: string;
   /** Said on every picture: none of them is a photograph. */
   badge: string;
+  /** What the scroll-scrubbed sequence shows, for someone who can't see it. */
+  sequenceAlt: string;
   /** What the robot's camera says about a truss, drawn over the picture while it looks. */
   scan: { ready: string; wait: string };
   beats: WhatBeat[];
@@ -100,6 +104,8 @@ export type JobItem = {
   job: string;
   body: string;
   stage: JobStage;
+  /** What the tile's render shows, for someone who can't see it. */
+  alt: string;
 };
 
 export type JobsContent = {
@@ -175,6 +181,10 @@ export type RoadmapContent = {
     heading: string;
     /** The steps every module goes through, in order. */
     steps: [string, string, string, string];
+    /** Screen-reader words for the table: its first column, and each cell's state. */
+    moduleHeader: string;
+    reachedLabel: string;
+    notYetLabel: string;
     rows: RoadmapLane[];
   };
 };

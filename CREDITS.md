@@ -15,5 +15,5 @@ time and serves them from this domain. Geist Pixel is self-hosted from
 ## Everything else
 
 The Vinea mark is the diamond pixel logo chosen in June 2026, redrawn as SVG
-for this site. The thread, the pixel arrow and the refusal drawings are drawn
-in code, in the mark's own cells. There are no photographs.
+for this site. The pixel arrow on the buttons is drawn in code, in the mark's
+own cells. There are no photographs.
