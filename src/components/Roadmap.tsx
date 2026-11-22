@@ -94,7 +94,7 @@ export function Roadmap() {
           <div className="lanes-grid mt-7" role="table" aria-label={roadmap.lanes.heading}>
             <div className="lane lane-head" role="row">
               <span role="columnheader" className="sr-only">
-                Module
+                {roadmap.lanes.moduleHeader}
               </span>
               <span aria-hidden="true" />
               {roadmap.lanes.steps.map((step) => (
@@ -118,7 +118,7 @@ export function Roadmap() {
                       role="cell"
                       className={`lane-cell ${on ? "is-on" : ""} ${head ? "is-head" : ""}`}
                     >
-                      <span className="sr-only">{on ? `${step}: reached` : `${step}: not yet`}</span>
+                      <span className="sr-only">{`${step}: ${on ? roadmap.lanes.reachedLabel : roadmap.lanes.notYetLabel}`}</span>
                     </span>
                   );
                 })}

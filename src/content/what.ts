@@ -11,6 +11,8 @@ export const what: WhatContent = {
   heading: "One base on your pipes. A module for each job.",
   lead: "The base rides the heating pipes between your rows. On it sits the module for the job: an arm and the tool that job needs. The greenhouse stays as it is.",
   badge: "Concept render",
+  sequenceAlt:
+    "A rendered sequence: the robot looks along the row, cuts a ripe truss and carries it to its crate; its module is swapped for the deleafing module and then for the lowering module, whose head rests on the crop wire, turns a plant's winding hook and lets the plant down.",
 
   scan: { ready: "Ready", wait: "Not yet" },
 
@@ -87,18 +89,21 @@ export const what: WhatContent = {
       label: "Harvest",
       name: "BLUSH",
       line: "Cuts the truss stalk with a blade at the fingertips and holds the truss on its way to the crate.",
+      alt: "A concept render of the Vinea base on the heating pipes between two rows of tomato plants at night, with the harvest module.",
     },
     {
       key: "deleaf",
       label: "Deleaf",
       name: "SHEAR",
       line: "Cuts the old leaves below the ripening truss, flush at the stem.",
+      alt: "A concept render of the Vinea base on the heating pipes between two rows of tomato plants at night, with the deleaf module.",
     },
     {
       key: "lower",
       label: "Lower",
       name: "HOIST",
       line: "A mast that reaches the crop wire and lets each plant down, so it keeps growing at working height.",
+      alt: "A concept render of the Vinea base on the heating pipes between two rows of tomato plants at night, with the lower module.",
     },
   ],
 };

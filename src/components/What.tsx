@@ -279,18 +279,14 @@ export function What() {
                   <Render
                     key={m.key}
                     name={STILLS[i]}
-                    alt={
-                      i === moduleIndex
-                        ? `A concept render of the Vinea base on the heating pipes between two rows of tomato plants at night, with the ${m.label.toLowerCase()} module.`
-                        : ""
-                    }
+                    alt={i === moduleIndex ? m.alt : ""}
                     className={`what-layer ${i === moduleIndex ? "is-on" : ""}`}
                   />
                 ))}
                 <canvas
                   className="what-canvas"
                   role="img"
-                  aria-label="A rendered sequence: the robot looks along the row, cuts a ripe truss and carries it to its crate; its module is swapped for the deleafing module and then for the lowering module, whose head rests on the crop wire, turns a plant's winding hook and lets the plant down."
+                  aria-label={what.sequenceAlt}
                 />
                 <span aria-hidden="true" className="what-cut" />
                 <span className="render-tag">{what.badge}</span>
