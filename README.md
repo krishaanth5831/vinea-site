@@ -162,11 +162,11 @@ kept for reference, and for undoing it.*
 
 The domain used to serve a different, pre-existing Vercel project.
 
-Current state, for reference:
+How it was set up before the move:
 
-- Project **`vinea-website`** holds both `getvinea.nl` and `www.getvinea.nl`
-- `getvinea.nl` redirects to `www.getvinea.nl` with a 308
-- This repo deploys to the separate project **`vinea-site`**
+- Project **`vinea-website`** held both `getvinea.nl` and `www.getvinea.nl`
+- `getvinea.nl` redirected to `www.getvinea.nl` with a 308
+- This repo deployed to the separate project **`vinea-site`**
 
 Both projects are in the same Vercel team, so the domain moves between them
 without any DNS change — the nameserver and record setup stays exactly as it
@@ -191,9 +191,9 @@ doing it in one sitting keeps that to a minute or so.
 To undo, do the same in reverse — the old project is untouched and its
 deployments are all still there.
 
-`metadataBase` in `src/app/layout.tsx` is already set to `https://getvinea.nl`,
-so canonical and Open Graph URLs are correct the moment the domain moves. No
-code change is needed as part of the switch.
+`metadataBase` in `src/app/layout.tsx` is built from `site.url` in
+`src/content/site.ts` (`https://getvinea.nl`), so canonical and Open Graph
+URLs did not need a code change for the switch.
 
 ## The deck and the calculator
 
@@ -203,8 +203,8 @@ for a public page (see DECISIONS.md). Its clips and stills live in
 one, and shows controls instead under reduced motion. On a screen at least `64rem` wide and
 `37.5rem` tall, with motion allowed, the slides are a sticky stack: each
 holds while the next rises over it and the one beneath settles back. Each
-slide's headline rises out of its masks, its text follows, and its drawing
-assembles from the mark's cells. A rail on the right jumps between slides,
+slide's headline rises out of its masks, then its text and the rows of its
+table or figures follow. A rail on the right jumps between slides,
 and the left and right arrow keys step through them. Everywhere else the
 same markup is a plain run of full-bleed slides that reveal as they arrive.
 The gate is in `.deck` CSS and `STAGED` in `deck/Deck.tsx`; keep them equal.

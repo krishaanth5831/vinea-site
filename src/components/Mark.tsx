@@ -45,8 +45,9 @@ function points({ c: x, r: y, shape }: Cell): string {
 
 /**
  * Each cell is a group around its shape, so motion on the group and motion
- * on the shape never write to the same transform. Today only the shapes
- * move: the deck's cover slide assembles them (`.slide-mark .mark-shape`).
+ * on the shape never write to the same transform. The deck assembles the
+ * shapes (`.slide-mark .mark-shape`), but only on a cover slide without a
+ * figure; the current cover has a clip, so nothing moves the mark today.
  */
 export function Mark({ children, ...props }: SVGProps<SVGSVGElement>) {
   const size = 6 + S;
