@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Untracked local output: agent worktrees (with their own .next) and
+    // the brag video's composition.
+    ".claude/**",
+    "brag-output/**",
   ]),
 ]);
 
