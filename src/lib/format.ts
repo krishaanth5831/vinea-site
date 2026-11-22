@@ -23,7 +23,6 @@ export const formatEuro = (n: number) => euro.format(Math.round(n));
 export const formatEuroCents = (n: number) => euroCents.format(n);
 export const formatWhole = (n: number) => whole.format(Math.round(n));
 export const formatTenth = (n: number) => tenth.format(n);
-export const formatPercent = (fraction: number) => `${tenth.format(fraction * 100)}%`;
 
 /** Euros, shortened for chart axes: €1.2M, €840k. */
 export function formatEuroShort(n: number): string {

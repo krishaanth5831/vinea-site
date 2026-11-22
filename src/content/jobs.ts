@@ -3,7 +3,8 @@ import type { JobsContent } from "./types";
 /*
  * The modules and where each one is. The stage labels are honest on
  * purpose: nothing has run in a working greenhouse yet. Update a stage here
- * when it moves; the page and the roadmap's lanes read from these lists.
+ * when it moves, and the module's lane (`reached`) in roadmap.ts with it:
+ * the two are kept by hand, not read from one list.
  */
 export const jobs: JobsContent = {
   id: "jobs",

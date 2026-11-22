@@ -137,13 +137,6 @@ body {
   text-wrap: balance;
 }
 
-.t-h3 {
-  font-size: clamp(1.75rem, 3.4vw, 2.75rem);
-  font-weight: 500;
-  line-height: 1.05;
-  letter-spacing: -0.035em;
-}
-
 .t-lead {
   font-size: clamp(1.0625rem, 1.4vw, 1.25rem);
   line-height: 1.55;
@@ -2436,13 +2429,5 @@ a.roi-tag-source:hover {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
-  }
-
-  .cursor-square {
-    animation: none !important;
-  }
-
-  .js .mark-assemble .mark-shape {
-    opacity: 1;
   }
 }
