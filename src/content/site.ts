@@ -13,7 +13,9 @@ export const EMAIL = "krishaanth2007@gmail.com" as const;
 export const mailto = (subject: string) =>
   `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}` as const;
 
-export const BOOK_A_CALL = mailto("Talking about greenhouse work");
+/* A real booking page (cal.com, thirty minutes) since 2026-11-26. It is an
+ * https link, so Button opens it in a new tab. */
+export const BOOK_A_CALL = "https://cal.com/krishaanthramaraj5831/30min" as const;
 export const INVESTOR_HELLO = mailto("Vinea — investor question");
 
 export const site: SiteContent = {
