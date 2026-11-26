@@ -45,7 +45,7 @@ here rather than drifting:
 | for growers         | `#for-growers`               |
 | for investors       | `#for-investors`             |
 | about               | `#where-this-stands`         |
-| book a call         | `mailto:` — no anchor        |
+| book a call         | cal.com booking page         |
 
 The method, the task map and the pushback carry the argument but are not in
 the nav, because the brief fixed the labels. The method is reachable from the
