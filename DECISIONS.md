@@ -575,3 +575,25 @@ a slightly smaller headline, and on screens under 50rem tall the table
 rows tighten. Checked at 1920x1080, 1440x900, 1366x768, 1280x720 and a
 phone: every slide fits, and only the current slide's clips play.
 `public/vinea-deck.pdf` was reprinted from the page (13 pages).
+
+## The cofounder page (2026-11-26)
+
+`/build` is a page for cofounder candidates, sent to them directly. It is
+not in the nav or the footer. Its shape follows a founder's "build this with
+me" page that the owner liked: the ask, how it works, the hard part, where
+it stands, why, who, how we'd start, about me, and a call. The words are the
+owner's own.
+
+**Candour.** The page names the gaps plainly, because a technical candidate
+judges it on them: nothing has run in a greenhouse, no crew has been
+recorded, no grower has signed, and the learned skills aren't good enough
+yet. The letter-of-intent line matches the home page's status column.
+
+**No terms yet.** "How we'd start" promises no pay and no equity figures.
+It says what the steps are and that either side can stop. Change it here
+when the owner decides the terms.
+
+**Rules kept.** No digits, Antler named as a residency, no data licensing,
+the full-time wording (no "student"). The clips are the home page's three
+Learn loops, labelled as concept renders. `audit:copy` and
+`check:responsive` both cover `/build`.

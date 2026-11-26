@@ -1,7 +1,8 @@
 # Vinea site
 
-The Vinea site: a home page, the pitch deck at `/deck`, and an ROI
-calculator for growers at `/roi`, all built from static, typed content.
+The Vinea site: a home page, the pitch deck at `/deck`, an ROI calculator
+for growers at `/roi`, and a page for cofounder candidates at `/build`, all
+built from static, typed content.
 
 Next.js (App Router) with TypeScript, Tailwind v4, GSAP and Lenis, deployed on
 Vercel. No CMS, no auth, no analytics. The one thing stored is an ROI
@@ -51,7 +52,7 @@ or screen-reader text. It needs a Chrome binary and skips cleanly without one.
 
 ```text
 src/
-  app/              routes: / (page.tsx), /deck, /roi, the /api/roi save and
+  app/              routes: / (page.tsx), /deck, /roi, /build, the /api/roi save and
                     export routes, layout.tsx, globals.css (every style token)
   components/       the home page's sections and the shared pieces
     deck/           the slide stack and its figures

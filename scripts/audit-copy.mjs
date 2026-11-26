@@ -20,6 +20,7 @@ const PAGES = [
   { route: "/", file: ".next/server/app/index.html" },
   { route: "/deck", file: ".next/server/app/deck.html" },
   { route: "/roi", file: ".next/server/app/roi.html" },
+  { route: "/build", file: ".next/server/app/build.html" },
 ];
 
 function decode(text) {

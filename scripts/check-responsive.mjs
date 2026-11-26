@@ -27,7 +27,7 @@ import { existsSync } from "node:fs";
 import puppeteer from "puppeteer-core";
 
 const BASE = (process.argv[2] ?? "http://localhost:3000").replace(/\/$/, "");
-const ROUTES = ["/", "/deck", "/roi"];
+const ROUTES = ["/", "/deck", "/roi", "/build"];
 
 const CHROME = [
   "/opt/google/chrome/chrome",
