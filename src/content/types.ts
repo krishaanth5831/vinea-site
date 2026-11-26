@@ -396,3 +396,26 @@ export type RoiContent = {
     privacy: string;
   };
 };
+
+/* ---- the cofounder page ------------------------------------------------ */
+
+export type BuildContent = {
+  meta: PageMeta;
+  intro: { eyebrow: string; heading: string; paragraphs: string[] };
+  how: {
+    heading: string;
+    lead: string;
+    steps: { label: string; body: string }[];
+    badge: string;
+    spine: string;
+    modules: { name: string; job: string }[];
+    flywheel: string;
+  };
+  hard: { heading: string; lead: string; items: { title: string; body: string }[] };
+  now: { heading: string; items: string[]; linksLead: string };
+  why: { heading: string; quote: string; paragraphs: string[] };
+  who: { heading: string; lead: string; items: { title: string; body: string }[] };
+  start: { heading: string; lead: string; steps: { when: string; body: string }[]; after: string };
+  me: { heading: string; paragraphs: string[] };
+  cta: { lead: string; button: Cta };
+};
